@@ -23,24 +23,31 @@ import {
 import Axios from 'axios';
 import AsyncStorage from '@react-native-community/async-storage';
 
+// For Testing enter password : admin   email : admin@admin.com in text inputs
 async function getLoginToken(email, password) {
-  const response = await Axios.post(
-    'http://chouhanaryan.pythonanywhere.com/auth/token/login',
-    {
-      password: password,
-      email: email,
-    },
-  );
-  const token = await response.data;
-  return token.auth_token;
+  try {
+    const response = await Axios.post(
+      'http://chouhanaryan.pythonanywhere.com/auth/token/login',
+      {
+        password: password,
+        email: email,
+      },
+    );
+    const token = await response.data;
+    // console.log(token.auth_token);
+    return token.auth_token;
+  } catch (error) {
+    console.log(Object.keys(error), error.message);
+    return -1; //Returning -1 for error 400
+  }
 }
+
 async function Login(navigation, email, password) {
-  if (email !== '' && password !== '') {
+  const token = await getLoginToken(email, password);
+  if (email !== '' && password !== '' && token !== -1) {
+    //checking if the token is recieved and inputs arent empty
     try {
-      await AsyncStorage.setItem(
-        'auth_key',
-        await getLoginToken(email, password),
-      );
+      await AsyncStorage.setItem('auth_key', token); //Storing token in local storage
     } catch (e) {
       console.log(e);
     }
@@ -51,6 +58,7 @@ async function Login(navigation, email, password) {
 
 function LoginScreen({navigation}) {
   async function LoginCheck() {
+    //checking if user has already logged in
     console.log(await AsyncStorage.getItem('auth_key'));
     if ((await AsyncStorage.getItem('auth_key')) !== null) {
       navigation.navigate('HomeScreen');
@@ -87,7 +95,6 @@ function LoginScreen({navigation}) {
                 name="email"
                 keyboardType="email-address"
                 autoCapitalize="none"
-                // value={userInput.email}
               />
             </Item>
 
@@ -99,7 +106,6 @@ function LoginScreen({navigation}) {
                 }}
                 name="password"
                 secureTextEntry
-                // value={userInput.password}
               />
             </Item>
 
