@@ -1,6 +1,19 @@
 # inventory-management-rn
 react-native project for inventory management app
 
+<p>
+ 
+  master :
+  <a href="https://travis-ci.com/djunicode/inventory-management-rn">
+    <img src="https://travis-ci.com/djunicode/inventory-management-rn.svg?branch=master" alt="master build status" />
+  </a>
+
+ prod:
+  <a href="https://travis-ci.com/djunicode/inventory-management-rn">
+    <img src="https://travis-ci.com/djunicode/inventory-management-rn.svg?branch=prod" alt="prod build status" />
+  </a>
+ 
+</p>
 
 # Contribution Guidelines
 
