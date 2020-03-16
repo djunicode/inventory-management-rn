@@ -64,12 +64,15 @@ function LoginScreen({navigation}) {
           },
         );
         const check = await response.data;
-        console.log(check);
-        setisAdmin(true);
+        try {
+          await AsyncStorage.setItem('is_staff', check.is_staff.toString()); //Storing whether staff or not in local storage
+        } catch (e) {
+          console.log(e);
+        }
       } catch (e) {
         console.log(e);
       }
-
+      console.log(await AsyncStorage.getItem('is_staff'));
       navigation.navigate('Drawer');
     }
   };
