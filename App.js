@@ -27,6 +27,7 @@ import LoginScreen from './src/screens/LoginScreen';
 import HomeScreen from './src/screens/Logout';
 import DrawerScreen1 from './src/screens/DrawerScreen1';
 import DrawerScreen2 from './src/screens/DrawerScreen2';
+import EmployeeListScreen from './src/screens/EmployeeListScreen'
 
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
@@ -82,9 +83,14 @@ function BurgerBtn() {
         options={{title: 'Inventory'}}
       />
       <Drawer.Screen
+        name="EmployeeList"
+        component={EmployeeListScreen}
+        options={{title: 'Employees'}}
+      />
+      <Drawer.Screen
         name="Employee"
         component={AddEmployee}
-        options={{title: 'Employee'}}
+        options={{title: '(temperory) Add Employee'}}
       />
       <Drawer.Screen
         name="Transactions"
