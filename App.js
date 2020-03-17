@@ -1,12 +1,17 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- * @flow
- */
-
-import React from 'react';
+import React, {Component} from 'react';
+import {
+  Button,
+  Body,
+  Input,
+  Container,
+  Content,
+  Header,
+  Item,
+  Tabs,
+  Tab,
+} from 'native-base';
+import AsyncStorage from '@react-native-community/async-storage';
+import Icon from 'react-native-vector-icons/Feather';
 import {
   SafeAreaView,
   StyleSheet,
@@ -14,101 +19,110 @@ import {
   View,
   Text,
   StatusBar,
+  TouchableOpacity,
 } from 'react-native';
+import {createDrawerNavigator} from '@react-navigation/drawer';
+import AddEmployee from './src/screens/AddEmployee';
+import LoginScreen from './src/screens/LoginScreen';
+import HomeScreen from './src/screens/Logout';
+import DrawerScreen1 from './src/screens/DrawerScreen1';
+import DrawerScreen2 from './src/screens/DrawerScreen2';
 
-import {
-  Header,
-  LearnMoreLinks,
-  Colors,
-  DebugInstructions,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
+import {NavigationContainer} from '@react-navigation/native';
+import {createStackNavigator} from '@react-navigation/stack';
 
-const App: () => React$Node = () => {
+const AppStack = createStackNavigator();
+const Drawer = createDrawerNavigator();
+
+function App({navigation}) {
   return (
-    <>
-      <StatusBar barStyle="dark-content" />
-      <SafeAreaView>
-        <ScrollView
-          contentInsetAdjustmentBehavior="automatic"
-          style={styles.scrollView}>
-          <Header />
-          {global.HermesInternal == null ? null : (
-            <View style={styles.engine}>
-              <Text style={styles.footer}>Engine: Hermes</Text>
-            </View>
-          )}
-          <View style={styles.body}>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>Step One</Text>
-              <Text style={styles.sectionDescription}>
-                Edit <Text style={styles.highlight}>App.js</Text> to change this
-                screen and then come back to see your edits.
-              </Text>
-            </View>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>See Your Changes</Text>
-              <Text style={styles.sectionDescription}>
-                <ReloadInstructions />
-              </Text>
-            </View>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>Debug</Text>
-              <Text style={styles.sectionDescription}>
-                <DebugInstructions />
-              </Text>
-            </View>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>Learn More</Text>
-              <Text style={styles.sectionDescription}>
-                Read the docs to discover what to do next:
-              </Text>
-            </View>
-            <LearnMoreLinks />
-          </View>
-        </ScrollView>
-      </SafeAreaView>
-    </>
+    <NavigationContainer theme={MyTheme}>
+      <AppStack.Navigator initialRouteName="Loginscreen">
+        <AppStack.Screen
+          name="Loginscreen"
+          component={LoginScreen}
+          options={{title: 'Inventory Management'}}
+        />
+        <AppStack.Screen
+          name="Drawer"
+          component={BurgerBtn}
+          options={{
+            headerLeft: () => {
+              return (
+                <TouchableOpacity onPress={() => {}}>
+                  <Icon name="menu" color="white" size={35} />
+                </TouchableOpacity>
+              );
+            },
+            headerRight:() => {
+              return (
+                <TouchableOpacity onPress={() => {}}>
+                  <Icon name="user" color="white" size={35} />
+                </TouchableOpacity>
+              );
+            },
+          }}
+        />
+      </AppStack.Navigator>
+    </NavigationContainer>
   );
+}
+
+function BurgerBtn() {
+  return (
+    <Drawer.Navigator initialRouteName="Home">
+      <Drawer.Screen
+        name="Home"
+        component={HomeScreen}
+        options={{title: 'Home'}}
+      />
+      <Drawer.Screen
+        name="Inventory"
+        component={DrawerScreen1}
+        options={{title: 'Inventory'}}
+      />
+      <Drawer.Screen
+        name="Employee"
+        component={AddEmployee}
+        options={{title: 'Employee'}}
+      />
+      <Drawer.Screen
+        name="Transactions"
+        component={DrawerScreen2}
+        options={{title: 'Transactions'}}
+      />
+    
+    </Drawer.Navigator>
+  );
+}
+export default App;
+const MyTheme = {
+  dark: false,
+  colors: {
+    primary: 'rgb(255, 45, 85)',
+    background: '#F3F9FB',
+    card: '#4796BD',
+    text: '#F4F9FA',
+    border: 'rgb(199, 199, 204)',
+  },
 };
 
-const styles = StyleSheet.create({
-  scrollView: {
-    backgroundColor: Colors.lighter,
-  },
-  engine: {
-    position: 'absolute',
-    right: 0,
-  },
-  body: {
-    backgroundColor: Colors.white,
-  },
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-    color: Colors.black,
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-    color: Colors.dark,
-  },
-  highlight: {
-    fontWeight: '700',
-  },
-  footer: {
-    color: Colors.dark,
-    fontSize: 12,
-    fontWeight: '600',
-    padding: 4,
-    paddingRight: 12,
-    textAlign: 'right',
-  },
-});
+// const LoginStack = createStackNavigator();
+// const RegisterStack = createStackNavigator();
+// function Login() {
+//   return (
+//     <LoginStack.Navigator headerMode='none'>
+//       <LoginStack.Screen name="LoginScreen" component={LoginScreen} />
+//       <LoginStack.Screen name="HomeScreen" component={HomeScreen} />
+//     </LoginStack.Navigator>
+//   );
+// }
 
-export default App;
+// function Register() {
+//   return (
+//     <RegisterStack.Navigator headerMode='none'>
+//       <RegisterStack.Screen name="RegisterScreen" component={RegisterScreen} />
+//       <RegisterStack.Screen name="HomeScreen" component={HomeScreen} />
+//     </RegisterStack.Navigator>
+//   );
+// }
