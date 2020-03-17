@@ -25,7 +25,7 @@ import { createDrawerNavigator } from '@react-navigation/drawer';
 import AddEmployee from './src/screens/AddEmployee';
 import LoginScreen from './src/screens/LoginScreen';
 import HomeScreen from './src/screens/Logout';
-import DrawerScreen1 from './src/screens/DrawerScreen1';
+import InventoryListScreen from './src/screens/InventoryListScreen';
 import DrawerScreen2 from './src/screens/DrawerScreen2';
 import EmployeeListScreen from './src/screens/EmployeeListScreen'
 
@@ -96,7 +96,7 @@ function BurgerBtn() {
       />
       <Drawer.Screen
         name="Inventory"
-        component={DrawerScreen1}
+        component={InventoryListScreen}
         options={{ title: 'Inventory' }}
       />
       {/* <Drawer.Screen
