@@ -33,6 +33,11 @@ const GENDER_FEMALE = 'Female'
 
 
 export default class EmployeeListItem extends React.Component {
+
+    componentDidMount() {
+        console.disableYellowBox = true;
+      }
+      
     render() {
         return (
             <View style={listItemStyles.container}>

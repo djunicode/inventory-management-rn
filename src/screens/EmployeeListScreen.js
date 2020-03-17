@@ -15,7 +15,7 @@ import {
     CardItem,
 } from 'native-base';
 import {
-    Alert, FlatList,SafeAreaView, StyleSheet, ScrollView, View, Text, StatusBar, TouchableOpacity,KeyboardAvoidingView, Dimensions,
+    Alert, FlatList, SafeAreaView, StyleSheet, ScrollView, View, Text, StatusBar, TouchableOpacity, KeyboardAvoidingView, Dimensions,
 } from 'react-native';
 import EmployeeListItem from '../components/EmployeeListItem'
 
@@ -102,6 +102,10 @@ const DEMO_DATA = [
 ];
 
 export default class EmployeeListScreen extends Component {
+    componentDidMount() {
+        console.disableYellowBox = true;
+      }
+      
     constructor(props) {
         super(props);
     }
@@ -112,10 +116,10 @@ export default class EmployeeListScreen extends Component {
             `edit pressed of id ${selectedID}`,
             '',
             [
-              {text: 'OK', onPress: () => console.log('OK Pressed')},
+                { text: 'OK', onPress: () => console.log('OK Pressed') },
             ],
-            {cancelable: false},
-          );
+            { cancelable: false },
+        );
     }
 
     onDeletePressed = (selectedID) => {
@@ -124,10 +128,10 @@ export default class EmployeeListScreen extends Component {
             `delete pressed of id ${selectedID}`,
             '',
             [
-              {text: 'OK', onPress: () => console.log('OK Pressed')},
+                { text: 'OK', onPress: () => console.log('OK Pressed') },
             ],
-            {cancelable: false},
-          );
+            { cancelable: false },
+        );
     }
 
     render() {
@@ -137,7 +141,7 @@ export default class EmployeeListScreen extends Component {
                     {/* the entire outerpart */}
                     <Body style={styles.listContainer} >
 
-                         {/* the header of table */}
+                        {/* the header of table */}
                         <View style={styles.tableHeader}>
                             <CardItem style={{ backgroundColor: 'rgba(255,255,255,0)' }}>
                                 <Text style={styles.nameHeader}>Name</Text>
@@ -163,13 +167,14 @@ export default class EmployeeListScreen extends Component {
                         </ScrollView>
 
                         {/* the add employee button */}
-                        <TouchableOpacity style={styles.addEmployeeButton}>
+                        <TouchableOpacity style={styles.addEmployeeButton}
+                            onPress={() => this.props.navigation.navigate('AddEmployee')}>
                             <Icon name="plus" color="white" size={25} />
                             <Text style={styles.addEmployeeButtonText}>
                                 Add Employee
                                 </Text>
                         </TouchableOpacity>
-        
+
                     </Body>
 
                 </Content>

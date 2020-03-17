@@ -72,7 +72,7 @@ export default class AddEmployee extends Component {
                 rounded
                 style={styles.regButton}
                 onPress={() => {
-                  this.props.navigation.navigate('HomeScreen');
+                  this.props.navigation.navigate('Home');
                 }}>
                 <Text style={styles.buttonText}>Register</Text>
               </TouchableOpacity>
