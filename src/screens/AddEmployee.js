@@ -32,7 +32,6 @@ export default class AddEmployee extends Component {
           <ScrollView>
             <Body>
               <Text style={styles.heading}>Account</Text>
-              
 
               <Item floatingLabel style={styles.inputBox}>
                 <Label style={styles.label}>First Name</Label>
@@ -76,7 +75,6 @@ export default class AddEmployee extends Component {
                 }}>
                 <Text style={styles.buttonText}>Register</Text>
               </TouchableOpacity>
-
             </Body>
           </ScrollView>
         </Content>
@@ -107,9 +105,8 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginTop: 25,
     marginBottom: 10,
-    alignSelf:'flex-start',
-    marginLeft:27
-  
+    alignSelf: 'flex-start',
+    marginLeft: 27,
   },
   subHeading: {
     fontSize: 22,

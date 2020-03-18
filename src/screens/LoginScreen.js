@@ -1,24 +1,11 @@
-import React, {Component, useState,useEffect} from 'react';
+import React, {Component, useState, useEffect} from 'react';
+import {Body, Input, Container, Content, Item, Label,Icon} from 'native-base';
 import {
-  Button,
-  Body,
-  Input,
-  Container,
-  Content,
-  Header,
-  Item,
-  Label,
-} from 'native-base';
-import {
-  SafeAreaView,
   StyleSheet,
   ScrollView,
-  View,
   Text,
-  StatusBar,
   TouchableOpacity,
   KeyboardAvoidingView,
-  Dimensions,
   Image,
 } from 'react-native';
 import Axios from 'axios';
@@ -43,7 +30,7 @@ async function getLoginToken(email, password) {
   }
 }
 
-function LoginScreen({navigation}) {
+const LoginScreen=({navigation})=> {
   const Login = async (email, password) => {
     const token = await getLoginToken(email, password);
     if (email !== '' && password !== '' && token !== -1) {
@@ -94,55 +81,56 @@ function LoginScreen({navigation}) {
   return (
     <Container style={{backgroundColor: '#F3F9FB'}}>
       <Content>
-        <ScrollView>
-          <Body>
-            <Text style={styles.heading}>Login</Text>
+        <Body>
+          <Text style={styles.heading}>Login</Text>
 
-            <Image
-              style={{
-                width: 274,
-                height: 207,
-                marginVertical: 40,
-                marginRight: 10,
+          <Image
+            style={{
+              width: 274,
+              height: 207,
+              marginVertical: 40,
+              marginRight: 10,
+            }}
+            source={require('../Images/Illustration.png')}
+          />
+
+          <Item floatingLabel style={styles.inputBox}>
+         
+            <Label style={styles.label}>Email ID</Label>
+            
+            <Input
+              style={styles.inputArea}
+              onChangeText={value => {
+                setUserEmail(value);
               }}
-              source={require('../Images/Illustration.png')}
+             
+              keyboardType="email-address"
+              autoCapitalize="none"
             />
+          </Item>
 
-            <Item floatingLabel style={styles.inputBox}>
-              <Label style={styles.label}>Email ID</Label>
-              <Input
-                style={styles.inputArea}
-                onChangeText={value => {
-                  setUserEmail(value);
-                }}
-                name="email"
-                keyboardType="email-address"
-                autoCapitalize="none"
-              />
-            </Item>
+          <Item floatingLabel style={styles.inputBox}>
+         
+            <Label style={styles.label}>Password</Label>
+            <Input
+              style={styles.inputArea}
+              onChangeText={value => {
+                setUserPassword(value);
+              }}
+              name="password"
+              secureTextEntry
+            />
+          </Item>
 
-            <Item floatingLabel style={styles.inputBox}>
-              <Label style={styles.label}>Password</Label>
-              <Input
-                style={styles.inputArea}
-                onChangeText={value => {
-                  setUserPassword(value);
-                }}
-                name="password"
-                secureTextEntry
-              />
-            </Item>
-
-            <TouchableOpacity
-              rounded
-              style={styles.loginButton}
-              onPress={() => {
-                Login(email, password);
-              }}>
-              <Text style={styles.buttonText}>Login</Text>
-            </TouchableOpacity>
-          </Body>
-        </ScrollView>
+          <TouchableOpacity
+            rounded
+            style={styles.loginButton}
+            onPress={() => {
+              Login(email, password);
+            }}>
+            <Text style={styles.buttonText}>Login</Text>
+          </TouchableOpacity>
+        </Body>
       </Content>
     </Container>
   );
@@ -187,12 +175,15 @@ const styles = StyleSheet.create({
     marginRight: 28,
     marginLeft: 28,
     textAlign: 'left',
-    marginVertical: 15,
+    marginVertical: 10,
     height: 55,
   },
 
   label: {
-    paddingLeft: 30,
+    paddingLeft: 10,
+   alignItems: 'center',
+   justifyContent: 'center',
+  
     color: '#828282',
   },
   inputArea: {

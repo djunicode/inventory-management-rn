@@ -7,7 +7,7 @@ function Home({navigation}) {
     // console.log(await AsyncStorage.getItem('auth_key'));
     await AsyncStorage.removeItem('auth_key'); //Removing the token from local storage while logging out
     // console.log(await AsyncStorage.getItem('auth_key'));
-    navigation.navigate('Loginscreen');
+    navigation.navigate('LoginScreen');
   }
   return (
     <View>
