@@ -1,6 +1,7 @@
 import React from 'react';
 
-import Icon from 'react-native-vector-icons/Feather';
+import Icon_Feather from 'react-native-vector-icons/Feather';
+import Icon_MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { TouchableOpacity } from 'react-native';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import AddEmployee from './src/screens/AddEmployee';
@@ -33,14 +34,14 @@ function App({ navigation }) {
             headerLeft: () => {
               return (
                 <TouchableOpacity onPress={() => { }}>
-                  <Icon name="menu" color="white" size={35} />
+                  <Icon_Feather name="menu" color="white" size={35} />
                 </TouchableOpacity>
               );
             },
             headerRight: () => {
               return (
                 <TouchableOpacity onPress={() => { }}>
-                  <Icon name="user" color="white" size={35} />
+                  <Icon_Feather name="user" color="white" size={35} />
                 </TouchableOpacity>
               );
             },
@@ -69,12 +70,12 @@ function BurgerBtn() {
       <Drawer.Screen
         name="Home"
         component={HomeScreen}
-        options={{ title: 'Home' }}
+        options={{title: 'Home'}, {drawerIcon: () => <Icon_MaterialIcons name="home" size={24} />}}
       />
       <Drawer.Screen
         name="Inventory"
         component={InventoryListScreen}
-        options={{ title: 'Inventory' }}
+        options={{title: 'Inventory'}, {drawerIcon: () => <Icon_Feather name="list" size={24} />}}
       />
       {/* <Drawer.Screen
         name="EmployeeAdd"
@@ -89,12 +90,12 @@ function BurgerBtn() {
       <Drawer.Screen
         name="Employee"
         component={StackFn}
-        options={{title: 'Employee'}}
+        options={{title: 'Employee'}, {drawerIcon: () => <Icon_MaterialIcons name="person" size={24} />}}
       />
       <Drawer.Screen
         name="Transactions"
         component={DrawerScreen2}
-        options={{ title: 'Transactions' }}
+        options={{title: 'Transactions'}, {drawerIcon: () => <Icon_MaterialIcons name="attach-money" size={24} />}}
       />
     </Drawer.Navigator>
   );
