@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import {
   ImageBackground,
   View,
@@ -6,38 +6,58 @@ import {
   Dimensions,
   Platform,
   StyleSheet,
+  TouchableOpacity
 } from 'react-native';
-import {Container, Button, H3, Text} from 'native-base';
+import { Container, Content, Text, Tab, Tabs, Header, Left, Right, Body, Item, Input, Label } from 'native-base';
+import Icon from 'react-native-vector-icons/Feather';
+import Buy from './Buy';
+import Sell from './Sell';
 
 const deviceHeight = Dimensions.get('window').height;
 
-export default class DrawerScreen2 extends Component {
-  render() {
-    return (
-      <Container>
-        <StatusBar barStyle="light-content" androidStatusBarColor="#000000" />
-
-        <View style={styles.container}>
-          <H3 style={styles.text}>Transactions</H3>
-        </View>
-      </Container>
-    );
-  }
+const MyHeader = ({ navigation }) => {
+  return (
+    <Header style={{ backgroundColor: '#4796BD', flexDirection: 'row' }}>
+      <Left>
+        <TouchableOpacity onPress={() => navigation.openDrawer()}>
+          <Icon name="menu" color="white" size={35} />
+        </TouchableOpacity>
+      </Left>
+      <Body>
+        <Text style={{ fontSize: 21, color: '#fff' }}>Drawer</Text>
+      </Body>
+      <Right>
+        <TouchableOpacity onPress={() => { }}>
+          <Icon name="user" color="white" size={35} />
+        </TouchableOpacity>
+      </Right>
+    </Header>
+  );
 }
 
-const styles = StyleSheet.create({
-  imageContainer: {
-    flex: 1,
-    width: null,
-    height: null,
-  },
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: 'transparent',
-  },
-  text: {
-    color: 'black',
-  },
-});
+
+
+
+
+
+
+const DrawerScreen2 = ({ navigation }) => {
+  return (
+    <Container>
+      {/* <MyHeader navigation={navigation} /> */}
+
+      <Tabs>
+        <Tab activeTabStyle={{ backgroundColor: '#4796BD' }} tabStyle={{ backgroundColor: '#4796BD' }} heading="Buy">
+          <Buy navigation={navigation} />
+        </Tab>
+        <Tab activeTabStyle={{ backgroundColor: '#4796BD' }} tabStyle={{ backgroundColor: '#4796BD' }} heading="Sell">
+          <Sell />
+        </Tab>
+      </Tabs>
+
+    </Container>
+  );
+
+}
+
+export default DrawerScreen2;
