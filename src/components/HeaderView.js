@@ -8,11 +8,10 @@ const HeaderView = ({ navigation }) => {
   return (
     <Header style={{ backgroundColor: '#4796BD', flexDirection: 'row' }}>
       <Left>
-        <TouchableOpacity onPress={() => navigation.navigate('Transactions')}>
+        <TouchableOpacity onPress={() => navigation.toggleDrawer()}>
           <Icon name="menu" color="white" size={35} />
         </TouchableOpacity>
       </Left>
-      {/* <Text>buy head</Text> */}
       <Body>
         <Text style={{fontSize: 21, color: '#fff'}}>Drawer</Text>
       </Body>

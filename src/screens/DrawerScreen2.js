@@ -12,6 +12,7 @@ import { Container, Content, Text, Tab, Tabs, Header, Left, Right, Body, Item, I
 import Icon from 'react-native-vector-icons/Feather';
 import Buy from './Buy';
 import Sell from './Sell';
+import HeaderView from '../components/HeaderView';
 
 const deviceHeight = Dimensions.get('window').height;
 
@@ -44,7 +45,7 @@ const MyHeader = ({ navigation }) => {
 const DrawerScreen2 = ({ navigation }) => {
   return (
     <Container>
-      {/* <MyHeader navigation={navigation} /> */}
+      <HeaderView navigation={navigation} />
 
       <Tabs>
         <Tab activeTabStyle={{ backgroundColor: '#4796BD' }} tabStyle={{ backgroundColor: '#4796BD' }} heading="Buy">

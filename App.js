@@ -1,8 +1,8 @@
 import React from 'react';
 
 import Icon from 'react-native-vector-icons/Feather';
-import {TouchableOpacity} from 'react-native';
-import {createDrawerNavigator} from '@react-navigation/drawer';
+import { TouchableOpacity } from 'react-native';
+import { createDrawerNavigator } from '@react-navigation/drawer';
 import AddEmployee from './src/screens/AddEmployee';
 import LoginScreen from './src/screens/LoginScreen';
 import HomeScreen from './src/screens/Logout';
@@ -10,22 +10,21 @@ import InventoryListScreen from './src/screens/InventoryListScreen';
 import DrawerScreen2 from './src/screens/DrawerScreen2';
 import EmployeeListScreen from './src/screens/EmployeeListScreen';
 
-import {NavigationContainer} from '@react-navigation/native';
-import {createStackNavigator, HeaderTitle} from '@react-navigation/stack';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator, HeaderTitle } from '@react-navigation/stack';
 
 const AppStack = createStackNavigator();
 const Drawer = createDrawerNavigator();
 const EmployeeStack = createStackNavigator();
 
-function App({navigation}) {
+function App({ navigation }) {
   return (
     <NavigationContainer theme={MyTheme}>
-      <AppStack.Navigator initialRouteName="LoginScreen">
+      <AppStack.Navigator headerMode={null} initialRouteName="LoginScreen">
         <AppStack.Screen
           name="LoginScreen"
           component={LoginScreen}
-          options={{title: 'Inventory Management',headerTitleAlign:'center'}}
-          
+          options={{ title: 'Inventory Management', headerTitleAlign: 'center' }}
         />
         <AppStack.Screen
           name="Drawer"
@@ -33,14 +32,14 @@ function App({navigation}) {
           options={{
             headerLeft: () => {
               return (
-                <TouchableOpacity onPress={() => {}}>
+                <TouchableOpacity onPress={() => { }}>
                   <Icon name="menu" color="white" size={35} />
                 </TouchableOpacity>
               );
             },
             headerRight: () => {
               return (
-                <TouchableOpacity onPress={() => {}}>
+                <TouchableOpacity onPress={() => { }}>
                   <Icon name="user" color="white" size={35} />
                 </TouchableOpacity>
               );
@@ -70,15 +69,12 @@ function BurgerBtn() {
       <Drawer.Screen
         name="Home"
         component={HomeScreen}
-        options={{title: 'Home'}}
+        options={{ title: 'Home' }}
       />
       <Drawer.Screen
         name="Inventory"
         component={InventoryListScreen}
-        options={{title: 'Inventory'}}
-       
-      
-        
+        options={{ title: 'Inventory' }}
       />
       {/* <Drawer.Screen
         name="EmployeeAdd"
@@ -98,7 +94,7 @@ function BurgerBtn() {
       <Drawer.Screen
         name="Transactions"
         component={DrawerScreen2}
-        options={{title: 'Transactions'}}
+        options={{ title: 'Transactions' }}
       />
     </Drawer.Navigator>
   );

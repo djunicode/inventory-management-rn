@@ -28,6 +28,7 @@ import {
   Dimensions,
 } from 'react-native';
 import EmployeeListItem from '../components/EmployeeListItem';
+import HeaderView from '../components/HeaderView';
 
 const GENDER_MALE = 'Male';
 const GENDER_FEMALE = 'Female';
@@ -107,16 +108,17 @@ const DEMO_DATA = [
   },
 ];
 
-export default class EmployeeListScreen extends Component {
-  componentDidMount() {
-    console.disableYellowBox = true;
-  }
+const EmployeeListScreen = ({ navigation }) => {
+// export default class EmployeeListScreen extends Component {
+  // componentDidMount() {
+  //   console.disableYellowBox = true;
+  // }
 
-  constructor(props) {
-    super(props);
-  }
+  // constructor(props) {
+  //   super(props);
+  // }
 
-  onEditPressed = selectedID => {
+  const onEditPressed = selectedID => {
     // console.warn(selectedID)
     Alert.alert(
       `edit pressed of id ${selectedID}`,
@@ -126,7 +128,7 @@ export default class EmployeeListScreen extends Component {
     );
   };
 
-  onDeletePressed = selectedID => {
+  const onDeletePressed = selectedID => {
     console.warn(selectedID);
     Alert.alert(
       `delete pressed of id ${selectedID}`,
@@ -136,9 +138,10 @@ export default class EmployeeListScreen extends Component {
     );
   };
 
-  render() {
+  
     return (
       <Container style={{backgroundColor: '#F3F9FB'}}>
+        <HeaderView navigation={navigation} />
         <Content>
           {/* the entire outerpart */}
           <Body style={styles.listContainer}>
@@ -160,8 +163,8 @@ export default class EmployeeListScreen extends Component {
                   // scrollEnabled={true}
                   renderItem={({item}) => (
                     <EmployeeListItem
-                      onEditPressed={data => this.onEditPressed(data)}
-                      onDeletePressed={data => this.onDeletePressed(data)}
+                      onEditPressed={data => onEditPressed(data)}
+                      onDeletePressed={data => onDeletePressed(data)}
                       item={item}
                     />
                   )}
@@ -173,7 +176,7 @@ export default class EmployeeListScreen extends Component {
             {/* the add employee button */}
             <TouchableOpacity
               style={styles.addEmployeeButton}
-              onPress={() => this.props.navigation.navigate('AddEmployee')}>
+              onPress={() => navigation.navigate('AddEmployee')}>
               <Icon name="plus" color="white" size={25} />
               <Text style={styles.addEmployeeButtonText}>Add Employee</Text>
             </TouchableOpacity>
@@ -181,8 +184,10 @@ export default class EmployeeListScreen extends Component {
         </Content>
       </Container>
     );
-  }
+  
 }
+
+export default EmployeeListScreen;
 
 const DEVICE_WIDTH = Dimensions.get('screen').width;
 const DEVICE_HEIGHT = Dimensions.get('screen').height;

@@ -1,5 +1,5 @@
 import React, {Component, useState, useEffect} from 'react';
-import {Body, Input, Container, Content, Item, Label,Icon} from 'native-base';
+import {Body, Input, Container, Content, Item, Label, Icon, Header} from 'native-base';
 import {
   StyleSheet,
   ScrollView,
@@ -80,6 +80,9 @@ const LoginScreen=({navigation})=> {
 
   return (
     <Container style={{backgroundColor: '#F3F9FB'}}>
+      <Header style={{ backgroundColor: '#4796BD', flexDirection: 'row', alignItems: 'center' }}>
+        <Text style={{color: '#fff', fontSize: 20}}>Inventory Management</Text>
+      </Header>
       <Content>
         <Body>
           <Text style={styles.heading}>Login</Text>
