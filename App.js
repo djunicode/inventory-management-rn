@@ -1,50 +1,31 @@
-import React, { Component } from 'react';
-import {
-  Button,
-  Body,
-  Input,
-  Container,
-  Content,
-  Header,
-  Item,
-  Tabs,
-  Tab,
-} from 'native-base';
-import AsyncStorage from '@react-native-community/async-storage';
-import Icon from 'react-native-vector-icons/Feather';
-import {
-  SafeAreaView,
-  StyleSheet,
-  ScrollView,
-  View,
-  Text,
-  StatusBar,
-  TouchableOpacity,
-} from 'react-native';
+import React from 'react';
+
+import Icon_Feather from 'react-native-vector-icons/Feather';
+import Icon_MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import { TouchableOpacity } from 'react-native';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import AddEmployee from './src/screens/AddEmployee';
 import LoginScreen from './src/screens/LoginScreen';
 import HomeScreen from './src/screens/Logout';
 import InventoryListScreen from './src/screens/InventoryListScreen';
 import DrawerScreen2 from './src/screens/DrawerScreen2';
-import EmployeeListScreen from './src/screens/EmployeeListScreen'
+import EmployeeListScreen from './src/screens/EmployeeListScreen';
 
 import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
+import { createStackNavigator, HeaderTitle } from '@react-navigation/stack';
 
 const AppStack = createStackNavigator();
 const Drawer = createDrawerNavigator();
 const EmployeeStack = createStackNavigator();
 
-
 function App({ navigation }) {
   return (
     <NavigationContainer theme={MyTheme}>
-      <AppStack.Navigator initialRouteName="Loginscreen">
+      <AppStack.Navigator headerMode={null} initialRouteName="LoginScreen">
         <AppStack.Screen
-          name="Loginscreen"
+          name="LoginScreen"
           component={LoginScreen}
-          options={{ title: 'Inventory Management' }}
+          options={{ title: 'Inventory Management', headerTitleAlign: 'center' }}
         />
         <AppStack.Screen
           name="Drawer"
@@ -53,14 +34,14 @@ function App({ navigation }) {
             headerLeft: () => {
               return (
                 <TouchableOpacity onPress={() => { }}>
-                  <Icon name="menu" color="white" size={35} />
+                  <Icon_Feather name="menu" color="white" size={35} />
                 </TouchableOpacity>
               );
             },
             headerRight: () => {
               return (
                 <TouchableOpacity onPress={() => { }}>
-                  <Icon name="user" color="white" size={35} />
+                  <Icon_Feather name="user" color="white" size={35} />
                 </TouchableOpacity>
               );
             },
@@ -73,17 +54,14 @@ function App({ navigation }) {
 
 function StackFn() {
   return (
-      <EmployeeStack.Navigator initialRouteName="EmployeeList" headerMode='none'>
-        <EmployeeStack.Screen
-          name="EmployeeList"
-          component={EmployeeListScreen} 
-          />
-        <EmployeeStack.Screen
-          name="AddEmployee"
-          component={AddEmployee} 
-          />
-      </EmployeeStack.Navigator>
-  )
+    <EmployeeStack.Navigator initialRouteName="EmployeeList" headerMode="none">
+      <EmployeeStack.Screen
+        name="EmployeeList"
+        component={EmployeeListScreen}
+      />
+      <EmployeeStack.Screen name="AddEmployee" component={AddEmployee} />
+    </EmployeeStack.Navigator>
+  );
 }
 
 function BurgerBtn() {
@@ -92,12 +70,12 @@ function BurgerBtn() {
       <Drawer.Screen
         name="Home"
         component={HomeScreen}
-        options={{ title: 'Home' }}
+        options={{title: 'Home'}, {drawerIcon: () => <Icon_MaterialIcons name="home" size={24} />}}
       />
       <Drawer.Screen
         name="Inventory"
         component={InventoryListScreen}
-        options={{ title: 'Inventory' }}
+        options={{title: 'Inventory'}, {drawerIcon: () => <Icon_Feather name="list" size={24} />}}
       />
       {/* <Drawer.Screen
         name="EmployeeAdd"
@@ -112,14 +90,13 @@ function BurgerBtn() {
       <Drawer.Screen
         name="Employee"
         component={StackFn}
-        options={{ title: 'Employee' }}
+        options={{title: 'Employee'}, {drawerIcon: () => <Icon_MaterialIcons name="person" size={24} />}}
       />
       <Drawer.Screen
         name="Transactions"
         component={DrawerScreen2}
-        options={{ title: 'Transactions' }}
+        options={{title: 'Transactions'}, {drawerIcon: () => <Icon_MaterialIcons name="attach-money" size={24} />}}
       />
-
     </Drawer.Navigator>
   );
 }
