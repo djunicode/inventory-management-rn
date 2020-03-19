@@ -1,5 +1,5 @@
 import React, {Component, useState, useEffect} from 'react';
-import {Body, Input, Container, Content, Item, Label,Icon,Header} from 'native-base';
+import {Body, Input, Container, Content, Item, Label, Icon, Header} from 'native-base';
 import {
   StyleSheet,
   ScrollView,
