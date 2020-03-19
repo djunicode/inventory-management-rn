@@ -10,6 +10,7 @@ import HomeScreen from './src/screens/HomeScreen';
 import InventoryListScreen from './src/screens/InventoryListScreen';
 import DrawerScreen2 from './src/screens/TransactionsScreen';
 import EmployeeListScreen from './src/screens/EmployeeListScreen';
+import SplashScreen from './src/screens/SplashScreen'
 import Settings from './src/screens/SettingsScreen'
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator, HeaderTitle } from '@react-navigation/stack';
@@ -21,11 +22,16 @@ const EmployeeStack = createStackNavigator();
 const App=({ navigation }) =>{
   return (
     <NavigationContainer theme={MyTheme}>
-      <AppStack.Navigator headerMode={null} initialRouteName="LoginScreen">
+      <AppStack.Navigator headerMode={null} initialRouteName="SplashScreen">
         <AppStack.Screen
           name="LoginScreen"
           component={LoginScreen}
           options={{ title: 'Inventory Management', headerTitleAlign: 'center' }}
+        />
+        <AppStack.Screen	
+          name="SplashScreen"	
+          component={SplashScreen}	
+          // options={{ title: 'Inventory Management', headerTitleAlign: 'center' }}	
         />
         <AppStack.Screen
           name="Drawer"

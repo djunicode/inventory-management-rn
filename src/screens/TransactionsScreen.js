@@ -34,7 +34,7 @@ const deviceHeight = Dimensions.get('window').height;
 const TransactionsScreen = ({navigation}) => {
   return (
     <Container>
-      <HeaderView navigation={navigation} title={"Trnasactions"} />
+      <HeaderView navigation={navigation} title={"Transactions"} />
 
       <Tabs>
         <Tab
