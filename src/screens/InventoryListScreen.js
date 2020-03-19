@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import Icon from 'react-native-vector-icons/Feather';
 import {
   Button,
@@ -28,6 +28,7 @@ import {
   Dimensions,
 } from 'react-native';
 import InventoryListItem from '../components/InventoryListItem';
+import HeaderView from '../components/HeaderView';
 
 const DEMO_INVENTORY_DATA = [
   {
@@ -104,82 +105,95 @@ const DEMO_INVENTORY_DATA = [
   },
 ];
 
-export default class InventoryListScreen extends Component {
-  componentDidMount() {
-    console.disableYellowBox = true;
-  }
+const InventoryListScreen = ({ navigation }) => {
+  // export default class InventoryListScreen extends Component {
+  // componentDidMount() {
+  //   console.disableYellowBox = true;
+  // }
 
-  constructor(props) {
-    super(props);
-  }
+  // constructor(props) {
+  //   super(props);
+  // }
 
-  onEditPressed = selectedID => {
+  const onEditPressed = selectedID => {
     // console.warn(selectedID)
     Alert.alert(
       `edit pressed of id ${selectedID}`,
       '',
-      [{text: 'OK', onPress: () => console.log('OK Pressed')}],
-      {cancelable: false},
+      [{ text: 'OK', onPress: () => console.log('OK Pressed') }],
+      { cancelable: false },
     );
   };
 
-  onDeletePressed = selectedID => {
+  const onDeletePressed = selectedID => {
     console.warn(selectedID);
     Alert.alert(
       `delete pressed of id ${selectedID}`,
       '',
-      [{text: 'OK', onPress: () => console.log('OK Pressed')}],
-      {cancelable: false},
+      [{ text: 'OK', onPress: () => console.log('OK Pressed') }],
+      { cancelable: false },
     );
   };
 
-  render() {
-    return (
-      <Container style={{backgroundColor: '#F3F9FB'}}>
-        <Content>
-          {/* the entire outerpart */}
-          <Body style={styles.listContainer}>
-            {/* the header of table */}
-            <View style={styles.tableHeader}>
-              <CardItem style={{backgroundColor: 'rgba(255,255,255,0)'}}>
-                <Text style={styles.productNameHeader}>Product</Text>
-                <Text style={styles.itemsHeader}>Items</Text>
-                <Text style={styles.priceHeader}>Price</Text>
-              </CardItem>
+
+  return (
+    <Container style={{ backgroundColor: '#F3F9FB' }}>
+      <HeaderView navigation={navigation} title={"Inventory"} />
+      <Content>
+        {/* the entire outerpart */}
+        <Body style={styles.listContainer}>
+          {/* the header of table */}
+          <View style={styles.tableHeader}>
+            <CardItem style={{ backgroundColor: 'rgba(255,255,255,0)' }}>
+              <Text style={styles.productNameHeader}>Product</Text>
+              <Text style={styles.itemsHeader}>Items</Text>
+              <Text style={styles.priceHeader}>Price</Text>
+            </CardItem>
+          </View>
+
+          {/* the inner list */}
+          <ScrollView>
+            <View>
+              <FlatList
+                style={styles.flatlist}
+                data={DEMO_INVENTORY_DATA}
+                // scrollEnabled={true}
+                renderItem={({ item }) => (
+                  <InventoryListItem
+                    onEditPressed={data => onEditPressed(data)}
+                    onDeletePressed={data => onDeletePressed(data)}
+                    item={item}
+                  />
+                )}
+                keyExtractor={item => item.id}
+              />
             </View>
+          </ScrollView>
 
-            {/* the inner list */}
-            <ScrollView>
-              <View>
-                <FlatList
-                  style={styles.flatlist}
-                  data={DEMO_INVENTORY_DATA}
-                  // scrollEnabled={true}
-                  renderItem={({item}) => (
-                    <InventoryListItem
-                      onEditPressed={data => this.onEditPressed(data)}
-                      onDeletePressed={data => this.onDeletePressed(data)}
-                      item={item}
-                    />
-                  )}
-                  keyExtractor={item => item.id}
-                />
-              </View>
-            </ScrollView>
+          {/* the add employee button */}
+          <TouchableOpacity
+            style={styles.addEmployeeButton}
+            // onPress={() => navigation.navigate('AddEmployee')}
+            onPress={() => {
+              Alert.alert(
+                'Product addition page to be added here',
+                '',
+                [{ text: 'OK', onPress: () => console.log('OK Pressed') }],
+                { cancelable: false },
+              );
+            }}
+          >
+            <Icon name="plus" color="white" size={25} />
+            <Text style={styles.addEmployeeButtonText}>Add Employee</Text>
+          </TouchableOpacity>
+        </Body>
+      </Content>
+    </Container>
+  );
 
-            {/* the add employee button */}
-            <TouchableOpacity
-              style={styles.addEmployeeButton}
-              onPress={() => this.props.navigation.navigate('AddEmployee')}>
-              <Icon name="plus" color="white" size={25} />
-              <Text style={styles.addEmployeeButtonText}>Add Employee</Text>
-            </TouchableOpacity>
-          </Body>
-        </Content>
-      </Container>
-    );
-  }
 }
+
+export default InventoryListScreen;
 
 const DEVICE_WIDTH = Dimensions.get('screen').width;
 const DEVICE_HEIGHT = Dimensions.get('screen').height;
