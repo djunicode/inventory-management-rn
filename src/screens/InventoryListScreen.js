@@ -184,7 +184,7 @@ const InventoryListScreen = ({ navigation }) => {
             }}
           >
             <Icon name="plus" color="white" size={25} />
-            <Text style={styles.addEmployeeButtonText}>Add Employee</Text>
+            <Text style={styles.addEmployeeButtonText}>Add Product</Text>
           </TouchableOpacity>
         </Body>
       </Content>

@@ -186,7 +186,7 @@ const styles = StyleSheet.create({
     paddingLeft: 10,
    alignItems: 'center',
    justifyContent: 'center',
-  
+    fontSize:15,
     color: '#828282',
   },
   inputArea: {

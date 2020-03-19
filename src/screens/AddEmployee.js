@@ -35,36 +35,36 @@ export default class AddEmployee extends Component {
 
               <Item floatingLabel style={styles.inputBox}>
                 <Label style={styles.label}>First Name</Label>
-                <Input />
+                <Input style={styles.inputArea} />
               </Item>
               <Item floatingLabel style={styles.inputBox}>
                 <Label style={styles.label}>Last Name</Label>
-                <Input />
+                <Input style={styles.inputArea} />
               </Item>
 
               <Item floatingLabel style={styles.inputBox}>
                 <Label style={styles.label}>Email ID</Label>
-                <Input keyboardType="email-address" autoCapitalize="none" />
+                <Input style={styles.inputArea} keyboardType="email-address" autoCapitalize="none" />
               </Item>
 
               <Item floatingLabel style={styles.inputBox}>
                 <Label style={styles.label}>Password</Label>
-                <Input secureTextEntry />
+                <Input style={styles.inputArea} secureTextEntry />
               </Item>
 
               <Item floatingLabel style={styles.inputBox}>
                 <Label style={styles.label}>Confirm Password</Label>
-                <Input secureTextEntry />
+                <Input style={styles.inputArea} secureTextEntry />
               </Item>
 
               <Item floatingLabel style={styles.inputBox}>
                 <Label style={styles.label}>Gender</Label>
-                <Input />
+                <Input style={styles.inputArea} />
               </Item>
 
               <Item floatingLabel style={styles.inputBox}>
                 <Label style={styles.label}>Age</Label>
-                <Input />
+                <Input style={styles.inputArea} />
               </Item>
 
               <TouchableOpacity
@@ -128,6 +128,7 @@ const styles = StyleSheet.create({
   label: {
     paddingLeft: 30,
     color: '#828282',
+    fontSize:15,
   },
   inputArea: {
     paddingLeft: 20,
