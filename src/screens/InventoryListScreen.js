@@ -138,7 +138,7 @@ const InventoryListScreen = ({ navigation }) => {
 
   return (
     <Container style={{ backgroundColor: '#F3F9FB' }}>
-      <HeaderView navigation={navigation} />
+      <HeaderView navigation={navigation} title={"Inventory"} />
       <Content>
         {/* the entire outerpart */}
         <Body style={styles.listContainer}>

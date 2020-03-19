@@ -6,12 +6,12 @@ import { TouchableOpacity } from 'react-native';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import AddEmployee from './src/screens/AddEmployee';
 import LoginScreen from './src/screens/LoginScreen';
-import HomeScreen from './src/screens/Logout';
+import HomeScreen from './src/screens/HomeScreen';
 import InventoryListScreen from './src/screens/InventoryListScreen';
-import DrawerScreen2 from './src/screens/DrawerScreen2';
+import DrawerScreen2 from './src/screens/TransactionsScreen';
 import EmployeeListScreen from './src/screens/EmployeeListScreen';
 import SplashScreen from './src/screens/SplashScreen'
-
+import Settings from './src/screens/SettingsScreen'
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator, HeaderTitle } from '@react-navigation/stack';
 
@@ -19,19 +19,19 @@ const AppStack = createStackNavigator();
 const Drawer = createDrawerNavigator();
 const EmployeeStack = createStackNavigator();
 
-function App({ navigation }) {
+const App=({ navigation }) =>{
   return (
     <NavigationContainer theme={MyTheme}>
-      <AppStack.Navigator headerMode={null} initialRouteName="SplashScreen"> 
+      <AppStack.Navigator headerMode={null} initialRouteName="SplashScreen">
         <AppStack.Screen
           name="LoginScreen"
           component={LoginScreen}
           options={{ title: 'Inventory Management', headerTitleAlign: 'center' }}
         />
-        <AppStack.Screen
-          name="SplashScreen"
-          component={SplashScreen}
-          // options={{ title: 'Inventory Management', headerTitleAlign: 'center' }}
+        <AppStack.Screen	
+          name="SplashScreen"	
+          component={SplashScreen}	
+          // options={{ title: 'Inventory Management', headerTitleAlign: 'center' }}	
         />
         <AppStack.Screen
           name="Drawer"
@@ -102,6 +102,11 @@ function BurgerBtn() {
         name="Transactions"
         component={DrawerScreen2}
         options={{title: 'Transactions'}, {drawerIcon: () => <Icon_MaterialIcons name="attach-money" size={24} />}}
+      />
+       <Drawer.Screen
+        name="Settings"
+        component={Settings}
+        options={{title: 'Settings'}, {drawerIcon: () => <Icon_MaterialIcons name="settings" size={24} />}}
       />
     </Drawer.Navigator>
   );

@@ -80,8 +80,8 @@ const LoginScreen=({navigation})=> {
 
   return (
     <Container style={{backgroundColor: '#F3F9FB'}}>
-      <Header style={{ backgroundColor: '#4796BD', flexDirection: 'row', alignItems: 'center' }}>
-        <Text style={{color: '#fff', fontSize: 20}}>Inventory Management</Text>
+     <Header style={{ backgroundColor: '#4796BD', flexDirection: 'row', alignItems: 'center' }}>	
+        <Text style={{color: '#fff', fontSize: 20}}>Inventory Management</Text>	
       </Header>
       <Content>
         <Body>
@@ -186,7 +186,7 @@ const styles = StyleSheet.create({
     paddingLeft: 10,
    alignItems: 'center',
    justifyContent: 'center',
-    fontSize:15,
+   fontSize:15,
     color: '#828282',
   },
   inputArea: {

@@ -4,7 +4,7 @@ import { Header, Left, Right, Body } from 'native-base';
 import Icon from 'react-native-vector-icons/Feather';
 
 
-const HeaderView = ({ navigation }) => {
+const HeaderView = ({ navigation,title }) => {
   return (
     <Header style={{ backgroundColor: '#4796BD', flexDirection: 'row' }}>
       <Left>
@@ -13,7 +13,7 @@ const HeaderView = ({ navigation }) => {
         </TouchableOpacity>
       </Left>
       <Body>
-        <Text style={{fontSize: 21, color: '#fff'}}>Drawer</Text>
+        <Text style={{fontSize: 21, color: '#fff'}}>{title}</Text>
       </Body>
       <Right>
         <TouchableOpacity onPress={() => {}}>

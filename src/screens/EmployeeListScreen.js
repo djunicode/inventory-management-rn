@@ -141,7 +141,7 @@ const EmployeeListScreen = ({ navigation }) => {
   
     return (
       <Container style={{backgroundColor: '#F3F9FB'}}>
-        <HeaderView navigation={navigation} />
+        <HeaderView navigation={navigation} title={"Employee Details"} />
         <Content>
           {/* the entire outerpart */}
           <Body style={styles.listContainer}>
