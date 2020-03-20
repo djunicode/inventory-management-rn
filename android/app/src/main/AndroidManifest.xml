@@ -2,6 +2,7 @@
   package="com.rn_inventory">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    
 
     <application
       android:name=".MainApplication"
