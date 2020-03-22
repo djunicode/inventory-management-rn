@@ -10,6 +10,8 @@ import {
 } from 'react-native-chart-kit';
 import AsyncStorage from '@react-native-community/async-storage';
 import HeaderView from '../components/HeaderView';
+import ProfitChart from './ProfitChart';
+
 
 const screenWidth = Dimensions.get('window').width;
 const Home = ({navigation}) => {
@@ -27,27 +29,7 @@ const Home = ({navigation}) => {
         <Text></Text>
         <Text></Text>
         <Text style={{fontSize: 25, paddingHorizontal: 3}}>Profit</Text>
-        <LineChart
-          data={{
-            labels: ['January', 'February', 'March', 'April', 'May', 'June'],
-            datasets: [
-              {
-                data: [20, 45, 28, 80, 99, 43],
-                color: (opacity = 1) => `rgba(200, 203, 207, ${opacity})`, // optional
-                strokeWidth: 3, // optional
-              },
-            ],
-          }}
-          width={screenWidth * 0.95}
-          height={220}
-          chartConfig={{
-            backgroundGradientFrom: '#c8cbcf',
-            backgroundGradientFromOpacity: 0,
-            backgroundGradientTo: '#c8cbcf',
-            backgroundGradientToOpacity: 0.5,
-            color: (opacity = 1) => `rgba(75, 79, 84, ${opacity})`,
-          }}
-        />
+        <ProfitChart />
       </View>
       <View style={{justifyContent: 'center', alignItems: 'center', flex: 1}}>
         <Text></Text>
@@ -85,7 +67,7 @@ const Home = ({navigation}) => {
             backgroundGradientFrom: '#d1e0df',
             backgroundGradientTo: '#d1e0df',
             decimalPlaces: 0, // optional, defaults to 2dp
-            color: (opacity = 1) => `rgba(21, 212, 50, ${opacity})`,
+            color: (opacity = 1) => `rgba(21, 50, 212, ${opacity})`,
             labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
             style: {
               borderRadius: 16,
@@ -93,7 +75,7 @@ const Home = ({navigation}) => {
             propsForDots: {
               r: '5',
               strokeWidth: '2',
-              stroke: '#00ed00',
+              stroke: '#0000ed',
             },
           }}
           bezier
@@ -122,7 +104,7 @@ const Home = ({navigation}) => {
             backgroundGradientFrom: '#daf0ee',
             backgroundGradientTo: '#daf0ee',
             decimalPlaces: 1, // optional, defaults to 2dp
-            color: (opacity = 1) => `rgba(7, 230, 7, ${opacity})`,
+            color: (opacity = 1) => `rgba(7, 7, 230, ${opacity})`,
             labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
             style: {
               borderRadius: 16,
