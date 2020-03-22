@@ -3,9 +3,6 @@ import { View, Text, TouchableOpacity, StyleSheet, ScrollView, Dimensions, proce
 
 import { LineChart } from 'react-native-charts-wrapper'
 
-
-
-
 const Functional = () => {
 
   const [min_Vis, setMin_Vis] = useState(0);
