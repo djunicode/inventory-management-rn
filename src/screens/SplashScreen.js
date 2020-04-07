@@ -31,16 +31,16 @@ export default class SplashScreen extends React.Component {
       <Container>
         <Content>
           <Body style={styles.container}>
-            <Text style={styles.heading}>INVENTORY {'\n'} MANAGEMENT</Text>
+
             <Image
               style={{
                 width: 374,
                 height: 300,
                 justifyContent: 'center',
                 marginVertical: 40,
-                marginRight: 10,
+
               }}
-              source={require('../Images/Illustration.png')}
+              source={require('../Images/store-inventory-logo.jpg')}
             />
           </Body>
         </Content>
@@ -56,7 +56,7 @@ const styles = StyleSheet.create({
     // backgroundColor:'blue',
     height: DEVICE_HEIGHT,
     width: DEVICE_WIDTH,
-    // justifyContent: 'center',
+    justifyContent: 'center',
     alignItems: 'center',
   },
   heading: {
