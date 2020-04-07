@@ -25,6 +25,7 @@ import {
 import Icon from 'react-native-vector-icons/Feather';
 import Buy from '../components/Buy';
 import Sell from '../components/Sell';
+import History from '../components/History'
 import HeaderView from '../components/HeaderView';
 
 const deviceHeight = Dimensions.get('window').height;
@@ -48,6 +49,12 @@ const TransactionsScreen = ({navigation}) => {
           tabStyle={{backgroundColor: '#4796BD'}}
           heading="Sell">
           <Sell />
+        </Tab>
+        <Tab
+          activeTabStyle={{backgroundColor: '#4796BD'}}
+          tabStyle={{backgroundColor: '#4796BD'}}
+          heading="History">
+          <History />
         </Tab>
       </Tabs>
     </Container>
