@@ -1,190 +1,99 @@
-import React, {Component} from 'react';
+import React, { Component, useState, useEffect, } from 'react';
 import Icon from 'react-native-vector-icons/Feather';
 import {
-  Button,
-  Body,
-  Input,
-  Container,
-  Content,
-  Header,
-  Right,
-  Left,
-  Item,
-  Label,
-  Card,
+  Button, Body, Input, Container, Content, Header, Right, Left, Item, Label, Card,
   CardItem,
 } from 'native-base';
 import {
-  Alert,
-  FlatList,
-  SafeAreaView,
-  StyleSheet,
-  ScrollView,
-  View,
-  Text,
-  StatusBar,
-  TouchableOpacity,
-  KeyboardAvoidingView,
-  Dimensions,
+  Alert, FlatList, SafeAreaView, StyleSheet, ScrollView, View, Text,
+  TouchableOpacity, KeyboardAvoidingView, Dimensions,
 } from 'react-native';
+import Axios from 'axios';
 import EmployeeListItem from '../components/EmployeeListItem';
 import HeaderView from '../components/HeaderView';
-
-const GENDER_MALE = 'Male';
-const GENDER_FEMALE = 'Female';
-
-const DEMO_DATA = [
-  {
-    id: '1',
-    name: 'Pat Black',
-    gender: GENDER_MALE,
-    age: 28,
-  },
-  {
-    id: '2',
-    name: 'Angel Jones',
-    gender: GENDER_FEMALE,
-    age: 36,
-  },
-  {
-    id: '3',
-    name: 'Max Edwards',
-    gender: GENDER_FEMALE,
-    age: 35,
-  },
-  {
-    id: '4',
-    name: 'Bruce Fox',
-    gender: GENDER_MALE,
-    age: 28,
-  },
-  {
-    id: '5',
-    name: 'Devon Fisher',
-    gender: GENDER_MALE,
-    age: 30,
-  },
-  {
-    id: '6',
-    name: 'Pat Black',
-    gender: GENDER_MALE,
-    age: 28,
-  },
-  {
-    id: '7',
-    name: 'Angel Jones',
-    gender: GENDER_FEMALE,
-    age: 36,
-  },
-  {
-    id: '8',
-    name: 'Max Edwards',
-    gender: GENDER_FEMALE,
-    age: 35,
-  },
-  {
-    id: '9',
-    name: 'Bruce Fox',
-    gender: GENDER_MALE,
-    age: 28,
-  },
-  {
-    id: '10',
-    name: 'Devon Fisher',
-    gender: GENDER_MALE,
-    age: 30,
-  },
-  {
-    id: '11',
-    name: 'Pat Black',
-    gender: GENDER_MALE,
-    age: 28,
-  },
-  {
-    id: '12',
-    name: 'Angel Jones',
-    gender: GENDER_FEMALE,
-    age: 36,
-  },
-];
+import AsyncStorage from '@react-native-community/async-storage';
 
 const EmployeeListScreen = ({ navigation }) => {
-// export default class EmployeeListScreen extends Component {
-  // componentDidMount() {
-  //   console.disableYellowBox = true;
-  // }
 
-  // constructor(props) {
-  //   super(props);
-  // }
+  const [employeeList, setEmployeeList] = useState([])
 
-  const onEditPressed = selectedID => {
-    // console.warn(selectedID)
+  useEffect(() => {
+    getUserList()
+  }, [employeeList])
+
+  const getUserList = async () => {
+    const auth_key = await AsyncStorage.getItem('auth_key')
+
+    fetch('http://chouhanaryan.pythonanywhere.com/auth/users/', {
+      method: "GET",
+      headers: {
+        "Authorization": `Token ${auth_key}`,
+      },
+    })
+      .then(res => res.json())
+      .then(data => setEmployeeList(data))
+      .catch((err) => console.log(err))
+  }
+
+  const onMenuPressed = selectedID => {
+    console.log('on edit', employeeList)
     Alert.alert(
-      `edit pressed of id ${selectedID}`,
+      `menu pressed of id ${selectedID}`,
       '',
-      [{text: 'OK', onPress: () => console.log('OK Pressed')}],
-      {cancelable: false},
+      [
+        { text: 'Edit', onPress: () => console.log('Edit pressed') },
+        { text: 'Delete', onPress: () => console.log('delete Pressed') },
+        { text: 'Cancel', onPress: () => console.log('Cancel Pressed') },
+      ],
+      { cancelable: false },
     );
   };
 
-  const onDeletePressed = selectedID => {
-    console.warn(selectedID);
-    Alert.alert(
-      `delete pressed of id ${selectedID}`,
-      '',
-      [{text: 'OK', onPress: () => console.log('OK Pressed')}],
-      {cancelable: false},
-    );
-  };
+  return (
+    <Container style={{ backgroundColor: '#F3F9FB' }}>
+      <HeaderView navigation={navigation} title={"Employee Details"} />
+      <Content>
+        {/* the entire outerpart */}
+        <Body style={styles.listContainer}>
+          {/* the header of table */}
+          <View style={styles.tableHeader}>
+            <CardItem style={{ backgroundColor: 'rgba(255,255,255,0)' }}>
+              <Text style={styles.nameHeader}>Name</Text>
+              <Text style={styles.genderHeader}>Gender</Text>
+              <Text style={styles.emailHeader}>Email</Text>
+              <Text style={styles.ageHeader}>Age</Text>
+            </CardItem>
+          </View>
 
-  
-    return (
-      <Container style={{backgroundColor: '#F3F9FB'}}>
-        <HeaderView navigation={navigation} title={"Employee Details"} />
-        <Content>
-          {/* the entire outerpart */}
-          <Body style={styles.listContainer}>
-            {/* the header of table */}
-            <View style={styles.tableHeader}>
-              <CardItem style={{backgroundColor: 'rgba(255,255,255,0)'}}>
-                <Text style={styles.nameHeader}>Name</Text>
-                <Text style={styles.genderHeader}>Gender</Text>
-                <Text style={styles.ageHeader}>Age</Text>
-              </CardItem>
+          {/* the inner list */}
+          <ScrollView>
+            <View>
+              <FlatList
+                style={styles.flatlist}
+                data={employeeList}
+                renderItem={({ item }) => (
+                  <EmployeeListItem
+                    onMenuPressed={data => onMenuPressed(data)}
+                    item={item}
+                  />
+                )}
+                keyExtractor={item => item.id}
+              />
             </View>
+          </ScrollView>
 
-            {/* the inner list */}
-            <ScrollView>
-              <View>
-                <FlatList
-                  style={styles.flatlist}
-                  data={DEMO_DATA}
-                  // scrollEnabled={true}
-                  renderItem={({item}) => (
-                    <EmployeeListItem
-                      onEditPressed={data => onEditPressed(data)}
-                      onDeletePressed={data => onDeletePressed(data)}
-                      item={item}
-                    />
-                  )}
-                  keyExtractor={item => item.id}
-                />
-              </View>
-            </ScrollView>
+          {/* the add employee button */}
+          <TouchableOpacity
+            style={styles.addEmployeeButton}
+            onPress={() => navigation.navigate('AddEmployee')}>
+            <Icon name="plus" color="white" size={25} />
+            <Text style={styles.addEmployeeButtonText}>Add Employee</Text>
+          </TouchableOpacity>
+        </Body>
+      </Content>
+    </Container>
+  );
 
-            {/* the add employee button */}
-            <TouchableOpacity
-              style={styles.addEmployeeButton}
-              onPress={() => navigation.navigate('AddEmployee')}>
-              <Icon name="plus" color="white" size={25} />
-              <Text style={styles.addEmployeeButtonText}>Add Employee</Text>
-            </TouchableOpacity>
-          </Body>
-        </Content>
-      </Container>
-    );
-  
 }
 
 export default EmployeeListScreen;
@@ -202,8 +111,6 @@ const styles = StyleSheet.create({
     marginVertical: 16,
     borderRadius: 20,
     width: DEVICE_WIDTH - 32,
-    // flexDirection: 'column',
-    // backgroundColor: 'blue',
   },
   flatlist: {
     width: DEVICE_WIDTH - 32,
@@ -219,9 +126,10 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 20,
   },
   nameHeader: {
-    flex: 0.39,
+    flex: 0.30,
     fontSize: 18,
     paddingLeft: 6,
+    marginLeft: 30,
     fontWeight: 'bold',
   },
   genderHeader: {
@@ -229,10 +137,17 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
   },
+  emailHeader: {
+    flex: 0.30,
+    fontSize: 18,
+    fontWeight: 'bold',
+    paddingLeft: 14,
+  },
   ageHeader: {
     flex: 0.15,
     fontSize: 18,
     fontWeight: 'bold',
+
   },
   addEmployeeButton: {
     backgroundColor: '#4796BD',
