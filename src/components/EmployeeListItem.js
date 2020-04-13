@@ -42,11 +42,11 @@ export default class EmployeeListItem extends React.Component {
     // this.props.onEditPressed(this.props.item.id))}
     render() {
 
-        const {first_name, last_name, gender, age, email} = this.props.item
+        const {first_name, last_name, gender, age, email, id } = this.props.item
         return (
             <View style={listItemStyles.container}>
                 <CardItem>
-                    <TouchableOpacity onPress={() => this.props.onMenuPressed(this.props.item.id)}>
+                    <TouchableOpacity onPress={() => this.props.onMenuPressed(this.props.item)}>
                         <Icon name="menu" color="grey" size={22} style={listItemStyles.icon} />
                     </TouchableOpacity>
 

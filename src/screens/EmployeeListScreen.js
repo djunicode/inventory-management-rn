@@ -6,7 +6,7 @@ import {
 } from 'native-base';
 import {
   Alert, FlatList, SafeAreaView, StyleSheet, ScrollView, View, Text,
-  TouchableOpacity, KeyboardAvoidingView, Dimensions,
+  TouchableOpacity, KeyboardAvoidingView, Dimensions, ToastAndroid,
 } from 'react-native';
 import Axios from 'axios';
 import EmployeeListItem from '../components/EmployeeListItem';
@@ -35,17 +35,36 @@ const EmployeeListScreen = ({ navigation }) => {
       .catch((err) => console.log(err))
   }
 
-  const onMenuPressed = selectedID => {
-    console.log('on edit', employeeList)
+  const deleteEmployee = async (formData) => {
+
+    fetch('http://chouhanaryan.pythonanywhere.com/auth/user_delete/', {
+      method: "POST",
+      body: formData,
+    })
+      .then(ToastAndroid.show("Employee Deleted !", ToastAndroid.SHORT))
+      .then(res => console.log('Employee Deleted!'))
+      .catch(err => console.log(err))
+  }
+
+  const onMenuPressed = employeeItem => {
     Alert.alert(
-      `menu pressed of id ${selectedID}`,
-      '',
+      `${employeeItem.first_name} ${employeeItem.last_name}`,
+      `${employeeItem.email}`,
       [
-        { text: 'Edit', onPress: () => console.log('Edit pressed') },
-        { text: 'Delete', onPress: () => console.log('delete Pressed') },
-        { text: 'Cancel', onPress: () => console.log('Cancel Pressed') },
+        {
+          text: 'Delete',
+          onPress: () => {
+            let formData = new FormData()
+            formData.append('email', employeeItem.email)
+            deleteEmployee(formData)
+          }
+        },
+        {
+          text: 'Cancel',
+          onPress: () => console.log('Cancel Pressed'),
+          style: "cancel"
+        },
       ],
-      { cancelable: false },
     );
   };
 
