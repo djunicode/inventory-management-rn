@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
 import Icon from 'react-native-vector-icons/Feather';
 import {
   Button,
@@ -27,6 +27,8 @@ import {
   KeyboardAvoidingView,
   Dimensions,
 } from 'react-native';
+import Axios from 'axios';
+import AsyncStorage from '@react-native-community/async-storage';
 import InventoryListItem from '../components/InventoryListItem';
 import HeaderView from '../components/HeaderView';
 
@@ -106,14 +108,13 @@ const DEMO_INVENTORY_DATA = [
 ];
 
 const InventoryListScreen = ({ navigation }) => {
-  // export default class InventoryListScreen extends Component {
-  // componentDidMount() {
-  //   console.disableYellowBox = true;
-  // }
 
-  // constructor(props) {
-  //   super(props);
-  // }
+  
+  const [inventoryList, setInventoryList] = useState([]);
+  
+  useEffect(() => {
+    getInventoryList()
+  }, [inventoryList])
 
   const onEditPressed = selectedID => {
     // console.warn(selectedID)
@@ -136,6 +137,49 @@ const InventoryListScreen = ({ navigation }) => {
   };
 
 
+  const getInventoryList = async () => {
+
+    fetch('http://chouhanaryan.pythonanywhere.com/api/productlist', {
+      method: "GET",
+    })
+      .then(res => res.json())
+      .then(data => setInventoryList(data))
+      .catch((err) => console.log(err))
+  }
+
+  const deleteInventoryItem = async (inventoryItem) => {
+    fetch(`http://chouhanaryan.pythonanywhere.com/api/productlist/${inventoryItem.id}/`, {
+      method: 'DELETE'
+    })
+    // .then(res => {
+    //   console.log(res.json())
+    //   return res.json()
+    // })
+    // .then(data => console.log(data))
+    // .catch(error => console.log(error))
+  }
+
+  const onMenuPressed = inventoryItem => {
+    console.log(inventoryItem)
+    Alert.alert(
+      `${inventoryItem.name} (Qty: ${inventoryItem.quantity})`,
+      `Rs. ${inventoryItem.avg_cost_price}`,
+      [
+        {
+          text: 'Delete',
+          onPress: () => {
+            deleteInventoryItem(inventoryItem)
+          }
+        },
+        {
+          text: 'Cancel',
+          // onPress: () => console.log('Cancel Pressed'),
+          style: "cancel"
+        },
+      ],
+    );
+  };
+
   return (
     <Container style={{ backgroundColor: '#F3F9FB' }}>
       <HeaderView navigation={navigation} title={"Inventory"} />
@@ -144,7 +188,7 @@ const InventoryListScreen = ({ navigation }) => {
         <Body style={styles.listContainer}>
           {/* the header of table */}
           <View style={styles.tableHeader}>
-            <CardItem style={{ backgroundColor: 'rgba(255,255,255,0)' }}>
+            <CardItem style={{ backgroundColor: 'rgba(255,255,255,0)', flexDirection: 'row', justifyContent: 'space-evenly', paddingLeft: 40 }}>
               <Text style={styles.productNameHeader}>Product</Text>
               <Text style={styles.itemsHeader}>Items</Text>
               <Text style={styles.priceHeader}>Price</Text>
@@ -156,12 +200,11 @@ const InventoryListScreen = ({ navigation }) => {
             <View>
               <FlatList
                 style={styles.flatlist}
-                data={DEMO_INVENTORY_DATA}
+                data={inventoryList}
                 // scrollEnabled={true}
                 renderItem={({ item }) => (
                   <InventoryListItem
-                    onEditPressed={data => onEditPressed(data)}
-                    onDeletePressed={data => onDeletePressed(data)}
+                    onMenuPressed={data => onMenuPressed(data)}
                     item={item}
                   />
                 )}
@@ -223,20 +266,22 @@ const styles = StyleSheet.create({
     width: DEVICE_WIDTH - 32,
     borderTopRightRadius: 20,
     borderTopLeftRadius: 20,
+    alignContent: 'stretch'
   },
   productNameHeader: {
-    flex: 0.39,
     fontSize: 18,
     paddingLeft: 6,
     fontWeight: 'bold',
+    // marginLeft: 50
   },
   itemsHeader: {
-    flex: 0.2,
+    // flex: 0.2,
     fontSize: 18,
     fontWeight: 'bold',
+    // marginLeft: 30
   },
   priceHeader: {
-    flex: 0.15,
+    // flex: 0.15,
     fontSize: 18,
     fontWeight: 'bold',
   },
