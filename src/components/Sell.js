@@ -1,31 +1,60 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Dimensions } from 'react-native';
-import { Container, Content, Tab, Tabs, Header, Left, Right, Body, Item, Input, Label } from 'native-base';
+import React, {useState, useEffect} from 'react';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  Dimensions,
+} from 'react-native';
+import {
+  Container,
+  Content,
+  Tab,
+  Tabs,
+  Header,
+  Left,
+  Right,
+  Body,
+  Item,
+  Input,
+  Label,
+} from 'native-base';
 import Icon from 'react-native-vector-icons/Feather';
 
-const Buy = ({ navigation }) => {
-
-  const [product, setProduct] = useState([{ name: '', price: 0, amount: 0 }]);
+const Buy = ({navigation}) => {
+  const [product, setProduct] = useState([{name: '', price: 0, amount: 0}]);
 
   return (
-    <Container style={{ backgroundColor: '#F3F9FB' }}>
+    <Container style={{backgroundColor: '#F3F9FB'}}>
       <Content>
         <Body>
           <Text style={styles.heading}>Sell Items</Text>
 
           {product.map((item, index) => {
-            let copy = [...product]
+            let copy = [...product];
             return (
-              <View key={index} style={{ width: Dimensions.get('window').width }}>
+              <View key={index} style={{width: Dimensions.get('window').width}}>
                 {/* for the separating line */}
-                <View style={{ borderColor: '#0004', borderWidth: 1, width: '50%', alignSelf: 'center', borderRadius: 2, marginBottom: -10, marginTop: 5 }} />
+                <View
+                  style={{
+                    borderColor: '#0004',
+                    borderWidth: 1,
+                    width: '50%',
+                    alignSelf: 'center',
+                    borderRadius: 2,
+                    marginBottom: -10,
+                    marginTop: 5,
+                  }}
+                />
 
-                <Text style={styles.product_titles}>Product {product.length == 1 ? '' : index + 1}</Text>
+                <Text style={styles.product_titles}>
+                  Product {product.length == 1 ? '' : index + 1}
+                </Text>
                 <Item floatingLabel style={styles.inputBox}>
                   <Label style={styles.label}>Product Name</Label>
                   <Input
                     style={styles.inputArea}
-                    onChangeText={(value) => copy[index].name = value}
+                    onChangeText={value => (copy[index].name = value)}
                   />
                 </Item>
 
@@ -33,8 +62,8 @@ const Buy = ({ navigation }) => {
                   <Label style={styles.label}>Price</Label>
                   <Input
                     style={styles.inputArea}
-                    keyboardType='numeric'
-                    onChangeText={(value) => copy[index].price = value}
+                    keyboardType="numeric"
+                    onChangeText={value => (copy[index].price = value)}
                   />
                 </Item>
 
@@ -42,19 +71,19 @@ const Buy = ({ navigation }) => {
                   <Label style={styles.label}>No. of Items</Label>
                   <Input
                     style={styles.inputArea}
-                    keyboardType='numeric'
-                    onChangeText={(value) => copy[index].amount = value}
+                    keyboardType="numeric"
+                    onChangeText={value => (copy[index].amount = value)}
                   />
                 </Item>
               </View>
-            )
+            );
           })}
 
           <TouchableOpacity
-onPress={() => {
+            onPress={() => {
               let copy = [...product];
-              copy.push({ name: '', price: 0, amount: 0 })
-              setProduct(copy)
+              copy.push({name: '', price: 0, amount: 0});
+              setProduct(copy);
             }}
             style={styles.addButton}>
             <Icon name="plus" color="#4796BD" size={25} style={styles.icon} />
@@ -62,22 +91,19 @@ onPress={() => {
           </TouchableOpacity>
 
           <TouchableOpacity
-          onPress={() => { 
-              console.log(product)
-             }}
+            onPress={() => {
+              console.log(product);
+            }}
             style={styles.sellButton}>
             <Text style={styles.sellButtonText}>Sell</Text>
           </TouchableOpacity>
-
         </Body>
       </Content>
     </Container>
   );
-}
-
+};
 
 export default Buy;
-
 
 const styles = StyleSheet.create({
   heading: {
@@ -87,7 +113,7 @@ const styles = StyleSheet.create({
     marginTop: 25,
     marginBottom: 10,
     alignSelf: 'center',
-    marginLeft: '5%'
+    marginLeft: '5%',
   },
   product_titles: {
     fontSize: 24,
@@ -95,7 +121,7 @@ const styles = StyleSheet.create({
     marginTop: 25,
     marginBottom: 10,
     alignSelf: 'flex-start',
-    marginLeft: '5%'
+    marginLeft: '5%',
   },
 
   inputBox: {
@@ -112,7 +138,7 @@ const styles = StyleSheet.create({
     paddingLeft: 10,
     alignItems: 'center',
     justifyContent: 'center',
-    fontSize:15,
+    fontSize: 15,
     color: '#828282',
   },
   inputArea: {
@@ -139,8 +165,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     flexDirection: 'row',
     alignContent: 'flex-start',
-    justifyContent: 'space-between'
-
+    justifyContent: 'space-between',
   },
   addButtonText: {
     color: '#4796BD',
@@ -149,6 +174,6 @@ const styles = StyleSheet.create({
   },
   icon: {
     marginLeft: 4,
-    marginRight: 10
-  }
+    marginRight: 10,
+  },
 });

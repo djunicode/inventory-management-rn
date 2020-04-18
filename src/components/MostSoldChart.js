@@ -15,7 +15,7 @@ const DATA = {
   datasets: [
     {
       products: productArray,
-      sp: [100, 40, 250, 200, 30],
+      sellingprice: [100, 40, 250, 200, 30],
       data: [ 140, 125, 113, 97, 84, ]
     }
   ]
@@ -70,7 +70,7 @@ export default class MostSoldChart extends Component {
       selected_index: index,
       selected_product: dataset.products[index],
       selected_noOfItems: value,
-      selected_avgSP  : dataset.sp[index]
+      selected_avgSP  : dataset.sellingprice[index]
     })
     this.handleOpen()
 
