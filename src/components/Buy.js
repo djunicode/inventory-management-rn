@@ -5,6 +5,7 @@ import {
   TouchableOpacity,
   StyleSheet,
   Dimensions,
+  Alert,
 } from 'react-native';
 import {
   Container,
@@ -21,10 +22,27 @@ import {
 } from 'native-base';
 import Icon from 'react-native-vector-icons/Feather';
 import {ScrollView} from 'react-native-gesture-handler';
-
+import axios from 'axios';
+//http://chouhanaryan.pythonanywhere.com/api/buy/
 const Buy = ({navigation}) => {
   const [product, setProduct] = useState([{name: '', price: 0, amount: 0}]);
-
+  useEffect(() => {
+    setProduct([{name: '', price: 0, amount: 0}]);
+  }, []);
+  const buyprod = async () => {
+    product.forEach(async product => {
+      const formData = new FormData();
+      formData.append('name', product.name);
+      formData.append('quantity', product.amount);
+      formData.append('avg_cost_price', product.price);
+      const response = await axios.post(
+        'http://chouhanaryan.pythonanywhere.com/api/buy/',
+        formData,
+      );
+      const {data} = response;
+      console.log(JSON.stringify(data) + ' here is data');
+    });
+  };
   return (
     <Container style={{backgroundColor: '#F3F9FB'}}>
       <ScrollView>
@@ -32,7 +50,7 @@ const Buy = ({navigation}) => {
           <Text style={styles.heading}>Buy Items</Text>
 
           {product.map((item, index) => {
-            let copy = [...product];
+            //  let copy = [...product];
             return (
               <View key={index} style={{width: Dimensions.get('window').width}}>
                 {/* for the separating line */}
@@ -54,8 +72,9 @@ const Buy = ({navigation}) => {
                 <Item floatingLabel style={styles.inputBox}>
                   <Label style={styles.label}>Product Name</Label>
                   <Input
+                    placeholder={product[index].name}
                     style={styles.inputArea}
-                    onChangeText={value => (copy[index].name = value)}
+                    onChangeText={value => (product[index].name = value.trim())}
                   />
                 </Item>
 
@@ -64,7 +83,9 @@ const Buy = ({navigation}) => {
                   <Input
                     style={styles.inputArea}
                     keyboardType="numeric"
-                    onChangeText={value => (copy[index].price = value)}
+                    onChangeText={value =>
+                      (product[index].price = parseFloat(value.trim()))
+                    }
                   />
                 </Item>
 
@@ -73,7 +94,9 @@ const Buy = ({navigation}) => {
                   <Input
                     style={styles.inputArea}
                     keyboardType="numeric"
-                    onChangeText={value => (copy[index].amount = value)}
+                    onChangeText={value =>
+                      (product[index].amount = parseInt(value.trim()))
+                    }
                   />
                 </Item>
               </View>
@@ -82,9 +105,19 @@ const Buy = ({navigation}) => {
 
           <TouchableOpacity
             onPress={() => {
-              let copy = [...product];
-              copy.push({name: '', price: 0, amount: 0});
-              setProduct(copy);
+              if (
+                product[product.length - 1].name &&
+                product[product.length - 1].price &&
+                product[product.length - 1].amount
+              ) {
+                let copy = [...product];
+                copy.push({name: '', price: 0, amount: 0});
+                setProduct(copy);
+              } else {
+                Alert.alert(
+                  `Please fill all details for product ${product.length}`,
+                );
+              }
             }}
             style={styles.addButton}>
             <Icon name="plus" color="#4796BD" size={25} style={styles.icon} />
@@ -92,8 +125,21 @@ const Buy = ({navigation}) => {
           </TouchableOpacity>
 
           <TouchableOpacity
-            onPress={() => {
-              console.log(product);
+            onPress={async() => {
+              if (
+                product[product.length - 1].name == '' ||
+                product[product.length - 1].price == 0 ||
+                product[product.length - 1].amount == 0
+              ) {
+                Alert.alert(
+                  `Please fill valid details for product ${product.length}`,
+                );
+              } else {
+                console.log(JSON.stringify(product) + '!');
+                await buyprod();
+                setProduct([{name: '', price: 0, amount: 0}]);
+              
+              }
             }}
             style={styles.buyButton}>
             <Text style={styles.buyButtonText}>Buy</Text>

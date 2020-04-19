@@ -20,7 +20,7 @@ import {
   Label,
 } from 'native-base';
 import Icon from 'react-native-vector-icons/Feather';
-
+//http://chouhanaryan.pythonanywhere.com/api/sell/
 const Buy = ({navigation}) => {
   const [product, setProduct] = useState([{name: '', price: 0, amount: 0}]);
 
