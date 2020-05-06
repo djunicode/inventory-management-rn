@@ -6,6 +6,7 @@ import {
   StyleSheet,
   Dimensions,
 } from 'react-native';
+import axios from 'axios';
 import {
   Container,
   Content,
@@ -17,12 +18,33 @@ import {
   Body,
   Item,
   Input,
+  Picker,
   Label,
 } from 'native-base';
 import Icon from 'react-native-vector-icons/Feather';
 //http://chouhanaryan.pythonanywhere.com/api/sell/
-const Buy = ({navigation}) => {
-  const [product, setProduct] = useState([{name: '', price: 0, amount: 0}]);
+const Sell = ({navigation}) => {
+  const [product, setProduct] = useState([]);
+  const [list,setProductsList]=useState([]);
+    useEffect(() => {
+    apiFetch();
+  },[])
+  const apiFetch = async () => {
+    try {
+      const response = await axios.get('http://chouhanaryan.pythonanywhere.com/api/productlist');
+      const { data } = response;
+      const list = data.map(val => ({
+        name: val.name,
+        quantity: val.quantity,
+        price: val.latest_selling_price,
+        id: val.id,
+      }));
+     await setProductsList(list);
+     console.log(list);
+    } catch (e) {
+      console.log(e);
+    }
+  };
 
   return (
     <Container style={{backgroundColor: '#F3F9FB'}}>
@@ -30,10 +52,9 @@ const Buy = ({navigation}) => {
         <Body>
           <Text style={styles.heading}>Sell Items</Text>
 
-          {product.map((item, index) => {
-            let copy = [...product];
-            return (
-              <View key={index} style={{width: Dimensions.get('window').width}}>
+        
+           
+              <View style={{width: Dimensions.get('window').width}}>
                 {/* for the separating line */}
                 <View
                   style={{
@@ -48,13 +69,30 @@ const Buy = ({navigation}) => {
                 />
 
                 <Text style={styles.product_titles}>
-                  Product {product.length == 1 ? '' : index + 1}
+                  Product 
                 </Text>
                 <Item floatingLabel style={styles.inputBox}>
                   <Label style={styles.label}>Product Name</Label>
+                
+            <Item picker>
+                  <Picker
+                iosIcon={<Icon name="arrow-down" />}
+                mode="dropdown"
+                style={{ width: "10%" }}
+              placeholder="Type of organization"
+              placeholderStyle={{ color: "#bfc6ea" }}
+              placeholderIconColor="#007aff"
+               // selectedValue={this.state.selected1}
+                //onValueChange={this.onValueChange.bind(this)}
+              >
+               {list.map((item, index) => {return(
+                 <Picker.Item label={item.name} value={index} />)}
+               )}
+              </Picker>
+              </Item>
                   <Input
                     style={styles.inputArea}
-                    onChangeText={value => (copy[index].name = value)}
+                  //  onChangeText={value => (copy[index].name = value)}
                   />
                 </Item>
 
@@ -63,7 +101,7 @@ const Buy = ({navigation}) => {
                   <Input
                     style={styles.inputArea}
                     keyboardType="numeric"
-                    onChangeText={value => (copy[index].price = value)}
+                  //  onChangeText={value => (copy[index].price = value)}
                   />
                 </Item>
 
@@ -72,19 +110,18 @@ const Buy = ({navigation}) => {
                   <Input
                     style={styles.inputArea}
                     keyboardType="numeric"
-                    onChangeText={value => (copy[index].amount = value)}
+                   // onChangeText={value => (copy[index].amount = value)}
                   />
                 </Item>
               </View>
-            );
-          })}
+   
 
           <TouchableOpacity
             onPress={() => {
-              let copy = [...product];
-              copy.push({name: '', price: 0, amount: 0});
-              setProduct(copy);
-            }}
+            //   let copy = [...product];
+            //   copy.push({name: '', price: 0, amount: 0});
+            //   setProduct(copy);
+             }}
             style={styles.addButton}>
             <Icon name="plus" color="#4796BD" size={25} style={styles.icon} />
             <Text style={styles.addButtonText}>Add Product</Text>
@@ -103,7 +140,7 @@ const Buy = ({navigation}) => {
   );
 };
 
-export default Buy;
+export default Sell;
 
 const styles = StyleSheet.create({
   heading: {
