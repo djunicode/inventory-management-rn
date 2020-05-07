@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   View,
   Text,
@@ -26,13 +26,10 @@ import {
 import Icon from 'react-native-vector-icons/Feather';
 //http://chouhanaryan.pythonanywhere.com/api/sell/
 
-
-const Sell = ({ navigation }) => {
-
+const Sell = ({navigation}) => {
   const [product, setProduct] = useState([]);
   const [selected, setSelected] = useState('key1');
   const [list, setProductsList] = useState([]);
-
 
   const onPickerValueChange = (item_name, item_index, product_index) => {
     setSelected(item_name);
@@ -43,16 +40,34 @@ const Sell = ({ navigation }) => {
     copy[product_index].name = item_name;
     console.log(copy);
     setProduct(copy);
-
-  }
-
+  };
+  
   useEffect(() => {
-    setProduct([{ name: 'Pick a value', price: 0, amount: 0 }]);
+    setProduct([{name: 'Pick a value', price: 0, amount: 0}]);
     apiFetch();
-  }, [])
+  }, []);
 
+  const apiFetch = async () => {
+    try {
+      const response = await axios.get(
+        'http://chouhanaryan.pythonanywhere.com/api/productlist',
+      );
+      const {data} = response;
+      const list = data.map(val => ({
+        name: val.name,
+        quantity: val.quantity,
+        price: val.latest_selling_price,
+        id: val.id,
+      }));
+   
+  
+      await setProductsList(list);
+    } catch (e) {
+      console.log(e);
+    }
+  };
   const sellprod = async () => {
-    product.forEach(async product => {
+   await product.forEach(async product => {
       const formData = new FormData();
       formData.append('name', product.name);
       formData.append('quantity', product.amount);
@@ -61,39 +76,25 @@ const Sell = ({ navigation }) => {
         'http://chouhanaryan.pythonanywhere.com/api/sell/',
         formData,
       );
-      const { data } = response;
+      const {data} = response;
       console.log(JSON.stringify(data) + ' here is selling data');
-    })
-  }
-
-
-  const apiFetch = async () => {
-    try {
-      const response = await axios.get('http://chouhanaryan.pythonanywhere.com/api/productlist');
-      const { data } = response;
-      const list = data.map(val => ({
-        name: val.name,
-        quantity: val.quantity,
-        price: val.latest_selling_price,
-        id: val.id,
-      }));
-      await setProductsList(list);
-    } catch (e) {
-      console.log(e);
-    }
+    });
+   
   };
 
+  
+
   return (
-    <Container style={{ backgroundColor: '#F3F9FB' }}>
+    <Container style={{backgroundColor: '#F3F9FB'}}>
       <Content>
         <Body>
           <Text style={styles.heading}>Sell Items</Text>
 
-
-
           {product.map((product_item, product_index) => {
             return (
-              <View key={product_index} style={{ width: Dimensions.get('window').width }}>
+              <View
+                key={product_index}
+                style={{width: Dimensions.get('window').width}}>
                 {/* for the separating line */}
                 <View
                   style={{
@@ -108,23 +109,43 @@ const Sell = ({ navigation }) => {
                 />
 
                 <Text style={styles.product_titles}>
-                  Product {product.length == 1 ? '' : product_index + 1}
+                  Product {product.length == 1 ? '1' : product_index + 1}
                 </Text>
-                <View style={{ justifyContent: 'space-evenly', flexDirection: 'row', }}>
+                <View
+                  style={{
+                    justifyContent: 'space-evenly',
+                    flexDirection: 'row',
+                  }}>
                   {/* <Label style={styles.label}>Product Name</Label> */}
-                  <Text style={[styles.label, { alignSelf: 'center' }]}>Product Name</Text>
-                  <Form style={{ borderWidth: 1, borderColor: '#0006', flex: 0.8, borderRadius: 5 }}>
+                  <Text style={[styles.label, {alignSelf: 'center'}]}>
+                    Product Name
+                  </Text>
+                  <Form
+                    style={{
+                      borderWidth: 1,
+                      borderColor: '#0006',
+                      flex: 0.8,
+                      borderRadius: 5,
+                    }}>
                     <Picker
                       note
                       mode="dropdown"
                       selectedValue={product[product_index].name}
                       onValueChange={(item_name, item_index) => {
-                        onPickerValueChange(item_name, item_index, product_index)
-                      }}
-                    >
+                        onPickerValueChange(
+                          item_name,
+                          item_index,
+                          product_index,
+                        );
+                      }}>
                       {/* <Picker.Item label='plz pick' value={-1} /> */}
                       {list.map((picker_item, picker_index) => (
-                        <Picker.Item key={picker_index} label={picker_item.name} value={picker_item.name} />
+                        <Picker.Item
+                          key={picker_index}
+                          // label={picker_item.name + " ("+picker_item.quantity+")"}
+                          label={picker_item.name }
+                          value={picker_item.name}
+                        />
                       ))}
                     </Picker>
                   </Form>
@@ -152,9 +173,8 @@ const Sell = ({ navigation }) => {
                   />
                 </Item>
               </View>
-            )
+            );
           })}
-
 
           <TouchableOpacity
             onPress={() => {
@@ -165,7 +185,7 @@ const Sell = ({ navigation }) => {
                 product[product.length - 1].amount
               ) {
                 let copy = [...product];
-                copy.push({ name: '', price: 0, amount: 0 });
+                copy.push({name: '', price: 0, amount: 0});
                 setProduct(copy);
               } else {
                 Alert.alert(
@@ -181,8 +201,8 @@ const Sell = ({ navigation }) => {
           <TouchableOpacity
             onPress={async () => {
               let all_unique = true;
-              console.log('product', product)
-              console.log('list', list)
+              console.log('product', product);
+              console.log('list', list);
               if (product.length != 1) {
                 for (let i = 0; i < product.length; i++) {
                   for (let j = i + 1; j < product.length; j++) {
@@ -194,12 +214,9 @@ const Sell = ({ navigation }) => {
                 }
               }
               if (!all_unique) {
-                console.log('same names')
-                Alert.alert(
-                  'please select all unique items',
-                );
-              }
-              else if (
+                console.log('same names');
+                Alert.alert('please select all unique items');
+              } else if (
                 product[product.length - 1].name == '' ||
                 product[product.length - 1].price == 0 ||
                 product[product.length - 1].amount == 0
@@ -210,12 +227,15 @@ const Sell = ({ navigation }) => {
               } else {
                 let enough_stock = true;
                 let shortage_products = [];
-                
+
                 for (let i = 0; i < product.length; i++) {
                   const product_object = product[i];
                   for (let j = 0; j < list.length; j++) {
                     const list_item_object = list[j];
-                    if (product_object.name == list_item_object.name && product_object.amount > list_item_object.quantity) {
+                    if (
+                      product_object.name == list_item_object.name &&
+                      product_object.amount > list_item_object.quantity
+                    ) {
                       shortage_products.push(product_object.name);
                       enough_stock = false;
                       break;
@@ -224,15 +244,15 @@ const Sell = ({ navigation }) => {
                 }
                 if (!enough_stock) {
                   Alert.alert(
-                    `Not enough stock in inventory for ${shortage_products}`
+                    `Not enough stock in inventory for ${shortage_products}`,
                   );
                 } else {
-                  console.log('finally sold!!')
+                  console.log('finally sold!!');
                   sellprod();
                   setProduct([{name: '', price: 0, amount: 0}]);
+                  
                 }
               }
-
             }}
             style={styles.sellButton}>
             <Text style={styles.sellButtonText}>Sell</Text>
@@ -271,7 +291,7 @@ const styles = StyleSheet.create({
     marginLeft: 28,
     textAlign: 'left',
     marginVertical: 10,
-    height: 55
+    height: 55,
   },
 
   label: {
@@ -279,7 +299,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     fontSize: 15,
-    color: '#828282'
+    color: '#828282',
   },
   inputArea: {
     paddingLeft: 20,
