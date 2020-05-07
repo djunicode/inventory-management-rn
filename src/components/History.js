@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component ,useState, useEffect} from 'react';
 import Icon from 'react-native-vector-icons/Feather';
 import {
     Button, Body, Input, Container, Content, Header, Right, Left, Item, Label, Card, CardItem,} from 'native-base';
@@ -7,7 +7,7 @@ import {Alert, FlatList, SafeAreaView, StyleSheet, ScrollView, View, Text, Statu
 } from 'react-native';
 import HistoryListItem from '../components/HistoryListItem';
 import HeaderView from '../components/HeaderView';
-
+import axios from 'axios';
 const DEMO_HISTORY_DATA = [
     {
         id: '1',
@@ -116,6 +116,27 @@ const HistoryScreen = ({ navigation }) => {
     // constructor(props) {
     //   super(props);
     // }
+    const [transaction,setTransaction] = useState([{}]);
+useEffect(()=>{
+    apiFetch();
+},[]);
+    const apiFetch = async () => {
+        try {
+          const response = await axios.get('http://chouhanaryan.pythonanywhere.com/api/productlist');
+          const { data } = response;
+        //   const list = data.map(val => ({
+        //     name: val.name,
+        //     quantity: val.quantity,
+        //     price: val.latest_selling_price,
+        //     id: val.id,
+        //   }));
+       
+      console.log(data);
+        } catch (e) {
+          console.log(e);
+        }
+      };
+    
 
     return (
         <Container style={{ backgroundColor: '#F3F9FB' }}>
