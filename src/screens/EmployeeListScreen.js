@@ -32,7 +32,7 @@ const EmployeeListScreen = ({ navigation }) => {
     })
       .then(res => res.json())
       .then(data =>{ 
-        console.log(JSON.stringify(data))
+        // console.log(JSON.stringify(data))
         setEmployeeList(data)})
       .catch((err) => console.log(err))
   }

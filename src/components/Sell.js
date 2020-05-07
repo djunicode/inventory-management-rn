@@ -1,10 +1,11 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
   TouchableOpacity,
   StyleSheet,
   Dimensions,
+  Alert,
 } from 'react-native';
 import axios from 'axios';
 import {
@@ -20,15 +21,52 @@ import {
   Input,
   Picker,
   Label,
+  Form,
 } from 'native-base';
 import Icon from 'react-native-vector-icons/Feather';
 //http://chouhanaryan.pythonanywhere.com/api/sell/
-const Sell = ({navigation}) => {
+
+
+const Sell = ({ navigation }) => {
+
   const [product, setProduct] = useState([]);
-  const [list,setProductsList]=useState([]);
-    useEffect(() => {
+  const [selected, setSelected] = useState('key1');
+  const [list, setProductsList] = useState([]);
+
+
+  const onPickerValueChange = (item_name, item_index, product_index) => {
+    setSelected(item_name);
+    console.log('this is name:', item_name);
+    console.log('this is index:', item_index);
+    console.log('which prod no.?:', product_index);
+    let copy = [...product];
+    copy[product_index].name = item_name;
+    console.log(copy);
+    setProduct(copy);
+
+  }
+
+  useEffect(() => {
+    setProduct([{ name: 'Pick a value', price: 0, amount: 0 }]);
     apiFetch();
-  },[])
+  }, [])
+
+  const sellprod = async () => {
+    product.forEach(async product => {
+      const formData = new FormData();
+      formData.append('name', product.name);
+      formData.append('quantity', product.amount);
+      formData.append('latest_selling_price', product.price);
+      const response = await axios.post(
+        'http://chouhanaryan.pythonanywhere.com/api/sell/',
+        formData,
+      );
+      const { data } = response;
+      console.log(JSON.stringify(data) + ' here is selling data');
+    })
+  }
+
+
   const apiFetch = async () => {
     try {
       const response = await axios.get('http://chouhanaryan.pythonanywhere.com/api/productlist');
@@ -39,22 +77,23 @@ const Sell = ({navigation}) => {
         price: val.latest_selling_price,
         id: val.id,
       }));
-     await setProductsList(list);
-     console.log(list);
+      await setProductsList(list);
     } catch (e) {
       console.log(e);
     }
   };
 
   return (
-    <Container style={{backgroundColor: '#F3F9FB'}}>
+    <Container style={{ backgroundColor: '#F3F9FB' }}>
       <Content>
         <Body>
           <Text style={styles.heading}>Sell Items</Text>
 
-        
-           
-              <View style={{width: Dimensions.get('window').width}}>
+
+
+          {product.map((product_item, product_index) => {
+            return (
+              <View key={product_index} style={{ width: Dimensions.get('window').width }}>
                 {/* for the separating line */}
                 <View
                   style={{
@@ -69,39 +108,36 @@ const Sell = ({navigation}) => {
                 />
 
                 <Text style={styles.product_titles}>
-                  Product 
+                  Product {product.length == 1 ? '' : product_index + 1}
                 </Text>
-                <Item floatingLabel style={styles.inputBox}>
-                  <Label style={styles.label}>Product Name</Label>
-                
-            <Item picker>
-                  <Picker
-                iosIcon={<Icon name="arrow-down" />}
-                mode="dropdown"
-                style={{ width: "10%" }}
-              placeholder="Type of organization"
-              placeholderStyle={{ color: "#bfc6ea" }}
-              placeholderIconColor="#007aff"
-               // selectedValue={this.state.selected1}
-                //onValueChange={this.onValueChange.bind(this)}
-              >
-               {list.map((item, index) => {return(
-                 <Picker.Item label={item.name} value={index} />)}
-               )}
-              </Picker>
-              </Item>
-                  <Input
-                    style={styles.inputArea}
-                  //  onChangeText={value => (copy[index].name = value)}
-                  />
-                </Item>
+                <View style={{ justifyContent: 'space-evenly', flexDirection: 'row', }}>
+                  {/* <Label style={styles.label}>Product Name</Label> */}
+                  <Text style={[styles.label, { alignSelf: 'center' }]}>Product Name</Text>
+                  <Form style={{ borderWidth: 1, borderColor: '#0006', flex: 0.8, borderRadius: 5 }}>
+                    <Picker
+                      note
+                      mode="dropdown"
+                      selectedValue={product[product_index].name}
+                      onValueChange={(item_name, item_index) => {
+                        onPickerValueChange(item_name, item_index, product_index)
+                      }}
+                    >
+                      {/* <Picker.Item label='plz pick' value={-1} /> */}
+                      {list.map((picker_item, picker_index) => (
+                        <Picker.Item key={picker_index} label={picker_item.name} value={picker_item.name} />
+                      ))}
+                    </Picker>
+                  </Form>
+                </View>
 
                 <Item floatingLabel style={styles.inputBox}>
                   <Label style={styles.label}>Price</Label>
                   <Input
                     style={styles.inputArea}
                     keyboardType="numeric"
-                  //  onChangeText={value => (copy[index].price = value)}
+                    onChangeText={value =>
+                      (product[product_index].price = parseFloat(value.trim()))
+                    }
                   />
                 </Item>
 
@@ -110,26 +146,93 @@ const Sell = ({navigation}) => {
                   <Input
                     style={styles.inputArea}
                     keyboardType="numeric"
-                   // onChangeText={value => (copy[index].amount = value)}
+                    onChangeText={value =>
+                      (product[product_index].amount = parseInt(value.trim()))
+                    }
                   />
                 </Item>
               </View>
-   
+            )
+          })}
+
 
           <TouchableOpacity
             onPress={() => {
-            //   let copy = [...product];
-            //   copy.push({name: '', price: 0, amount: 0});
-            //   setProduct(copy);
-             }}
+              console.log(product);
+              if (
+                product[product.length - 1].name &&
+                product[product.length - 1].price &&
+                product[product.length - 1].amount
+              ) {
+                let copy = [...product];
+                copy.push({ name: '', price: 0, amount: 0 });
+                setProduct(copy);
+              } else {
+                Alert.alert(
+                  `Please fill all details for product ${product.length}`,
+                );
+              }
+            }}
             style={styles.addButton}>
             <Icon name="plus" color="#4796BD" size={25} style={styles.icon} />
             <Text style={styles.addButtonText}>Add Product</Text>
           </TouchableOpacity>
 
           <TouchableOpacity
-            onPress={() => {
-              console.log(product);
+            onPress={async () => {
+              let all_unique = true;
+              console.log('product', product)
+              console.log('list', list)
+              if (product.length != 1) {
+                for (let i = 0; i < product.length; i++) {
+                  for (let j = i + 1; j < product.length; j++) {
+                    if (product[i].name == product[j].name) {
+                      all_unique = false;
+                      break;
+                    }
+                  }
+                }
+              }
+              if (!all_unique) {
+                console.log('same names')
+                Alert.alert(
+                  'please select all unique items',
+                );
+              }
+              else if (
+                product[product.length - 1].name == '' ||
+                product[product.length - 1].price == 0 ||
+                product[product.length - 1].amount == 0
+              ) {
+                Alert.alert(
+                  `Please fill valid details for product ${product.length}`,
+                );
+              } else {
+                let enough_stock = true;
+                let shortage_products = [];
+                
+                for (let i = 0; i < product.length; i++) {
+                  const product_object = product[i];
+                  for (let j = 0; j < list.length; j++) {
+                    const list_item_object = list[j];
+                    if (product_object.name == list_item_object.name && product_object.amount > list_item_object.quantity) {
+                      shortage_products.push(product_object.name);
+                      enough_stock = false;
+                      break;
+                    }
+                  }
+                }
+                if (!enough_stock) {
+                  Alert.alert(
+                    `Not enough stock in inventory for ${shortage_products}`
+                  );
+                } else {
+                  console.log('finally sold!!')
+                  sellprod();
+                  setProduct([{name: '', price: 0, amount: 0}]);
+                }
+              }
+
             }}
             style={styles.sellButton}>
             <Text style={styles.sellButtonText}>Sell</Text>
@@ -168,7 +271,7 @@ const styles = StyleSheet.create({
     marginLeft: 28,
     textAlign: 'left',
     marginVertical: 10,
-    height: 55,
+    height: 55
   },
 
   label: {
@@ -176,7 +279,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     fontSize: 15,
-    color: '#828282',
+    color: '#828282'
   },
   inputArea: {
     paddingLeft: 20,
