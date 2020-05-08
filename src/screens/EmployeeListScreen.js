@@ -6,7 +6,7 @@ import {
 } from 'native-base';
 import {
   Alert, FlatList, SafeAreaView, StyleSheet, ScrollView, View, Text,
-  TouchableOpacity, KeyboardAvoidingView, Dimensions, ToastAndroid,
+  TouchableOpacity, KeyboardAvoidingView, Dimensions, ToastAndroid, ActivityIndicator,
 } from 'react-native';
 import Axios from 'axios';
 import EmployeeListItem from '../components/EmployeeListItem';
@@ -16,10 +16,36 @@ import AsyncStorage from '@react-native-community/async-storage';
 const EmployeeListScreen = ({ navigation }) => {
 
   const [employeeList, setEmployeeList] = useState([])
+  const [isReady, setReady] = useState(false)
+  const [currentUserDetails, setCurrentUserDetails] = useState({})
 
   useEffect(() => {
-    getUserList()
-  }, [employeeList])
+    getCurrentUserInfo()
+  }, [])
+
+
+  const getCurrentUserInfo = async () => {
+    const auth_key = await AsyncStorage.getItem('auth_key')
+
+    fetch('http://chouhanaryan.pythonanywhere.com/auth/users/me', {
+      method: "GET",
+      headers: {
+        "Authorization": `Token ${auth_key}`,
+      },
+    })
+      .then(res => res.json())
+      .then(data => {
+        // console.log(data)
+        setCurrentUserDetails(data) //set user details to state
+        setReady(true)
+
+        //if logged in user is a staff, only then he can view the user list
+        if (data.is_staff) {
+          getUserList()
+        }
+      })
+      .catch(err => console.log(err))
+  }
 
   const getUserList = async () => {
     const auth_key = await AsyncStorage.getItem('auth_key')
@@ -31,9 +57,10 @@ const EmployeeListScreen = ({ navigation }) => {
       },
     })
       .then(res => res.json())
-      .then(data =>{ 
+      .then(data => {
         // console.log(JSON.stringify(data))
-        setEmployeeList(data)})
+        setEmployeeList(data)
+      })
       .catch((err) => console.log(err))
   }
 
@@ -60,7 +87,8 @@ const EmployeeListScreen = ({ navigation }) => {
             formData.append('email', employeeItem.email)
             deleteEmployee(formData)
           }
-        },
+        }
+        ,
         {
           text: 'Cancel',
           onPress: () => console.log('Cancel Pressed'),
@@ -70,50 +98,80 @@ const EmployeeListScreen = ({ navigation }) => {
     );
   };
 
-  return (
-    <Container style={{ backgroundColor: '#F3F9FB' }}>
-      <HeaderView navigation={navigation} title={"Employee Details"} />
-      <Content>
-        {/* the entire outerpart */}
-        <Body style={styles.listContainer}>
-          {/* the header of table */}
-          <View style={styles.tableHeader}>
-            <CardItem style={{ backgroundColor: 'rgba(255,255,255,0)' }}>
-              <Text style={styles.nameHeader}>Name</Text>
-              <Text style={styles.genderHeader}>Gender</Text>
-              <Text style={styles.emailHeader}>Email</Text>
-              <Text style={styles.ageHeader}>Age</Text>
-            </CardItem>
-          </View>
+  if (isReady) {
+    if (currentUserDetails.is_staff) {
+      return (
+        <Container style={{ backgroundColor: '#F3F9FB' }}>
+          <HeaderView navigation={navigation} title={"Employee Details"} />
+          <Content>
+            {/* the entire outerpart */}
+            <Body style={styles.listContainer}>
+              {/* the header of table */}
+              <View style={styles.tableHeader}>
+                <CardItem style={{ backgroundColor: 'rgba(255,255,255,0)' }}>
+                  <Text style={styles.nameHeader}>Name</Text>
+                  <Text style={styles.genderHeader}>Gender</Text>
+                  <Text style={styles.emailHeader}>Email</Text>
+                  <Text style={styles.ageHeader}>Age</Text>
+                </CardItem>
+              </View>
 
-          {/* the inner list */}
-          <ScrollView>
-            <View>
-              <FlatList
-                style={styles.flatlist}
-                data={employeeList}
-                renderItem={({ item }) => (
-                  <EmployeeListItem
-                    onMenuPressed={data => onMenuPressed(data)}
-                    item={item}
+              {/* the inner list */}
+              <ScrollView>
+                <View>
+                  <FlatList
+                    style={styles.flatlist}
+                    data={employeeList}
+                    renderItem={({ item }) => (
+                      <EmployeeListItem
+                        onMenuPressed={data => onMenuPressed(data)}
+                        item={item}
+                      />
+                    )}
+                    keyExtractor={item => item.id}
                   />
-                )}
-                keyExtractor={item => item.id}
-              />
-            </View>
-          </ScrollView>
+                </View>
+              </ScrollView>
 
-          {/* the add employee button */}
-          <TouchableOpacity
-            style={styles.addEmployeeButton}
-            onPress={() => navigation.navigate('AddEmployee')}>
-            <Icon name="plus" color="white" size={25} />
-            <Text style={styles.addEmployeeButtonText}>Add Employee</Text>
-          </TouchableOpacity>
-        </Body>
-      </Content>
-    </Container>
-  );
+              {/* the add employee button */}
+              <TouchableOpacity
+                style={styles.addEmployeeButton}
+                onPress={() => navigation.navigate('AddEmployee')}>
+                <Icon name="plus" color="white" size={25} />
+                <Text style={styles.addEmployeeButtonText}>Add Employee</Text>
+              </TouchableOpacity>
+            </Body>
+          </Content>
+        </Container>
+      );
+    } else if (!currentUserDetails.is_staff) {
+      return (<Container style={{ backgroundColor: '#F3F9FB', }}>
+        <HeaderView navigation={navigation} title={"Employee Details"} />
+        <Content>
+          <Body style={{ justifyContent: 'center', alignItems: 'center', padding: 30, marginVertical: 250, }}>
+            <Text style={{ fontSize: 24, lineHeight: 45, textAlign: 'center', }}>
+              You do not have permission to View, Create or Delete Employees!
+            </Text>
+          </Body>
+
+        </Content>
+      </Container>)
+    }
+  }
+  else {
+    return (
+      <Container style={{ backgroundColor: '#F3F9FB', }}>
+        <HeaderView navigation={navigation} title={"Employee Details"} />
+        <Content>
+          <Body style={{justifyContent:'center', }}>
+            <ActivityIndicator size="large" color='#000' />
+          </Body >
+        </Content>
+      </Container>
+
+    )
+  }
+
 
 }
 
