@@ -27,7 +27,7 @@ const EmployeeListScreen = ({ navigation }) => {
   const getCurrentUserInfo = async () => {
     const auth_key = await AsyncStorage.getItem('auth_key')
 
-    fetch('http://chouhanaryan.pythonanywhere.com/auth/users/me', {
+    fetch('http://chouhanaryan.pythonanywhere.com/auth/users/me/', {
       method: "GET",
       headers: {
         "Authorization": `Token ${auth_key}`,

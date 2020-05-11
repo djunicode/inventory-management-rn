@@ -15,7 +15,7 @@ import AsyncStorage from '@react-native-community/async-storage';
 async function getLoginToken(email, password) {
   try {
     const response = await Axios.post(
-      'http://chouhanaryan.pythonanywhere.com/auth/token/login',
+      'http://chouhanaryan.pythonanywhere.com/auth/token/login/',
       {
         password: password,
         email: email,
@@ -43,7 +43,7 @@ const LoginScreen=({navigation})=> {
       try {
         // console.log(token)
         const response = await Axios.get(
-          'http://chouhanaryan.pythonanywhere.com/auth/users/me',
+          'http://chouhanaryan.pythonanywhere.com/auth/users/me/',
           {
             headers: {
               Authorization: `Token ${token}`,

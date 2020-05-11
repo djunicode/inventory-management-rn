@@ -50,7 +50,7 @@ const Sell = ({navigation}) => {
   const apiFetch = async () => {
     try {
       const response = await axios.get(
-        'http://chouhanaryan.pythonanywhere.com/api/productlist',
+        'http://chouhanaryan.pythonanywhere.com/api/productlist/',
       );
       const {data} = response;
       const list = data.map(val => ({
