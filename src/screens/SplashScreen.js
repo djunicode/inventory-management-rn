@@ -31,14 +31,13 @@ export default class SplashScreen extends React.Component {
       <Container>
         <Content>
           <Body style={styles.container}>
-
             <Image
               style={{
                 width: 374,
                 height: 300,
                 justifyContent: 'center',
                 marginVertical: 40,
-
+                resizeMode: 'cover',
               }}
               source={require('../Images/store-inventory-logo.jpg')}
             />

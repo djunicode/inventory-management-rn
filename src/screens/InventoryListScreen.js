@@ -139,7 +139,7 @@ const InventoryListScreen = ({ navigation }) => {
 
   const getInventoryList = async () => {
 
-    fetch('http://chouhanaryan.pythonanywhere.com/api/productlist', {
+    fetch('http://chouhanaryan.pythonanywhere.com/api/productlist/', {
       method: "GET",
     })
       .then(res => res.json())
