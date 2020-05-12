@@ -46,30 +46,36 @@ export default class AddEmployee extends Component {
     return await AsyncStorage.getItem('auth_key');
   }
 
-  sendUser = () => {
-    console.log(this.keyy());
+  sendUserData = async formData => {
+    console.log('in senduserdata');
 
-    Axios.post('http://chouhanaryan.pythonanywhere.com/auth/users/', {
-      headers: {
-        Authorization: `Token ${this.keyy()}`,
-      },
-      data: {
-        email: this.state.email,
-        password: this.state.password,
-        first_name: this.state.fname,
-        last_name: this.state.lname,
-        is_staff: true,
-        age: this.state.age,
-        gender: this.state.gender,
-      },
+    const auth_key = await AsyncStorage.getItem('auth_key');
+    console.log('auth key is', auth_key);
+    fetch('http://chouhanaryan.pythonanywhere.com/auth/users/', {
+      method: 'POST',
+      headers: {Authorization: `Token ${auth_key}`},
+      body: formData,
     })
-      .then(response => {
-        console.log(response);
-      })
-      .catch(error => {
-        console.log(error);
-      });
+      .then(res => res.json())
+      .then(data => console.log(data))
+      .catch(error => console.log(error));
   };
+
+  buttonPressed = () => {
+    console.log('in button pressed');
+
+    let formData = new FormData();
+    formData.append('email', this.state.email);
+    formData.append('password', this.state.password);
+    formData.append('first_name', this.state.fname);
+    formData.append('last_name', this.state.lname);
+    formData.append('is_staff', true);
+    formData.append('age', this.state.age);
+    formData.append('gender', this.state.gender);
+
+    this.sendUserData(formData);
+  };
+
   render() {
     return (
       <Container style={{backgroundColor: '#F3F9FB'}}>
@@ -104,7 +110,7 @@ export default class AddEmployee extends Component {
                   keyboardType="email-address"
                   autoCapitalize="none"
                   onChangeText={value => {
-                    var mailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+                    var mailformat = /^\w+([\.-]?\w+)@\w+([\.-]?\w+)(\.\w{2,3})+$/;
                     this.setState({email: value});
                     if (value.match(mailformat)) {
                       this.setState({inval_email: false});
@@ -132,7 +138,7 @@ export default class AddEmployee extends Component {
                   secureTextEntry
                   onChangeText={value => {
                     this.setState({password: value});
-                    var passw = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,20}$/;
+                    var passw = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
                     if (value.match(passw)) {
                       this.setState({inval_pass: false});
                     } else {
@@ -149,7 +155,7 @@ export default class AddEmployee extends Component {
                     marginLeft: 40,
                   }}>
                   Password should contain only characters, numeric digits,
-                  underscore starting with a letter and length from 6-15
+                  underscore and starting with a letter having length 8-15
                 </Text>
               )}
 
@@ -214,7 +220,15 @@ export default class AddEmployee extends Component {
                       this.state.fname !== '' &&
                       this.state.password === this.state.confpass
                     ) {
-                      this.sendUser();
+                      // let formData = new FormData()
+                      // formData.append('email', this.state.email)
+                      // formData.append('password', this.state.password)
+                      // formData.append('first_name', this.state.fname)
+                      // formData.append('last_name', this.state.lname)
+                      // formData.append('is_staff', true)
+                      // formData.append('age', this.state.age)
+                      // formData.append('gender', this.state.gender)
+                      this.buttonPressed();
                       this.props.navigation.navigate('EmployeeList');
                     } else {
                       this.setState({inval_confpass: true});

@@ -1,4 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect} from 'react';
+import RadioForm, {
+  RadioButton,
+  RadioButtonInput,
+  RadioButtonLabel,
+} from 'react-native-simple-radio-button';
 import Icon from 'react-native-vector-icons/Feather';
 import {
   Button,
@@ -26,6 +31,7 @@ import {
   TouchableOpacity,
   KeyboardAvoidingView,
   Dimensions,
+  Modal,
 } from 'react-native';
 import Axios from 'axios';
 import AsyncStorage from '@react-native-community/async-storage';
@@ -107,88 +113,167 @@ const DEMO_INVENTORY_DATA = [
   },
 ];
 
-const InventoryListScreen = ({ navigation }) => {
-
-  
+const InventoryListScreen = ({navigation}) => {
   const [inventoryList, setInventoryList] = useState([]);
-  
+  const [modalVisible, setModalVisible] = useState(false);
+  const [updateSellPrice, setUpdateSellPrice] = useState(null);
+  const [updateName, setUpdateName] = useState('');
+  const [updateProd, setUpdateProd] = useState({});
+
   useEffect(() => {
-    getInventoryList()
-  }, [inventoryList])
-
-  const onEditPressed = selectedID => {
-    // console.warn(selectedID)
-    Alert.alert(
-      `edit pressed of id ${selectedID}`,
-      '',
-      [{ text: 'OK', onPress: () => console.log('OK Pressed') }],
-      { cancelable: false },
-    );
-  };
-
-  const onDeletePressed = selectedID => {
-    console.warn(selectedID);
-    Alert.alert(
-      `delete pressed of id ${selectedID}`,
-      '',
-      [{ text: 'OK', onPress: () => console.log('OK Pressed') }],
-      { cancelable: false },
-    );
-  };
-
+    getInventoryList();
+  }, [inventoryList]);
 
   const getInventoryList = async () => {
-
     fetch('http://chouhanaryan.pythonanywhere.com/api/productlist/', {
-      method: "GET",
+      method: 'GET',
     })
       .then(res => res.json())
       .then(data => setInventoryList(data))
-      .catch((err) => console.log(err))
-  }
+      .catch(err => console.log(err));
+  };
 
-  const deleteInventoryItem = async (inventoryItem) => {
-    fetch(`http://chouhanaryan.pythonanywhere.com/api/productlist/${inventoryItem.id}/`, {
-      method: 'DELETE'
-    })
-    // .then(res => {
-    //   console.log(res.json())
-    //   return res.json()
-    // })
-    // .then(data => console.log(data))
-    // .catch(error => console.log(error))
-  }
+  const deleteInventoryItem = async inventoryItem => {
+    fetch(
+      `http://chouhanaryan.pythonanywhere.com/api/productlist/${
+        inventoryItem.id
+      }/`,
+      {
+        method: 'DELETE',
+      },
+    );
+  };
+
+  const updateProductPost = () => {
+    const sendObj = {};
+    if (updateName !== '') sendObj.name = updateName;
+    if (updateSellPrice != null) sendObj.latest_selling_price = updateSellPrice;
+    sendObj.loose = updateProd.loose;
+    console.log(sendObj);
+
+    fetch(
+      `http://chouhanaryan.pythonanywhere.com/api/update/${updateProd.id}/`,
+      {
+        method: 'POST',
+        body: JSON.stringify(sendObj),
+      },
+    )
+      .then(res => console.log(res))
+      .catch(err => console.log(err));
+    setUpdateName('');
+    setUpdateSellPrice(null);
+  };
 
   const onMenuPressed = inventoryItem => {
-    console.log(inventoryItem)
+    console.log(inventoryItem);
     Alert.alert(
       `${inventoryItem.name} (Qty: ${inventoryItem.quantity})`,
       `Rs. ${inventoryItem.avg_cost_price}`,
       [
         {
+          text: 'Update',
+          onPress: () => {
+            setUpdateProd(inventoryItem);
+            setUpdateName(inventoryItem.name);
+            setUpdateSellPrice(inventoryItem.latest_selling_price);
+            setModalVisible(true);
+          },
+        },
+        {
           text: 'Delete',
           onPress: () => {
-            deleteInventoryItem(inventoryItem)
-          }
+            deleteInventoryItem(inventoryItem);
+          },
         },
         {
           text: 'Cancel',
           // onPress: () => console.log('Cancel Pressed'),
-          style: "cancel"
+          style: 'cancel',
         },
       ],
     );
   };
+  var radio_props = [
+    {label: 'Loose', value: true},
+    {label: 'Packed', value: false},
+  ];
 
   return (
-    <Container style={{ backgroundColor: '#F3F9FB' }}>
-      <HeaderView navigation={navigation} title={"Inventory"} />
+    <Container style={{backgroundColor: '#F3F9FB'}}>
+      <HeaderView navigation={navigation} title={'Inventory'} />
+
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => {
+          Alert.alert('No changes made');
+          setModalVisible(!modalVisible);          
+        }}>
+        <View style={styles.centeredView}>
+          <View style={styles.modalView}>
+            <Text style={styles.product_titles}>Product</Text>
+            <Item floatingLabel style={styles.inputBox}>
+              <Label style={styles.label}>Product Name</Label>
+              <Input
+                style={styles.inputArea}
+                onChangeText={value => {
+                  setUpdateName(value);
+                }}
+                value={updateName}
+              />
+            </Item>
+
+            <Item floatingLabel style={styles.inputBox}>
+              <Label style={styles.label}>Selling Price</Label>
+              <Input
+                style={styles.inputArea}
+                onChangeText={value => {
+                  setUpdateSellPrice(value);
+                }}
+                value={updateSellPrice}
+                keyboardType="numeric"
+              />
+            </Item>
+            <RadioForm
+              radio_props={radio_props}
+              labelHorizontal={true}
+              formHorizontal={false}
+              buttonColor={'#50C900'}
+              labelColor={'#50C900'}
+              style={{padding:5}}
+              onPress={value => {
+                updateProd.loose = value;
+                setUpdateProd(updateProd);
+              }}
+            />
+
+<TouchableOpacity
+            style={styles.addEmployeeButton}
+            // onPress={() => navigation.navigate('AddEmployee')}
+            onPress={() => {
+              updateProductPost();
+                setModalVisible(!modalVisible);
+            }}>
+            
+            <Text style={styles.addEmployeeButtonText}>Update</Text>
+          </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+
       <Content>
         {/* the entire outerpart */}
         <Body style={styles.listContainer}>
           {/* the header of table */}
           <View style={styles.tableHeader}>
-            <CardItem style={{ backgroundColor: 'rgba(255,255,255,0)', flexDirection: 'row', justifyContent: 'space-evenly', paddingLeft: 40 }}>
+            <CardItem
+              style={{
+                backgroundColor: 'rgba(255,255,255,0)',
+                flexDirection: 'row',
+                justifyContent: 'space-evenly',
+                paddingLeft: 40,
+              }}>
               <Text style={styles.productNameHeader}>Product</Text>
               <Text style={styles.itemsHeader}>Items</Text>
               <Text style={styles.priceHeader}>Price</Text>
@@ -202,7 +287,7 @@ const InventoryListScreen = ({ navigation }) => {
                 style={styles.flatlist}
                 data={inventoryList}
                 // scrollEnabled={true}
-                renderItem={({ item }) => (
+                renderItem={({item}) => (
                   <InventoryListItem
                     onMenuPressed={data => onMenuPressed(data)}
                     item={item}
@@ -214,27 +299,12 @@ const InventoryListScreen = ({ navigation }) => {
           </ScrollView>
 
           {/* the add employee button */}
-          <TouchableOpacity
-            style={styles.addEmployeeButton}
-            // onPress={() => navigation.navigate('AddEmployee')}
-            onPress={() => {
-              Alert.alert(
-                'Product addition page to be added here',
-                '',
-                [{ text: 'OK', onPress: () => console.log('OK Pressed') }],
-                { cancelable: false },
-              );
-            }}
-          >
-            <Icon name="plus" color="white" size={25} />
-            <Text style={styles.addEmployeeButtonText}>Add Product</Text>
-          </TouchableOpacity>
+        
         </Body>
       </Content>
     </Container>
   );
-
-}
+};
 
 export default InventoryListScreen;
 
@@ -266,7 +336,7 @@ const styles = StyleSheet.create({
     width: DEVICE_WIDTH - 32,
     borderTopRightRadius: 20,
     borderTopLeftRadius: 20,
-    alignContent: 'stretch'
+    alignContent: 'stretch',
   },
   productNameHeader: {
     fontSize: 18,
@@ -299,5 +369,68 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     textAlignVertical: 'center',
     // padding:6,
+  },
+  centeredView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 22,
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: 'white',
+    borderRadius: 20,
+    padding: 35,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+  openButton: {
+    backgroundColor: '#F194FF',
+    borderRadius: 20,
+    padding: 10,
+    elevation: 2,
+  },
+  textStyle: {
+    color: 'white',
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  modalText: {
+    marginBottom: 15,
+    textAlign: 'center',
+  },
+  inputBox: {
+   
+    borderRadius: 10,
+    marginRight: 28,
+    marginLeft: 28,
+    textAlign: 'left',
+    marginVertical: 10,
+    height: 55,
+  },
+  product_titles: {
+    fontSize: 24,
+    color: '#122E40',
+    marginTop: 25,
+    marginBottom: 10,
+    alignSelf: 'flex-start',
+    marginLeft: '5%',
+  },
+  label: {
+    paddingLeft: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+    fontSize: 15,
+    color: '#828282',
+  },
+  inputArea: {
+    paddingLeft: 20,
   },
 });
