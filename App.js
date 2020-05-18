@@ -1,5 +1,5 @@
 import React from 'react';
-
+import { StatusBar } from 'react-native'
 import Icon_Feather from 'react-native-vector-icons/Feather';
 import Icon_MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { TouchableOpacity } from 'react-native';
@@ -12,7 +12,7 @@ import DrawerScreen2 from './src/screens/TransactionsScreen';
 import EmployeeListScreen from './src/screens/EmployeeListScreen';
 import SplashScreen from './src/screens/SplashScreen'
 import Settings from './src/screens/SettingsScreen'
-import { NavigationContainer } from '@react-navigation/native';
+import { NavigationContainer,DarkTheme,DefaultTheme } from '@react-navigation/native';
 import { createStackNavigator, HeaderTitle } from '@react-navigation/stack';
 
 const AppStack = createStackNavigator();
@@ -22,6 +22,7 @@ const EmployeeStack = createStackNavigator();
 const App=({ navigation }) =>{
   return (
     <NavigationContainer theme={MyTheme}>
+    
       <AppStack.Navigator headerMode={null} initialRouteName="SplashScreen">
         <AppStack.Screen
           name="LoginScreen"

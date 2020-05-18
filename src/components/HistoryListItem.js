@@ -10,7 +10,7 @@ export default class HistoryListItem extends React.Component {
     //console.log(date)=>2020-05-07T13:19:40.442654Z
     const newDate = new Date(date).toDateString().slice(4);//=>May 07 2020
     const forMonthAndDate = newDate.split(' ');//convert to array and take only May 7
-    const finalDate = forMonthAndDate[0] + ' ' + forMonthAndDate[1];//join May and 7
+    const finalDate = forMonthAndDate[0] + ' \n ' + forMonthAndDate[1];//join May and 7
     return finalDate;
   };
 
