@@ -122,26 +122,36 @@ const InventoryListScreen = ({navigation}) => {
 
   useEffect(() => {
     getInventoryList();
-  }, [inventoryList]);
+  }, []);
 
   const getInventoryList = async () => {
+    const auth_key = await AsyncStorage.getItem('auth_key')
     fetch('http://chouhanaryan.pythonanywhere.com/api/productlist/', {
       method: 'GET',
+      headers: {
+        "Authorization": `Token ${auth_key}`,
+      },
     })
       .then(res => res.json())
-      .then(data => setInventoryList(data))
+      .then(data => {
+        console.log(data);
+        setInventoryList(data)
+      })
       .catch(err => console.log(err));
   };
 
   const deleteInventoryItem = async inventoryItem => {
+    const auth_key = await AsyncStorage.getItem('auth_key')
     fetch(
       `http://chouhanaryan.pythonanywhere.com/api/productlist/${
         inventoryItem.id
       }/`,
       {
         method: 'DELETE',
+        headers: {Authorization: `Token ${auth_key}`,}
       },
     );
+    console.log('deleted successfully!')
   };
 
   const updateProductPost = () => {
