@@ -103,6 +103,7 @@ const LoginScreen=({navigation})=> {
             
             <Input
               style={styles.inputArea}
+              blurOnSubmit={true}
               onChangeText={value => {
                 setUserEmail(value);
               }}
@@ -117,6 +118,7 @@ const LoginScreen=({navigation})=> {
             <Label style={styles.label}>Password</Label>
             <Input
               style={styles.inputArea}
+              blurOnSubmit={true}
               onChangeText={value => {
                 setUserPassword(value);
               }}
