@@ -71,7 +71,10 @@ const EmployeeListScreen = ({ navigation }) => {
       body: formData,
     })
       .then(ToastAndroid.show("Employee Deleted !", ToastAndroid.SHORT))
-      .then(res => console.log('Employee Deleted!'))
+      .then(res => {
+        console.log(res.json())
+        console.log('Employee Deleted!')
+      })
       .catch(err => console.log(err))
   }
 
@@ -136,7 +139,7 @@ const EmployeeListScreen = ({ navigation }) => {
               {/* the add employee button */}
               <TouchableOpacity
                 style={styles.addEmployeeButton}
-                onPress={() => navigation.navigate('AddEmployee')}>
+                onPress={() => navigation.navigate('AddEmployee', {getUserList})}>
                 <Icon name="plus" color="white" size={25} />
                 <Text style={styles.addEmployeeButtonText}>Add Employee</Text>
               </TouchableOpacity>
