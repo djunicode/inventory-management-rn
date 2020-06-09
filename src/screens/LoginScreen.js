@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   KeyboardAvoidingView,
   Image,
+  Alert,
 } from 'react-native';
 import Axios from 'axios';
 import AsyncStorage from '@react-native-community/async-storage';
@@ -25,6 +26,7 @@ async function getLoginToken(email, password) {
     console.log(token.auth_token);
     return token.auth_token;
   } catch (error) {
+    Alert.alert('Invalid email or password', 'Please enter correct credentials')
     console.log(Object.keys(error), error.message);
     return -1; //Returning -1 for error 400
   }
