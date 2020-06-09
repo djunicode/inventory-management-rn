@@ -23,6 +23,9 @@ const EmployeeListScreen = ({ navigation }) => {
     getCurrentUserInfo()
   }, [])
 
+  useEffect(() => {
+    getUserList()
+  }, employeeList)
 
   const getCurrentUserInfo = async () => {
     const auth_key = await AsyncStorage.getItem('auth_key')
@@ -65,9 +68,11 @@ const EmployeeListScreen = ({ navigation }) => {
   }
 
   const deleteEmployee = async (formData) => {
+    const auth_key = await AsyncStorage.getItem('auth_key');
 
     fetch('http://chouhanaryan.pythonanywhere.com/auth/user_delete/', {
       method: "POST",
+      headers: {Authorization: `Token ${auth_key}`},
       body: formData,
     })
       .then(ToastAndroid.show("Employee Deleted !", ToastAndroid.SHORT))
