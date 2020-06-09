@@ -25,7 +25,7 @@ const EmployeeListScreen = ({ navigation }) => {
 
   useEffect(() => {
     getUserList()
-  }, employeeList)
+  }, [employeeList])
 
   const getCurrentUserInfo = async () => {
     const auth_key = await AsyncStorage.getItem('auth_key')
