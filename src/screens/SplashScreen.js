@@ -1,24 +1,31 @@
-import React, {useState, useEffect} from 'react';
-import {View, Text, StyleSheet, Image, Dimensions} from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, Image, Dimensions } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
-import {Container, Content, Body} from 'native-base';
-import {StackActions} from '@react-navigation/native';
+import { Container, Content, Body } from 'native-base';
+import { StackActions } from '@react-navigation/native';
 
 export default class SplashScreen extends React.Component {
+
   componentDidMount = async () => {
     try {
-      const checkVar = await AsyncStorage.getItem('is_staff');
-      console.log(checkVar);
-      if (checkVar) {
+      const auth_key = await AsyncStorage.getItem('auth_key')   // gets auth token from async storage
+      const data = await fetch('http://chouhanaryan.pythonanywhere.com/auth/users/me/', {
+        method: "GET",
+        headers: {
+          "Authorization": `Token ${auth_key}`,
+        },
+      })
+      console.log('okStatus', data.ok)
+      if (data.ok) { // its a valid user
         setTimeout(
           () => this.props.navigation.dispatch(StackActions.replace('Drawer')),
-          2000,
+          1000,
         );
       } else {
         setTimeout(
           () =>
             this.props.navigation.dispatch(StackActions.replace('LoginScreen')),
-          2000,
+          1000,
         );
       }
     } catch (error) {
