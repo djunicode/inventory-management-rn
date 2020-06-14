@@ -8,6 +8,7 @@ import {
   KeyboardAvoidingView,
   Image,
   Alert,
+  View
 } from 'react-native';
 import Axios from 'axios';
 import AsyncStorage from '@react-native-community/async-storage';
@@ -137,6 +138,20 @@ const LoginScreen=({navigation})=> {
             }}>
             <Text style={styles.buttonText}>Login</Text>
           </TouchableOpacity>
+          <View style={{flexDirection: 'row'}}>
+          <Text style={styles.newUser}>New user ? </Text>
+          <TouchableOpacity onPress={() =>{
+            navigation.navigate('RegisterScreen');
+          }}   ><Text style={{fontSize: 18,
+          textDecorationLine: 'underline',
+    color: '#9ca2ad',
+    // borderBottomWidth:1,
+    // borderBottomColor: 'black',
+    
+    marginTop: 25,
+    marginBottom: 10,
+    marginBottom: 10,}}>Register </Text></TouchableOpacity>
+          </View>
         </Body>
       </Content>
     </Container>
@@ -146,6 +161,14 @@ const LoginScreen=({navigation})=> {
 export default LoginScreen;
 
 const styles = StyleSheet.create({
+  newUser:{
+    fontSize: 18,
+    color: '#9ca2ad',
+    
+    marginTop: 25,
+    marginBottom: 10,
+    marginBottom: 10,
+  },
   loginButton: {
     width: 280,
     height: 40,

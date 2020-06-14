@@ -12,18 +12,28 @@ import {
   Text,
   Dimensions,
 } from 'react-native';
+import AsyncStorage from '@react-native-community/async-storage';
 import HistoryListItem from '../components/HistoryListItem';
 
 const HistoryScreen = ({navigation}) => {
   const [transactionlist, setTransactionList] = useState([]);
   const apiFetch = async () => {
     try {
-      const response = await axios.get(
-        'http://chouhanaryan.pythonanywhere.com/api/bill/',
-      );
-      const {data} = response;
-      await setTransactionList(data);
-      await console.log(transactionlist);
+      const auth_key = await AsyncStorage.getItem('auth_key');
+
+      fetch('http://chouhanaryan.pythonanywhere.com/api/bill/', {
+        method: 'GET',
+        headers: {
+          Authorization: `Token ${auth_key}`,
+        },
+      })
+        .then(res => res.json())
+        .then(data => {
+           console.log(data)
+          setTransactionList(data);
+          console.log(transactionlist);
+        })
+        .catch(err => console.log(err));
     } catch (e) {
       console.log(e);
     }

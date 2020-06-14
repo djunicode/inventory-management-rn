@@ -1,3 +1,5 @@
 rootProject.name = 'rn_inventory'
+include ':@react-native-community_datetimepicker'
+project(':@react-native-community_datetimepicker').projectDir = new File(rootProject.projectDir, '../node_modules/@react-native-community/datetimepicker/android')
 apply from: file("../node_modules/@react-native-community/cli-platform-android/native_modules.gradle"); applyNativeModulesSettingsGradle(settings)
 include ':app'

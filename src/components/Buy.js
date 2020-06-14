@@ -6,6 +6,7 @@ import {
   StyleSheet,
   Dimensions,
   Alert,
+  Button,
 } from 'react-native';
 import {
   Container,
@@ -20,29 +21,70 @@ import {
   Input,
   Label,
 } from 'native-base';
-import Icon from 'react-native-vector-icons/Feather';
+import AsyncStorage from '@react-native-community/async-storage';
+import Icon from 'react-native-vector-icons/FontAwesome';
 import {ScrollView} from 'react-native-gesture-handler';
+import DateTimePicker from '@react-native-community/datetimepicker';
 import axios from 'axios';
 //http://chouhanaryan.pythonanywhere.com/api/buy/
 const Buy = ({navigation}) => {
-  const [product, setProduct] = useState([{name: '', price: 0, amount: 0}]);
+  const [product, setProduct] = useState([
+    {name: '', price: 0, amount: 0, expiry: ''},
+  ]);
   useEffect(() => {
     setProduct([{name: '', price: 0, amount: 0}]);
   }, []);
   const buyprod = async () => {
     product.forEach(async product => {
-      const formData = new FormData();
-      formData.append('name', product.name);
-      formData.append('quantity', product.amount);
-      formData.append('avg_cost_price', product.price);
-      const response = await axios.post(
-        'http://chouhanaryan.pythonanywhere.com/api/buy/',
-        formData,
-      );
-      const {data} = response;
-      console.log(JSON.stringify(data) + ' here is data');
+      const formdata = new FormData();
+      formdata.append("name", product.name);
+      formdata.append("avg_cost_price\n", product.price);
+      formdata.append("quantity", product.amount);
+      
+      formdata.append("expiry","2020-8-6");
+      var myHeaders = new Headers();
+      const auth_key = AsyncStorage.getItem('auth_key');
+myHeaders.append("Authorization", `Token ${auth_key}`);
+
+      //       const token = AsyncStorage.getItem('auth_key');
+      // const config = { headers: { Authorization: `Token ${token}` } };
+      //       const response = await axios.post(
+      //         'http://chouhanaryan.pythonanywhere.com/api/buy/',
+      //         formData,
+      //         config
+      //       );
+     
+      fetch('http://chouhanaryan.pythonanywhere.com/api/buy/', {
+        method: 'POST',
+        headers:myHeaders,
+        body: formdata,
+        redirect: 'follow'
+      })
+        .then(res => console.log(res))
+        .catch(err => console.log(err));
     });
   };
+
+  const [date, setDate] = useState(new Date());
+  const [mode, setMode] = useState('date');
+  const [show, setShow] = useState(false);
+
+  const onChange = (event, selectedDate) => {
+    const currentDate = selectedDate || date;
+    setShow(Platform.OS === 'ios');
+    console.log('\n');
+    setDate(currentDate);
+    console.log(date.toDateString());
+    console.log(date.toLocaleDateString());
+    console.log(date.toUTCString());
+    var da = date.toLocaleDateString().split('/');
+    console.log(da[2]);
+    console.log(da[1]);
+    console.log(da[0]);
+    var d = '' + 20 + '' + da[2] + '-' + da[0] + '-' + da[1] + '';
+    console.log(d);
+  };
+
   return (
     <Container style={{backgroundColor: '#F3F9FB'}}>
       <ScrollView>
@@ -99,6 +141,48 @@ const Buy = ({navigation}) => {
                     }
                   />
                 </Item>
+                <View style={{flexDirection: 'row', flex: 1}}>
+                  <View style={styles.dateMainView}>
+                    <Text
+                      style={{
+                        marginLeft: 4,
+                        fontSize: 18,
+                        marginTop: 17,
+                        color: 'black',
+                      }}>
+                      Expiry date : {date.toLocaleDateString()}
+                    </Text>
+                  </View>
+
+                  <TouchableOpacity onPress={() => setShow(true)}>
+                    <Icon
+                      name="calendar"
+                      color="#4796BD"
+                      size={30}
+                      style={{
+                        marginLeft: -10,
+                        flex: 1,
+                        marginRight: 30,
+                        marginTop: 20,
+                      }}
+                    />
+                  </TouchableOpacity>
+                </View>
+
+                <View>
+                  <View>
+                    {show && (
+                      <DateTimePicker
+                        testID="dateTimePicker"
+                        value={date}
+                        mode={mode}
+                        is24Hour={true}
+                        display="default"
+                        onChange={onChange}
+                      />
+                    )}
+                  </View>
+                </View>
               </View>
             );
           })}
@@ -125,7 +209,7 @@ const Buy = ({navigation}) => {
           </TouchableOpacity>
 
           <TouchableOpacity
-            onPress={async() => {
+            onPress={async () => {
               if (
                 product[product.length - 1].name == '' ||
                 product[product.length - 1].price == 0 ||
@@ -138,7 +222,6 @@ const Buy = ({navigation}) => {
                 console.log(JSON.stringify(product) + '!');
                 await buyprod();
                 setProduct([{name: '', price: 0, amount: 0}]);
-              
               }
             }}
             style={styles.buyButton}>
@@ -153,6 +236,16 @@ const Buy = ({navigation}) => {
 export default Buy;
 
 const styles = StyleSheet.create({
+  dateMainView: {
+    backgroundColor: '#E0E0E0',
+    borderRadius: 10,
+    marginRight: 20,
+    marginLeft: 28,
+    textAlign: 'left',
+    marginVertical: 10,
+    height: 55,
+    flex: 9,
+  },
   heading: {
     fontSize: 26,
     color: '#122E40',
