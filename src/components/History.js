@@ -20,8 +20,8 @@ const HistoryScreen = ({navigation}) => {
   const apiFetch = async () => {
     try {
       const auth_key = await AsyncStorage.getItem('auth_key');
-
-      fetch('http://chouhanaryan.pythonanywhere.com/api/bill/', {
+      console.log(auth_key);
+      fetch('http://chouhanaryan.pythonanywhere.com/api/transactions/', {
         method: 'GET',
         headers: {
           Authorization: `Token ${auth_key}`,
@@ -29,7 +29,7 @@ const HistoryScreen = ({navigation}) => {
       })
         .then(res => res.json())
         .then(data => {
-           console.log(data)
+          console.log(data);
           setTransactionList(data);
           console.log(transactionlist);
         })
@@ -50,12 +50,20 @@ const HistoryScreen = ({navigation}) => {
         <Body style={styles.listContainer}>
           {/* the header of table */}
           <View style={styles.tableHeader}>
-            <CardItem style={{backgroundColor: 'rgba(255,255,255,0)'}}>
-              <Text style={styles.dateHeader}>Date</Text>
-              <Text style={styles.typeHeader}>Type</Text>
+            <CardItem
+              style={{
+                backgroundColor: 'rgba(255,255,255,0)',
+                justifyContent: 'center',
+              }}>
+              {/* <Text style={styles.dateHeader}>Date</Text> */}
+              {/* <Text style={styles.typeHeader}>Type</Text>
               <Text style={styles.productHeader}>Product</Text>
               <Text style={styles.itemsHeader}>Items</Text>
-              <Text style={styles.priceHeader}>Price</Text>
+              <Text style={styles.priceHeader}>Price</Text> */}
+              <Text style={styles.typeHeader}>Type</Text>
+              <Text style={styles.productHeader}>Product</Text>
+              <Text style={styles.itemsHeader}>Quanity</Text>
+              <Text style={styles.priceHeader}>Rate</Text>
             </CardItem>
           </View>
 
@@ -106,27 +114,27 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 20,
   },
   itemsHeader: {
-    flex: 0.2,
+    flex: 0.25,
     fontSize: 16,
     fontWeight: 'bold',
   },
   productHeader: {
-    flex: 0.26,
+    flex: 0.3,
     fontSize: 16,
     fontWeight: 'bold',
   },
   typeHeader: {
-    flex: 0.22,
+    flex: 0.25,
     fontSize: 16,
     fontWeight: 'bold',
   },
-  dateHeader: {
-    flex: 0.22,
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
+  // dateHeader: {
+  //   flex: 0.22,
+  //   fontSize: 16,
+  //   fontWeight: 'bold',
+  // },
   priceHeader: {
-    flex: 0.15,
+    flex: 0.2,
     fontSize: 16,
     fontWeight: 'bold',
   },

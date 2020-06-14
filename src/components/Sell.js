@@ -7,7 +7,7 @@ import {
   Dimensions,
   Alert,
 } from 'react-native';
-import AsyncStorage from   '@react-native-community/async-storage';
+import AsyncStorage from '@react-native-community/async-storage';
 import axios from 'axios';
 import {
   Container,
@@ -42,30 +42,29 @@ const Sell = ({navigation}) => {
     console.log(copy);
     setProduct(copy);
   };
-  
+
   useEffect(() => {
     setProduct([{name: 'Pick a value', price: 0, amount: 0}]);
     apiFetch();
   }, []);
 
   const apiFetch = async () => {
-  
-    const auth_key = await AsyncStorage.getItem('auth_key')
+    const auth_key = await AsyncStorage.getItem('auth_key');
     fetch('http://chouhanaryan.pythonanywhere.com/api/productlist/', {
       method: 'GET',
       headers: {
-        "Authorization": `Token ${auth_key}`,
+        Authorization: `Token ${auth_key}`,
       },
     })
       .then(res => res.json())
       .then(data => {
         console.log(data);
-        setProductsList(data)
+        setProductsList(data);
       })
       .catch(err => console.log(err));
   };
   const sellprod = async () => {
-   await product.forEach(async product => {
+    await product.forEach(async product => {
       const formData = new FormData();
       formData.append('name', product.name);
       formData.append('quantity', product.amount);
@@ -73,33 +72,29 @@ const Sell = ({navigation}) => {
       var myHeaders = new Headers();
       const auth_key = await AsyncStorage.getItem('auth_key');
 
-myHeaders.append("Authorization", `Token ${auth_key}`);
+      myHeaders.append('Authorization', `Token ${auth_key}`);
 
+      fetch('http://chouhanaryan.pythonanywhere.com/api/sell/', {
+        method: 'POST',
+        headers: myHeaders,
+        body: formData,
+        redirect: 'follow',
+      })
+        .then(response => response.text())
+        .then(result => console.log(result))
+        .catch(error => console.log('error', error));
 
-     
-    fetch('http://chouhanaryan.pythonanywhere.com/api/sell/', {
-      method: "POST",
-      headers:myHeaders,
-      body: formData,
-      redirect: 'follow'
-    }).then(response => response.text())
-    .then(result => console.log(result))
-    .catch(error => console.log('error', error));
-
-
-// const config = { headers: { Authorization: `Token ${token}` } };
-//       const response = await axios.post(
-//         'http://chouhanaryan.pythonanywhere.com/api/sell/',
-//         formData,
-//         config
-//       );
-//       const {data} = response;
-//       console.log(JSON.stringify(data) + ' here is selling data');
-//     });
-  });
+      // const config = { headers: { Authorization: `Token ${token}` } };
+      //       const response = await axios.post(
+      //         'http://chouhanaryan.pythonanywhere.com/api/sell/',
+      //         formData,
+      //         config
+      //       );
+      //       const {data} = response;
+      //       console.log(JSON.stringify(data) + ' here is selling data');
+      //     });
+    });
   };
-
-  
 
   return (
     <Container style={{backgroundColor: '#F3F9FB'}}>
@@ -160,7 +155,7 @@ myHeaders.append("Authorization", `Token ${auth_key}`);
                         <Picker.Item
                           key={picker_index}
                           // label={picker_item.name + " ("+picker_item.quantity+")"}
-                          label={picker_item.name }
+                          label={picker_item.name}
                           value={picker_item.name}
                         />
                       ))}
@@ -267,7 +262,6 @@ myHeaders.append("Authorization", `Token ${auth_key}`);
                   console.log('finally sold!!');
                   sellprod();
                   setProduct([{name: '', price: 0, amount: 0}]);
-                  
                 }
               }
             }}

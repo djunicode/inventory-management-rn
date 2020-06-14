@@ -38,13 +38,13 @@ const Buy = ({navigation}) => {
     product.forEach(async product => {
       const formdata = new FormData();
       formdata.append("name", product.name);
-      formdata.append("avg_cost_price\n", product.price);
+      formdata.append("avg_cost_price", product.price);
       formdata.append("quantity", product.amount);
-      
-      formdata.append("expiry","2020-8-6");
+
+      formdata.append("expiry", '2020-8-6');
       var myHeaders = new Headers();
       const auth_key = AsyncStorage.getItem('auth_key');
-myHeaders.append("Authorization", `Token ${auth_key}`);
+      myHeaders.append("Authorization", `Token ${auth_key}`);
 
       //       const token = AsyncStorage.getItem('auth_key');
       // const config = { headers: { Authorization: `Token ${token}` } };
@@ -53,12 +53,12 @@ myHeaders.append("Authorization", `Token ${auth_key}`);
       //         formData,
       //         config
       //       );
-     
+
       fetch('http://chouhanaryan.pythonanywhere.com/api/buy/', {
         method: 'POST',
-        headers:myHeaders,
+        headers: myHeaders,
         body: formdata,
-        redirect: 'follow'
+        redirect: 'follow',
       })
         .then(res => console.log(res))
         .catch(err => console.log(err));
