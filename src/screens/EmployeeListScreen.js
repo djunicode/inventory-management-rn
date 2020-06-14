@@ -159,7 +159,7 @@ const EmployeeListScreen = ({navigation}) => {
               {/* the add employee button */}
               <TouchableOpacity
                 style={styles.addEmployeeButton}
-                onPress={() => navigation.navigate('AddEmployee')}>
+                onPress={() => navigation.navigate('AddEmployee', {getUserList})}>
                 <Icon name="plus" color="white" size={25} />
                 <Text style={styles.addEmployeeButtonText}>Add Employee</Text>
               </TouchableOpacity>

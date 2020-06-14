@@ -28,6 +28,7 @@ import AsyncStorage from '@react-native-community/async-storage';
 export default class AddEmployee extends Component {
   constructor(props) {
     super(props);
+    console.log(props.route.params)
     this.state = {
       fname: '',
       email: '',
@@ -229,6 +230,7 @@ export default class AddEmployee extends Component {
                       // formData.append('age', this.state.age)
                       // formData.append('gender', this.state.gender)
                       this.buttonPressed();
+                      this.props.route.params.getUserList();
                       this.props.navigation.navigate('EmployeeList');
                     } else {
                       this.setState({inval_confpass: true});
