@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 
 import {LineChart} from 'react-native-charts-wrapper';
+import AsyncStorage from '@react-native-community/async-storage';
 
 const Functional = () => {
   const [min_Vis, setMin_Vis] = useState(0);
@@ -60,12 +61,36 @@ const Functional = () => {
     ],
   };
 
+
+  const [finalData, setFinalData] = useState([]);
+  const [data_date, setData_date] = useState([]);
+
+  const get_data = async () => {
+    const auth_key = await AsyncStorage.getItem('auth_key')
+    fetch('http://chouhanaryan.pythonanywhere.com/api/profit/', {
+      headers: {"Authorization": `Token ${auth_key}`},
+    })
+    .then((res) => res.json())
+    .then((data) => {
+      const total = data.Total;
+      const my_data = Object.keys(total).map((key) => {
+        return {month: key, value: total[key]}
+      })
+      setFinalData(my_data)
+    })
+    .catch((err) => console.log(err))
+  }
+
+  useEffect(() => {
+    get_data();
+  }, [])
+
   const [final_set, setFinal_set] = useState(simple_data);
 
   let dummy_time = [];
 
-  for (let i = 0; i < final_set['Total profit'].length; i++) {
-    dummy_time.push(final_set['Total profit'][i].month);
+  for (let i = 0; i < finalData.length; i++) {
+    dummy_time.push(finalData[i].month);
   }
 
   let time = dummy_time;
@@ -107,8 +132,8 @@ const Functional = () => {
     textColor: processColor('white'),
   };
 
-  for (let i = 0; i < final_set['Total profit'].length; i++) {
-    valueLegend.push({y: final_set['Total profit'][i].val});
+  for (let i = 0; i < finalData.length; i++) {
+    valueLegend.push({y: finalData[i].value.spent});
   }
 
   datasetObject = {
@@ -131,6 +156,15 @@ const Functional = () => {
 
   const renderLine = () => {
     return (
+      <>
+      <TouchableOpacity onPress={() => {
+        // console.log(finalData)
+        // console.log(JSON.stringify(finalData, null, 2))
+        console.log(JSON.stringify(final_set, null, 2))
+        
+      }}>
+        <Text>click me</Text>
+      </TouchableOpacity>
       <LineChart
         style={styles.bar}
         visibleRange={{
@@ -162,6 +196,7 @@ const Functional = () => {
         borderWidth={1}
         drawBorders={true}
       />
+      </>
     );
   };
 
@@ -198,3 +233,168 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
 });
+
+
+
+// dummy data
+const temp = {
+  Total: {
+    Total: {
+      earned: 200.0,
+      sold: 10,
+      spent: 10000.0,
+      bought: 210,
+    },
+    Munch: {
+      earned: 50.0,
+      spent: 200.0,
+      sold: 5,
+      bought: 20,
+    },
+    Kitkat: {
+      earned: 300.0,
+      spent: 100.0,
+      sold: 0,
+      bought: 10,
+    },
+    Lays: {
+      earned: 150.0,
+      spent: 600.0,
+      sold: 5,
+      bought: 40,
+    },
+    Chips: {
+      earned: 200.0,
+      spent: 400.0,
+      sold: 0,
+      bought: 20,
+    },
+    Milk: {
+      earned: 900.0,
+      spent: 700.0,
+      sold: 0,
+      bought: 120,
+    },
+    Bag: {
+      earned: 1500.0,
+      spent: 700.0,
+      sold: 0,
+      bought: 120,
+    },
+    Chocolate: {
+      earned: 300.0,
+      spent: 150.0,
+      sold: 0,
+      bought: 120,
+    },
+    Water: {
+      earned: 200.0,
+      spent: 100.0,
+      sold: 0,
+      bought: 120,
+    },
+    Bread: {
+      earned: 1000.0,
+      spent: 800.0,
+      sold: 0,
+      bought: 120,
+    },
+  },
+  '2020-01': {
+    Total: {
+      earned: 290.0,
+      sold: 10,
+      spent: 380.0,
+      bought: 210,
+    },
+  },
+  '2020-02': {
+    Total: {
+      earned: 310.0,
+      sold: 10,
+      spent: 230.0,
+      bought: 210,
+    },
+  },
+  '2020-03': {
+    Total: {
+      earned: 340.0,
+      sold: 10,
+      spent: 250.0,
+      bought: 210,
+    },
+  },
+  '2020-04': {
+    Total: {
+      earned: 320.0,
+      sold: 10,
+      spent: 280.0,
+      bought: 210,
+    },
+  },
+
+  '2020-05': {
+    Total: {
+      earned: 300.0,
+      sold: 10,
+      spent: 300.0,
+      bought: 210,
+    },
+  },
+  '2020-06': {
+    Total: {
+      earned: 200.0,
+      sold: 10,
+      spent: 100.0,
+      bought: 210,
+    },
+  },
+  '2020-07': {
+    Total: {
+      earned: 355.0,
+      sold: 10,
+      spent: 265.0,
+      bought: 210,
+    },
+  },
+  '2020-08': {
+    Total: {
+      earned: 370.0,
+      sold: 10,
+      spent: 300.0,
+      bought: 210,
+    },
+  },
+  '2020-09': {
+    Total: {
+      earned: 342.0,
+      sold: 10,
+      spent: 296.0,
+      bought: 210,
+    },
+  },
+  '2020-10': {
+    Total: {
+      earned: 321.0,
+      sold: 10,
+      spent: 257.0,
+      bought: 210,
+    },
+  },
+  '2020-11': {
+    Total: {
+      earned: 361.0,
+      sold: 10,
+      spent: 285.0,
+      bought: 210,
+    },
+  },
+  '2020-12': {
+    Total: {
+      earned: 398.0,
+      sold: 10,
+      spent: 302.0,
+      bought: 210,
+    },
+  },
+};
