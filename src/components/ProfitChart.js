@@ -1,20 +1,21 @@
 import React, {useState, useEffect} from 'react';
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  StyleSheet,
-  ScrollView,
-  Dimensions,
-  processColor,
-} from 'react-native';
-
+import {StyleSheet, Dimensions, processColor } from 'react-native';
 import {LineChart} from 'react-native-charts-wrapper';
 import AsyncStorage from '@react-native-community/async-storage';
 
 const Functional = () => {
   const [min_Vis, setMin_Vis] = useState(0);
-  const [max_vis, setMax_vis] = useState(6);
+  const [max_vis, setMax_vis] = useState(10);
+
+  const get_month_name_from_data = (data_month_string) => {
+    const month_name = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const year = data_month_string.substr(2, 2)
+    const month = data_month_string.substr(5, 2);
+    const index = parseInt(month) - 1;
+    const display_string = month_name[index] + '/' + year;
+    return display_string
+  }
+
 
   const getRandomColor = () => {
     let color = '#0000ff';
@@ -61,9 +62,7 @@ const Functional = () => {
     ],
   };
 
-
   const [finalData, setFinalData] = useState([]);
-  const [data_date, setData_date] = useState([]);
 
   const get_data = async () => {
     const auth_key = await AsyncStorage.getItem('auth_key')
@@ -72,11 +71,17 @@ const Functional = () => {
     })
     .then((res) => res.json())
     .then((data) => {
-      const total = data.Total;
+      // this temp variable is a dummy data object which is being used because it has more months in its data
+      const total = temp;
+
+      /* uncomment this below line to display data from endpoint in the graph and comment the above line */
+      // const total = data;
+
       const my_data = Object.keys(total).map((key) => {
         return {month: key, value: total[key]}
       })
       setFinalData(my_data)
+      setMax_vis(my_data.length)
     })
     .catch((err) => console.log(err))
   }
@@ -85,12 +90,14 @@ const Functional = () => {
     get_data();
   }, [])
 
-  const [final_set, setFinal_set] = useState(simple_data);
-
   let dummy_time = [];
 
   for (let i = 0; i < finalData.length; i++) {
-    dummy_time.push(finalData[i].month);
+    // console.log(i)
+    if (finalData[i].month != 'Total') {
+      const month_name = get_month_name_from_data(finalData[i].month)
+      dummy_time.push(month_name);
+    }
   }
 
   let time = dummy_time;
@@ -133,7 +140,8 @@ const Functional = () => {
   };
 
   for (let i = 0; i < finalData.length; i++) {
-    valueLegend.push({y: finalData[i].value.spent});
+    if (finalData[i].month != 'Total')
+      valueLegend.push({y: finalData[i].value.Total.earned});
   }
 
   datasetObject = {
@@ -142,7 +150,7 @@ const Functional = () => {
     config: {
       lineWidth: 1,
       drawCubicIntensity: 0.4,
-      circleRadius: 5,
+      circleRadius: 3,
       drawHighlightIndicators: false,
       color: processColor(getRandomColor()),
       drawFilled: true,
@@ -156,29 +164,22 @@ const Functional = () => {
 
   const renderLine = () => {
     return (
-      <>
-      <TouchableOpacity onPress={() => {
-        // console.log(finalData)
-        // console.log(JSON.stringify(finalData, null, 2))
-        console.log(JSON.stringify(final_set, null, 2))
-        
-      }}>
-        <Text>click me</Text>
-      </TouchableOpacity>
       <LineChart
         style={styles.bar}
         visibleRange={{
-          x: {min: 0, max: 12},
+          x: {min: 0, max: 10}
         }}
-        onChange={event => {
-          if (event.nativeEvent.scaleX > 2.2) {
-            setMax_vis(24);
-            setFinal_set(complex_data);
-          } else {
-            setMax_vis(6);
-            setFinal_set(simple_data);
-          }
-        }}
+        // onChange={event => {
+        //   if (event.nativeEvent.scaleX > 2.2) {
+        //     console.log('scale greater')
+        //     setMax_vis(24);
+        //     setFinal_set(complex_data);
+        //   } else {
+        //     console.log('scale smaller')
+        //     setMax_vis(6);
+        //     setFinal_set(simple_data);
+        //   }
+        // }}
         autoScaleMinMaxEnabled={false}
         animation={{
           durationX: 300,
@@ -190,13 +191,12 @@ const Functional = () => {
         xAxis={xAxisStyle}
         drawGridBackground={false}
         drawValues={false}
-        dragDecelerationFrictionCoef={0}
+        dragDecelerationFrictionCoef={0.95}
         dragEnabled
         borderColor={processColor('teal')}
         borderWidth={1}
         drawBorders={true}
       />
-      </>
     );
   };
 
