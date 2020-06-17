@@ -125,33 +125,33 @@ const InventoryListScreen = ({navigation}) => {
   }, []);
 
   const getInventoryList = async () => {
-    const auth_key = await AsyncStorage.getItem('auth_key')
+    const auth_key = await AsyncStorage.getItem('auth_key');
     fetch('http://chouhanaryan.pythonanywhere.com/api/productlist/', {
       method: 'GET',
       headers: {
-        "Authorization": `Token ${auth_key}`,
+        Authorization: `Token ${auth_key}`,
       },
     })
       .then(res => res.json())
       .then(data => {
         console.log(data);
-        setInventoryList(data)
+        setInventoryList(data);
       })
       .catch(err => console.log(err));
   };
 
   const deleteInventoryItem = async inventoryItem => {
-    const auth_key = await AsyncStorage.getItem('auth_key')
+    const auth_key = await AsyncStorage.getItem('auth_key');
     fetch(
       `http://chouhanaryan.pythonanywhere.com/api/productlist/${
         inventoryItem.id
       }/`,
       {
         method: 'DELETE',
-        headers: {Authorization: `Token ${auth_key}`,}
+        headers: {Authorization: `Token ${auth_key}`},
       },
     );
-    console.log('deleted successfully!')
+    console.log('deleted successfully!');
   };
 
   const updateProductPost = () => {
@@ -218,7 +218,7 @@ const InventoryListScreen = ({navigation}) => {
         visible={modalVisible}
         onRequestClose={() => {
           Alert.alert('No changes made');
-          setModalVisible(!modalVisible);          
+          setModalVisible(!modalVisible);
         }}>
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
@@ -251,23 +251,22 @@ const InventoryListScreen = ({navigation}) => {
               formHorizontal={false}
               buttonColor={'#50C900'}
               labelColor={'#50C900'}
-              style={{padding:5}}
+              style={{padding: 5}}
               onPress={value => {
                 updateProd.loose = value;
                 setUpdateProd(updateProd);
               }}
             />
 
-<TouchableOpacity
-            style={styles.addEmployeeButton}
-            // onPress={() => navigation.navigate('AddEmployee')}
-            onPress={() => {
-              updateProductPost();
+            <TouchableOpacity
+              style={styles.addEmployeeButton}
+              // onPress={() => navigation.navigate('AddEmployee')}
+              onPress={() => {
+                updateProductPost();
                 setModalVisible(!modalVisible);
-            }}>
-            
-            <Text style={styles.addEmployeeButtonText}>Update</Text>
-          </TouchableOpacity>
+              }}>
+              <Text style={styles.addEmployeeButtonText}>Update</Text>
+            </TouchableOpacity>
           </View>
         </View>
       </Modal>
@@ -309,7 +308,6 @@ const InventoryListScreen = ({navigation}) => {
           </ScrollView>
 
           {/* the add employee button */}
-        
         </Body>
       </Content>
     </Container>
@@ -417,7 +415,6 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   inputBox: {
-   
     borderRadius: 10,
     marginRight: 28,
     marginLeft: 28,

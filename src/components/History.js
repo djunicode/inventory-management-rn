@@ -12,18 +12,28 @@ import {
   Text,
   Dimensions,
 } from 'react-native';
+import AsyncStorage from '@react-native-community/async-storage';
 import HistoryListItem from '../components/HistoryListItem';
 
 const HistoryScreen = ({navigation}) => {
   const [transactionlist, setTransactionList] = useState([]);
   const apiFetch = async () => {
     try {
-      const response = await axios.get(
-        'http://chouhanaryan.pythonanywhere.com/api/bill/',
-      );
-      const {data} = response;
-      await setTransactionList(data);
-      await console.log(transactionlist);
+      const auth_key = await AsyncStorage.getItem('auth_key');
+      console.log(auth_key);
+      fetch('http://chouhanaryan.pythonanywhere.com/api/transactions/', {
+        method: 'GET',
+        headers: {
+          Authorization: `Token ${auth_key}`,
+        },
+      })
+        .then(res => res.json())
+        .then(data => {
+          console.log(data);
+          setTransactionList(data);
+          console.log(transactionlist);
+        })
+        .catch(err => console.log(err));
     } catch (e) {
       console.log(e);
     }
@@ -40,12 +50,20 @@ const HistoryScreen = ({navigation}) => {
         <Body style={styles.listContainer}>
           {/* the header of table */}
           <View style={styles.tableHeader}>
-            <CardItem style={{backgroundColor: 'rgba(255,255,255,0)'}}>
-              <Text style={styles.dateHeader}>Date</Text>
-              <Text style={styles.typeHeader}>Type</Text>
+            <CardItem
+              style={{
+                backgroundColor: 'rgba(255,255,255,0)',
+                justifyContent: 'center',
+              }}>
+              {/* <Text style={styles.dateHeader}>Date</Text> */}
+              {/* <Text style={styles.typeHeader}>Type</Text>
               <Text style={styles.productHeader}>Product</Text>
               <Text style={styles.itemsHeader}>Items</Text>
-              <Text style={styles.priceHeader}>Price</Text>
+              <Text style={styles.priceHeader}>Price</Text> */}
+              <Text style={styles.typeHeader}>Type</Text>
+              <Text style={styles.productHeader}>Product</Text>
+              <Text style={styles.itemsHeader}>Quanity</Text>
+              <Text style={styles.priceHeader}>Rate</Text>
             </CardItem>
           </View>
 
@@ -96,27 +114,27 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 20,
   },
   itemsHeader: {
-    flex: 0.2,
+    flex: 0.25,
     fontSize: 16,
     fontWeight: 'bold',
   },
   productHeader: {
-    flex: 0.26,
+    flex: 0.3,
     fontSize: 16,
     fontWeight: 'bold',
   },
   typeHeader: {
-    flex: 0.22,
+    flex: 0.25,
     fontSize: 16,
     fontWeight: 'bold',
   },
-  dateHeader: {
-    flex: 0.22,
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
+  // dateHeader: {
+  //   flex: 0.22,
+  //   fontSize: 16,
+  //   fontWeight: 'bold',
+  // },
   priceHeader: {
-    flex: 0.15,
+    flex: 0.2,
     fontSize: 16,
     fontWeight: 'bold',
   },

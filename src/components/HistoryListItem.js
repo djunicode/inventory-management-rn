@@ -8,42 +8,53 @@ export default class HistoryListItem extends React.Component {
   }
   parseDate = date => {
     //console.log(date)=>2020-05-07T13:19:40.442654Z
-    const newDate = new Date(date).toDateString().slice(4);//=>May 07 2020
-    const forMonthAndDate = newDate.split(' ');//convert to array and take only May 7
-    const finalDate = forMonthAndDate[0] + ' \n ' + forMonthAndDate[1];//join May and 7
+    const newDate = new Date(date).toDateString().slice(4); //=>May 07 2020
+    const forMonthAndDate = newDate.split(' '); //convert to array and take only May 7
+    const finalDate = forMonthAndDate[0] + ' \n ' + forMonthAndDate[1]; //join May and 7
     return finalDate;
   };
 
-  parsePrice = transactions => {//accumulator mei store karo from left to right
-    return transactions.reduce((acc, obj) => acc + obj.rate * obj.quantity,0);
+  parsePrice = transactions => {
+    //accumulator mei store karo from left to right
+    return transactions.reduce((acc, obj) => acc + obj.rate * obj.quantity, 0);
   };
- //row=this.props.item could have done this rather than writing this.props.item evrywhere
+  //row=this.props.item could have done this rather than writing this.props.item evrywhere
   render() {
     return (
       <View style={listItemStyles.container}>
-        <CardItem>
-          <Text style={listItemStyles.date}>
+        <CardItem
+          style={{
+            justifyContent: 'center',
+            alignItems: 'center',
+            alignSelf: 'center',
+            alignContent: 'center',
+            textAlign: 'center',
+          }}>
+          {/* <Text style={listItemStyles.date}>
             {this.parseDate(this.props.item.date_time)}
-          </Text>
+          </Text> */}
           <Text style={listItemStyles.type}>
             {this.props.item.in_or_out == 'In' ? 'Buy' : 'Sell'}
           </Text>
           <Text style={listItemStyles.product}>
-            {this.props.item.transaction.map((val, index) =>
+            {/* {this.props.item.transaction.map((val, index) =>
               index === this.props.item.transaction.length - 1
                 ? val.name
                 : `${val.name}, `,
-            )}
+            )} */}
+            {this.props.item.name}
           </Text>
           <Text style={listItemStyles.items}>
-            {this.props.item.transaction.map((val, index) =>
+            {/* {this.props.item.transaction.map((val, index) =>
               index === this.props.item.transaction.length - 1
                 ? val.quantity
                 : `${val.quantity}, `,
-            )}
+            )} */}
+            {this.props.item.quantity}
           </Text>
           <Text style={listItemStyles.price}>
-            {this.parsePrice(this.props.item.transaction)}
+            {/* {this.parsePrice(this.props.item.transaction)} */}
+            {this.props.item.rate}
           </Text>
         </CardItem>
       </View>
@@ -57,25 +68,27 @@ const listItemStyles = StyleSheet.create({
     borderColor: '#E0E0E0',
     borderWidth: 0.5,
   },
-  date: {
-    flex: 0.24,
-    fontSize: 16,
-  },
+  // date: {
+  //   flex: 0.24,
+  //   fontSize: 16,
+  // },
   type: {
-    flex: 0.19,
+    flex: 0.25,
     fontSize: 16,
   },
   product: {
-    flex: 0.32,
+    flex: 0.3,
     fontSize: 16,
   },
   items: {
-    flex: 0.15,
+    flex: 0.25,
     fontSize: 16,
+    // textAlign: 'center',
   },
   price: {
-    flex: 0.15,
+    flex: 0.2,
     fontSize: 16,
+    // textAlign: 'center'
   },
 
   // backgroundColor: '#4796BD', blue
