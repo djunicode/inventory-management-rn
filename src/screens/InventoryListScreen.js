@@ -33,91 +33,18 @@ import {
   Dimensions,
   Modal,
 } from 'react-native';
-import Axios from 'axios';
+import NumericInput from 'react-native-numeric-input';
 import AsyncStorage from '@react-native-community/async-storage';
 import InventoryListItem from '../components/InventoryListItem';
 import HeaderView from '../components/HeaderView';
 
-const DEMO_INVENTORY_DATA = [
-  {
-    id: '1',
-    product_name: 'Pat Black',
-    items: 200,
-    price: '₹45',
-  },
-  {
-    id: '2',
-    product_name: 'Angel Jones',
-    items: 90,
-    price: '₹88',
-  },
-  {
-    id: '3',
-    product_name: 'Max Edwards',
-    items: 20,
-    price: '₹28',
-  },
-  {
-    id: '4',
-    product_name: 'Bruce Fox',
-    items: 40,
-    price: '₹150',
-  },
-  {
-    id: '5',
-    product_name: 'Devon Fisher',
-    items: 10,
-    price: '₹100',
-  },
-  {
-    id: '6',
-    product_name: 'Pat Black',
-    items: 20,
-    price: '₹96',
-  },
-  {
-    id: '7',
-    product_name: 'Angel Jones',
-    items: 23,
-    price: '₹45',
-  },
-  {
-    id: '8',
-    product_name: 'Max Edwards',
-    items: 75,
-    price: '₹50',
-  },
-  {
-    id: '9',
-    product_name: 'Bruce Fox',
-    items: 78,
-    price: '₹74',
-  },
-  {
-    id: '10',
-    product_name: 'Devon Fisher',
-    items: 20,
-    price: '₹78',
-  },
-  {
-    id: '11',
-    product_name: 'Pat Black',
-    items: 20,
-    price: '₹28',
-  },
-  {
-    id: '12',
-    product_name: 'Angel Jones',
-    items: 20,
-    price: '₹28',
-  },
-];
-
 const InventoryListScreen = ({navigation}) => {
   const [inventoryList, setInventoryList] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
-  const [updateSellPrice, setUpdateSellPrice] = useState(null);
+  const [updateSellPrice, setUpdateSellPrice] = useState('');
   const [updateName, setUpdateName] = useState('');
+  const [upperLimit, setUpperLimit] = useState(0);
+  const [lowerLimit, setLowerLimit] = useState(0);
   const [updateProd, setUpdateProd] = useState({});
 
   useEffect(() => {
@@ -154,21 +81,33 @@ const InventoryListScreen = ({navigation}) => {
     console.log('deleted successfully!');
   };
 
-  const updateProductPost = () => {
-    const sendObj = {};
-    if (updateName !== '') sendObj.name = updateName;
-    if (updateSellPrice != null) sendObj.latest_selling_price = updateSellPrice;
-    sendObj.loose = updateProd.loose;
-    console.log(sendObj);
+  const updateProductPost = async () => {
+    let formData = new FormData();
+    const looseVal = updateProd.loose === true ? 'True' : 'False';
+    formData.append('loose', looseVal);
+    formData.append('upper', upperLimit);
+    formData.append('lower', lowerLimit);
+    formData.append('name', updateName);
+    formData.append('latest_selling_price', updateSellPrice);
+    const auth_key = await AsyncStorage.getItem('auth_key');
+    console.log(formData);
 
     fetch(
       `http://chouhanaryan.pythonanywhere.com/api/update/${updateProd.id}/`,
       {
         method: 'POST',
-        body: JSON.stringify(sendObj),
+        headers: {
+          Authorization: `Token ${auth_key}`,
+        },
+        body: formData,
       },
     )
-      .then(res => console.log(res))
+      .then(res => res.json())
+      .then(data => {
+        console.log(data);
+        getInventoryList();
+        Alert.alert('Success!', 'Product Updated');
+      })
       .catch(err => console.log(err));
     setUpdateName('');
     setUpdateSellPrice(null);
@@ -185,7 +124,10 @@ const InventoryListScreen = ({navigation}) => {
           onPress: () => {
             setUpdateProd(inventoryItem);
             setUpdateName(inventoryItem.name);
-            setUpdateSellPrice(inventoryItem.latest_selling_price);
+            setUpdateSellPrice(inventoryItem.latest_selling_price.toString());
+            console.log(inventoryItem.latest_selling_price);
+            setUpperLimit(inventoryItem.upper_limit);
+            setLowerLimit(inventoryItem.lower_limit);
             setModalVisible(true);
           },
         },
@@ -222,36 +164,101 @@ const InventoryListScreen = ({navigation}) => {
         }}>
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
-            <Text style={styles.product_titles}>Product</Text>
-            <Item floatingLabel style={styles.inputBox}>
-              <Label style={styles.label}>Product Name</Label>
-              <Input
-                style={styles.inputArea}
-                onChangeText={value => {
-                  setUpdateName(value);
-                }}
-                value={updateName}
-              />
-            </Item>
+            <Text style={styles.product_titles}>Update Product</Text>
+            <View style={{alignItems:'flex-start',marginVertical:20}}>
+              <Item floatingLabel style={styles.inputBox}>
+                <Label style={styles.label}>Product Name</Label>
+                <Input
+                  style={styles.inputArea}
+                  onChangeText={value => {
+                    setUpdateName(value);
+                  }}
+                  value={updateName}
+                />
+              </Item>
 
-            <Item floatingLabel style={styles.inputBox}>
-              <Label style={styles.label}>Selling Price</Label>
-              <Input
-                style={styles.inputArea}
-                onChangeText={value => {
-                  setUpdateSellPrice(value);
-                }}
-                value={updateSellPrice}
-                keyboardType="numeric"
-              />
-            </Item>
+              <Item floatingLabel style={styles.inputBox}>
+                <Label style={styles.label}>Selling Price</Label>
+                <Input
+                  style={styles.inputArea}
+                  value={updateSellPrice}
+                  onChangeText={value => {
+                    setUpdateSellPrice(value);
+                  }}
+                  keyboardType="numeric"
+                />
+              </Item>
+            </View>
+            <View style={{paddingLeft: 10,}}>
+            <Text
+              style={{
+                marginTop:10,
+                marginBottom: 3,
+                fontSize: 17,
+                fontWeight: '800',
+              }}>
+              Recommended Limit
+            </Text>
+            <NumericInput
+              value={upperLimit}
+              onChange={value => {
+                setUpperLimit(value);
+              }}
+              totalWidth={150}
+              totalHeight={35}
+              minValue={0}
+              maxValue={99999}
+              onLimitReached={(isMAx, msg) => console.log(msg)}
+              step={1}
+              iconStyle={{fontSize: 15, color: '#434A5E'}}
+              inputStyle={{fontSize: 18, color: '#434A5E'}}
+              valueType="real"
+              borderColor="#C7CBD6"
+              rightButtonBackgroundColor="#C7CBD6"
+              leftButtonBackgroundColor="#C7CBD6"
+            />
+            <Text
+              style={{
+                marginTop: 20,
+                marginBottom: 3,
+                fontSize: 17,
+                fontWeight: '800',
+              }}>
+              Critical Limit
+            </Text>
+            <NumericInput
+              value={lowerLimit}
+              onChange={value => {
+                setLowerLimit(value);
+              }}
+              totalWidth={150}
+              totalHeight={35}
+              minValue={0}
+              maxValue={99999}
+              onLimitReached={(isMAx, msg) => console.log(msg)}
+              step={1}
+              iconStyle={{fontSize: 15, color: '#434A5E'}}
+              inputStyle={{fontSize: 18, color: '#434A5E'}}
+              valueType="real"
+              borderColor="#C7CBD6"
+              rightButtonBackgroundColor="#C7CBD6"
+              leftButtonBackgroundColor="#C7CBD6"
+            />
+            </View>
+            <Text style={{
+                marginTop: 30,
+                fontSize: 17,
+                fontWeight: '800',
+                paddingLeft:10,
+              }}>Type</Text>
             <RadioForm
               radio_props={radio_props}
               labelHorizontal={true}
-              formHorizontal={false}
-              buttonColor={'#50C900'}
-              labelColor={'#50C900'}
-              style={{padding: 5}}
+              formHorizontal={true}
+              buttonColor={'#434A5E'}
+              labelColor={'#434A5E'}
+              labelStyle={{marginRight: 20,}}
+              style={{paddingLeft: 10, marginTop: 8}}
               onPress={value => {
                 updateProd.loose = value;
                 setUpdateProd(updateProd);
@@ -370,6 +377,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     borderRadius: 20,
     flexDirection: 'row',
+    alignSelf:'center'
     // position:'fixed',
   },
   addEmployeeButtonText: {
@@ -389,7 +397,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     borderRadius: 20,
     padding: 35,
-    alignItems: 'center',
+    alignItems: 'flex-start',
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
@@ -414,10 +422,9 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     textAlign: 'center',
   },
+
   inputBox: {
     borderRadius: 10,
-    marginRight: 28,
-    marginLeft: 28,
     textAlign: 'left',
     marginVertical: 10,
     height: 55,
@@ -426,9 +433,8 @@ const styles = StyleSheet.create({
     fontSize: 24,
     color: '#122E40',
     marginTop: 25,
-    marginBottom: 10,
-    alignSelf: 'flex-start',
-    marginLeft: '5%',
+    marginBottom: 20,
+    alignSelf: 'center',
   },
   label: {
     paddingLeft: 10,

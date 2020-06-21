@@ -65,7 +65,7 @@ export default class EmployeeListItem extends React.Component {
             {first_name} {last_name}
           </Text>
           <Text style={listItemStyles.gender}>
-            {gender === 'M' ? 'Male' : 'Female'}
+            {gender === 'M' ? 'Male' : gender === 'F' ? 'Female' : 'Other'}
           </Text>
           <Text style={listItemStyles.email}>{email}</Text>
           <Text style={listItemStyles.age}>{age}</Text>
