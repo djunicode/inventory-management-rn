@@ -23,6 +23,7 @@
     "react-native-chart-kit": "^5.2.0",
     "react-native-charts-wrapper": "^0.5.7",
     "react-native-gesture-handler": "^1.6.0",
+    "react-native-numeric-input": "^1.8.3",
     "react-native-push-notification": "^3.1.9",
     "react-native-reanimated": "^1.7.0",
     "react-native-safe-area-context": "^0.7.3",

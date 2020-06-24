@@ -28,6 +28,7 @@ import AsyncStorage from '@react-native-community/async-storage';
 export default class AddEmployee extends Component {
   constructor(props) {
     super(props);
+    console.log(props.route.params);
     this.state = {
       fname: '',
       email: '',
@@ -39,6 +40,7 @@ export default class AddEmployee extends Component {
       inval_email: false,
       inval_pass: false,
       inval_confpass: false,
+      failed: false,
     };
   }
   async keyy() {
@@ -47,22 +49,38 @@ export default class AddEmployee extends Component {
   }
 
   sendUserData = async formData => {
-    console.log('in senduserdata');
-
     const auth_key = await AsyncStorage.getItem('auth_key');
-    console.log('auth key is', auth_key);
+    // console.log('auth key is', auth_key);
     fetch('http://chouhanaryan.pythonanywhere.com/auth/users/', {
       method: 'POST',
       headers: {Authorization: `Token ${auth_key}`},
       body: formData,
     })
-      .then(res => res.json())
-      .then(data => console.log(data))
-      .catch(error => console.log(error));
+      .then(res => {
+        console.log(res);
+        if (res.status == 201) {
+          Alert.alert('Success!', 'Employee Added Successfully!');
+        } else {
+          this.setState({failed: true});
+        }
+        return res.json();
+      })
+      .then(data => {
+        console.log('pas', data);
+        if (this.state.failed === true) {
+          let responseErr = Object.values(data)[0][0];
+          Alert.alert('Ooops!', responseErr);
+          this.setState({failed: false});
+        } else {
+          this.props.route.params.getUserList();
+          this.props.navigation.navigate('EmployeeList');
+        }
+      })
+      .catch(error => console.log('err', error.response));
   };
 
   buttonPressed = () => {
-    console.log('in button pressed');
+    // console.log('in button pressed');
 
     let formData = new FormData();
     formData.append('email', this.state.email);
@@ -72,7 +90,7 @@ export default class AddEmployee extends Component {
     formData.append('is_staff', true);
     formData.append('age', this.state.age);
     formData.append('gender', this.state.gender);
-
+    console.log(formData);
     this.sendUserData(formData);
   };
 
@@ -200,7 +218,7 @@ export default class AddEmployee extends Component {
                   }}>
                   <Picker.Item label="Male" value="M" />
                   <Picker.Item label="Female" value="F" />
-                  <Picker.Item label="Others" value="others" />
+                  <Picker.Item label="Others" value="Other" />
                 </Picker>
               </Item>
 
@@ -229,7 +247,6 @@ export default class AddEmployee extends Component {
                       // formData.append('age', this.state.age)
                       // formData.append('gender', this.state.gender)
                       this.buttonPressed();
-                      this.props.navigation.navigate('EmployeeList');
                     } else {
                       this.setState({inval_confpass: true});
                     }
