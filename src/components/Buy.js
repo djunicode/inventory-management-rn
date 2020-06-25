@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -23,36 +23,36 @@ import {
 } from 'native-base';
 import AsyncStorage from '@react-native-community/async-storage';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import {ScrollView} from 'react-native-gesture-handler';
+import { ScrollView } from 'react-native-gesture-handler';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import axios from 'axios';
-//http://chouhanaryan.pythonanywhere.com/api/buy/
-const Buy = ({navigation}) => {
-  const [product, setProduct] = useState([
-    {name: '', price: 0, amount: 0, expiry: ''},
-  ]);
+const Buy = ({ navigation }) => {
+  const [product, setProduct] = useState([]);
+  const [date_array, setDate_array] = useState([]);
+
+  const [show, setShow] = useState(false);
+  const [curr_ind, setCurr_ind] = useState(0);
+
+
   useEffect(() => {
-    setProduct([{name: '', price: 0, amount: 0}]);
+    setProduct([{ name: '', price: 0, amount: 0, expiry: '' }]);
+    setDate_array([new Date()])
   }, []);
+
+
   const buyprod = async () => {
+
     product.forEach(async product => {
       const formdata = new FormData();
       formdata.append("name", product.name);
       formdata.append("avg_cost_price", product.price);
       formdata.append("quantity", product.amount);
 
-      formdata.append("expiry", '2020-8-6');
-      var myHeaders = new Headers();
-      const auth_key = AsyncStorage.getItem('auth_key');
+      formdata.append("expiry", product.expiry);
+      let myHeaders = new Headers();
+      const auth_key = await AsyncStorage.getItem('auth_key');
       myHeaders.append("Authorization", `Token ${auth_key}`);
 
-      //       const token = AsyncStorage.getItem('auth_key');
-      // const config = { headers: { Authorization: `Token ${token}` } };
-      //       const response = await axios.post(
-      //         'http://chouhanaryan.pythonanywhere.com/api/buy/',
-      //         formData,
-      //         config
-      //       );
 
       fetch('http://chouhanaryan.pythonanywhere.com/api/buy/', {
         method: 'POST',
@@ -65,36 +65,43 @@ const Buy = ({navigation}) => {
     });
   };
 
-  const [date, setDate] = useState(new Date());
-  const [mode, setMode] = useState('date');
-  const [show, setShow] = useState(false);
 
-  const onChange = (event, selectedDate) => {
-    const currentDate = selectedDate || date;
-    setShow(Platform.OS === 'ios');
-    console.log('\n');
-    setDate(currentDate);
-    console.log(date.toDateString());
-    console.log(date.toLocaleDateString());
-    console.log(date.toUTCString());
-    var da = date.toLocaleDateString().split('/');
-    console.log(da[2]);
-    console.log(da[1]);
-    console.log(da[0]);
-    var d = '' + 20 + '' + da[2] + '-' + da[0] + '-' + da[1] + '';
-    console.log(d);
-  };
+
+  const set_date = (e) => {
+    setShow(false);
+
+    let date_array_copy = [...date_array];
+    let product_copy = [...product];
+
+    const date = new Date(e.nativeEvent.timestamp)
+
+    date_array_copy[curr_ind] = date;
+    setDate_array(date_array_copy);
+
+    if (date == 'Invalid Date') {
+      product_copy[curr_ind].expiry = 'Choose a date and press OK';
+      setProduct(product_copy);
+    } else {
+      const month = date.toLocaleDateString().split('/')[0];
+      const day = date.toLocaleDateString().split('/')[1];
+      const year = date.toDateString().split(' ')[3];
+      const final_date = year + '-' + month + '-' + day;
+
+      product_copy[curr_ind].expiry = final_date;
+      setProduct(product_copy);
+    }
+  }
+
 
   return (
-    <Container style={{backgroundColor: '#F3F9FB'}}>
+    <Container style={{ backgroundColor: '#F3F9FB' }}>
       <ScrollView>
         <Body>
           <Text style={styles.heading}>Buy Items</Text>
 
           {product.map((item, index) => {
-            //  let copy = [...product];
             return (
-              <View key={index} style={{width: Dimensions.get('window').width}}>
+              <View key={index} style={{ width: Dimensions.get('window').width }}>
                 {/* for the separating line */}
                 <View
                   style={{
@@ -108,9 +115,12 @@ const Buy = ({navigation}) => {
                   }}
                 />
 
+                {/* Product title */}
                 <Text style={styles.product_titles}>
                   Product {product.length == 1 ? '' : index + 1}
                 </Text>
+
+                {/* Product name input */}
                 <Item floatingLabel style={styles.inputBox}>
                   <Label style={styles.label}>Product Name</Label>
                   <Input
@@ -120,6 +130,7 @@ const Buy = ({navigation}) => {
                   />
                 </Item>
 
+                {/* Price input */}
                 <Item floatingLabel style={styles.inputBox}>
                   <Label style={styles.label}>Price</Label>
                   <Input
@@ -131,6 +142,7 @@ const Buy = ({navigation}) => {
                   />
                 </Item>
 
+                {/* Quantity input */}
                 <Item floatingLabel style={styles.inputBox}>
                   <Label style={styles.label}>No. of Items</Label>
                   <Input
@@ -141,20 +153,25 @@ const Buy = ({navigation}) => {
                     }
                   />
                 </Item>
-                <View style={{flexDirection: 'row', flex: 1}}>
+
+                {/* Expiry date text */}
+                <View style={{ flexDirection: 'row', flex: 1 }}>
                   <View style={styles.dateMainView}>
                     <Text
                       style={{
                         marginLeft: 4,
-                        fontSize: 18,
+                        fontSize: 16,
                         marginTop: 17,
                         color: 'black',
                       }}>
-                      Expiry date : {date.toLocaleDateString()}
+                      Expiry: {product[index].expiry}
                     </Text>
                   </View>
 
-                  <TouchableOpacity onPress={() => setShow(true)}>
+                  <TouchableOpacity onPress={() => {
+                    setCurr_ind(index);
+                    setShow(true)
+                  }}>
                     <Icon
                       name="calendar"
                       color="#4796BD"
@@ -169,16 +186,17 @@ const Buy = ({navigation}) => {
                   </TouchableOpacity>
                 </View>
 
+                {/* Date display */}
                 <View>
                   <View>
                     {show && (
                       <DateTimePicker
                         testID="dateTimePicker"
-                        value={date}
-                        mode={mode}
+                        value={new Date()}
+                        mode='date'
                         is24Hour={true}
                         display="default"
-                        onChange={onChange}
+                        onChange={(e) => set_date(e)}
                       />
                     )}
                   </View>
@@ -192,11 +210,15 @@ const Buy = ({navigation}) => {
               if (
                 product[product.length - 1].name &&
                 product[product.length - 1].price &&
-                product[product.length - 1].amount
+                product[product.length - 1].amount &&
+                product[product.length - 1].expiry.length === 10  // length should be 10 because for date, we have format YYYY-MM-DD, and the length of the string is thus 10
               ) {
                 let copy = [...product];
-                copy.push({name: '', price: 0, amount: 0});
+                copy.push({ name: '', price: 0, amount: 0, expiry: '' });
                 setProduct(copy);
+                let dates_copy = [...date_array];
+                dates_copy.push(new Date());
+                setDate_array(dates_copy);
               } else {
                 Alert.alert(
                   `Please fill all details for product ${product.length}`,
@@ -210,18 +232,28 @@ const Buy = ({navigation}) => {
 
           <TouchableOpacity
             onPress={async () => {
-              if (
-                product[product.length - 1].name == '' ||
-                product[product.length - 1].price == 0 ||
-                product[product.length - 1].amount == 0
-              ) {
+              let can_buy = true;
+              let incomplete_product_index = 0;
+              for (let i = 0; i < product.length; i++) {
+                if (
+                  product[i].name == '' ||
+                  product[i].price == 0 ||
+                  product[i].amount == 0 ||
+                  product[i].expiry.length !== 10
+                ) {
+                  can_buy = false;
+                  incomplete_product_index = i + 1;
+                  break;
+                }
+              }
+              if (!can_buy) {
                 Alert.alert(
-                  `Please fill valid details for product ${product.length}`,
+                  `Please fill valid details for product ${incomplete_product_index}`,
                 );
               } else {
-                console.log(JSON.stringify(product) + '!');
                 await buyprod();
-                setProduct([{name: '', price: 0, amount: 0}]);
+                setProduct([{ name: '', price: 0, amount: 0, expiry: '' }]);
+                setDate_array([new Date()])
               }
             }}
             style={styles.buyButton}>
