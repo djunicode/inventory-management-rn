@@ -1,4 +1,5 @@
-import React, {Component, useState, useEffect} from 'react';
+import React, {Component, useState, useEffect, useCallback} from 'react';
+import {useFocusEffect} from '@react-navigation/native';
 
 import axios from 'axios';
 import {Body, Container, Content, CardItem} from 'native-base';
@@ -42,7 +43,14 @@ const HistoryScreen = ({navigation}) => {
     console.disableYellowBox = true;
     apiFetch();
   }, []);
+  useFocusEffect(
 
+    useCallback(() => {
+      apiFetch();
+    }),
+    [],
+  );
+  
   return (
     <Container style={{backgroundColor: '#F3F9FB'}}>
       <Content>
