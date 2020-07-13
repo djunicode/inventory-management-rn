@@ -157,7 +157,7 @@ export default class AddEmployee extends Component {
                   onChangeText={value => {
                     this.setState({password: value});
                     var passw = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
-                    if (value.match(passw)) {
+                    if (value.length >= 8) {
                       this.setState({inval_pass: false});
                     } else {
                       this.setState({inval_pass: true});
@@ -172,8 +172,7 @@ export default class AddEmployee extends Component {
                     alignSelf: 'flex-start',
                     marginLeft: 40,
                   }}>
-                  Password should contain only characters, numeric digits,
-                  underscore and starting with a letter having length 8-15
+                  Password should be atleast 8 characters
                 </Text>
               )}
 
