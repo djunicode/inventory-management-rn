@@ -21,6 +21,29 @@ const ProfilePage = ({ navigation }) => {
 
     const [isReady, setReady] = useState(false);
 
+    async function Logout() {
+
+        const auth_key = await AsyncStorage.getItem('auth_key')
+
+        await fetch('http://chouhanaryan.pythonanywhere.com/auth/token/logout/', {
+            method: 'POST',
+            headers: { Authorization: `Token ${auth_key}` }
+        })
+            .then((res) => {
+                console.log('here response', res.json())
+                return res.json()
+            })
+            .catch((err) => {
+                console.log(err)
+            })
+
+        // console.log(await AsyncStorage.getItem('auth_key'));
+        await AsyncStorage.removeItem('auth_key'); //Removing the token from local storage while logging out
+        // console.log(await AsyncStorage.getItem('auth_key'));
+
+        navigation.navigate('LoginScreen');
+    }
+
     useEffect(() => {
         getCurrentUserInfo();
     }, []);     //called only when component mounted 
@@ -92,29 +115,25 @@ const ProfilePage = ({ navigation }) => {
                     },
                     body: formData,
                 })
-                // console.log(res.status)
-                // const resJson = await res.json()
-
-                // console.log(resJson)
-
+                console.log(res)
+                console.log(res.status)
+                const resJson = await res.json()
+                console.log(resJson)
                 if (res.status === 200) {
                     Alert.alert('details updated')
                 } else {
                     Alert.alert('Error in updating details')
                 }
-
                 toggleEditMode(!editMode)
             } catch (err) {
                 console.log(err)
             }
-
         }
-
     }
 
     return (
         <ScrollView style={{ flex: 1 }}>
-            <Header style={{ backgroundColor: '#4796BD', flexDirection: 'row' }}>
+            <Header style={{ backgroundColor: '#4796BD', flexDirection: 'row' }} androidStatusBarColor="#247096">
                 <Left>
                     <TouchableOpacity onPress={() => { navigation.navigate('Drawer') }}>
                         <Icon name="arrow-left" color="white" size={35} />
@@ -241,6 +260,13 @@ const ProfilePage = ({ navigation }) => {
                     }
 
 
+                    <TouchableOpacity
+                        style={styles.logoutButton}
+                        onPress={() => {
+                            Logout();
+                        }}>
+                        <Text style={styles.logoutText}>Logout</Text>
+                    </TouchableOpacity>
 
                 </View>}
 
@@ -333,7 +359,24 @@ const styles = StyleSheet.create({
     isStaffText: {
         fontSize: 20,
         marginLeft: 30,
-    }
+    },
+
+    logoutButton: {
+        backgroundColor: '#4796BD',
+        marginHorizontal: 100,
+        paddingVertical: 10,
+        // paddingHorizontal: ,
+        borderRadius: 20,
+        // flexDirection: 'row',
+        // position:'fixed',
+      },
+      logoutText: {
+        color: '#fff',
+        fontWeight: 'bold',
+        fontSize: 18,
+        textAlignVertical: 'center',
+        textAlign:'center',
+      },
 
 })
 
