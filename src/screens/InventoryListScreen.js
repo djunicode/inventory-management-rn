@@ -46,14 +46,16 @@ const InventoryListScreen = ({navigation}) => {
   const [upperLimit, setUpperLimit] = useState(0);
   const [lowerLimit, setLowerLimit] = useState(0);
   const [updateProd, setUpdateProd] = useState({});
+  const [limit, setLimit] = useState(10);
+  const [offset, setOffset] = useState(0);
 
   useEffect(() => {
-    getInventoryList();
-  }, []);
+    getInventoryList(offset);
+  }, [inventoryList]);
 
-  const getInventoryList = async () => {
+  const getInventoryList = async (offset) => {
     const auth_key = await AsyncStorage.getItem('auth_key');
-    fetch('http://chouhanaryan.pythonanywhere.com/api/productlist/', {
+    fetch(`http://chouhanaryan.pythonanywhere.com/api/productlist/?limit=${limit}&offset=${offset}`, {
       method: 'GET',
       headers: {
         Authorization: `Token ${auth_key}`,
@@ -61,9 +63,13 @@ const InventoryListScreen = ({navigation}) => {
     })
       .then(res => res.json())
       .then(data => {
-        console.log(data);
-        setInventoryList(data);
+        const tempInventoryList = [...inventoryList, ...data.results]
+        if (data.results.length !==0 ){
+          setOffset(offset + 10)
+          setInventoryList(tempInventoryList);
+        }
       })
+
       .catch(err => console.log(err));
   };
 
@@ -302,7 +308,6 @@ const InventoryListScreen = ({navigation}) => {
               <FlatList
                 style={styles.flatlist}
                 data={inventoryList}
-                // scrollEnabled={true}
                 renderItem={({item}) => (
                   <InventoryListItem
                     onMenuPressed={data => onMenuPressed(data)}
