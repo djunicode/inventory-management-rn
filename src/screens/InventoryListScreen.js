@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import RadioForm, {
   RadioButton,
   RadioButtonInput,
@@ -38,7 +38,7 @@ import AsyncStorage from '@react-native-community/async-storage';
 import InventoryListItem from '../components/InventoryListItem';
 import HeaderView from '../components/HeaderView';
 
-const InventoryListScreen = ({navigation}) => {
+const InventoryListScreen = ({ navigation }) => {
   const [inventoryList, setInventoryList] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
   const [updateSellPrice, setUpdateSellPrice] = useState('');
@@ -64,27 +64,29 @@ const InventoryListScreen = ({navigation}) => {
       .then(res => res.json())
       .then(data => {
         const tempInventoryList = [...inventoryList, ...data.results]
-        if (data.results.length !==0 ){
+        if (data.results.length !== 0) {
           setOffset(offset + 10)
           setInventoryList(tempInventoryList);
         }
       })
-
       .catch(err => console.log(err));
   };
 
   const deleteInventoryItem = async inventoryItem => {
     const auth_key = await AsyncStorage.getItem('auth_key');
-    fetch(
+    await fetch(
       `http://chouhanaryan.pythonanywhere.com/api/productlist/${
-        inventoryItem.id
+      inventoryItem.id
       }/`,
       {
         method: 'DELETE',
-        headers: {Authorization: `Token ${auth_key}`},
+        headers: { Authorization: `Token ${auth_key}` },
       },
-    );
-    console.log('deleted successfully!');
+    ).then(
+      console.log('deleted successfully!'),
+      setInventoryList(inventoryList.filter((item) => item.id !== inventoryItem.id))
+    )
+
   };
 
   const updateProductPost = async () => {
@@ -152,12 +154,12 @@ const InventoryListScreen = ({navigation}) => {
     );
   };
   var radio_props = [
-    {label: 'Loose', value: true},
-    {label: 'Packed', value: false},
+    { label: 'Loose', value: true },
+    { label: 'Packed', value: false },
   ];
 
   return (
-    <Container style={{backgroundColor: '#F3F9FB'}}>
+    <Container style={{ backgroundColor: '#F3F9FB' }}>
       <HeaderView navigation={navigation} title={'Inventory'} />
 
       <Modal
@@ -171,7 +173,7 @@ const InventoryListScreen = ({navigation}) => {
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
             <Text style={styles.product_titles}>Update Product</Text>
-            <View style={{alignItems:'flex-start',marginVertical:20}}>
+            <View style={{ alignItems: 'flex-start', marginVertical: 20 }}>
               <Item floatingLabel style={styles.inputBox}>
                 <Label style={styles.label}>Product Name</Label>
                 <Input
@@ -195,76 +197,76 @@ const InventoryListScreen = ({navigation}) => {
                 />
               </Item>
             </View>
-            <View style={{paddingLeft: 10,}}>
-            <Text
-              style={{
-                marginTop:10,
-                marginBottom: 3,
-                fontSize: 17,
-                fontWeight: '800',
-              }}>
-              Recommended Limit
+            <View style={{ paddingLeft: 10, }}>
+              <Text
+                style={{
+                  marginTop: 10,
+                  marginBottom: 3,
+                  fontSize: 17,
+                  fontWeight: '800',
+                }}>
+                Recommended Limit
             </Text>
-            <NumericInput
-              value={upperLimit}
-              onChange={value => {
-                setUpperLimit(value);
-              }}
-              totalWidth={150}
-              totalHeight={35}
-              minValue={0}
-              maxValue={99999}
-              onLimitReached={(isMAx, msg) => console.log(msg)}
-              step={1}
-              iconStyle={{fontSize: 15, color: '#434A5E'}}
-              inputStyle={{fontSize: 18, color: '#434A5E'}}
-              valueType="real"
-              borderColor="#C7CBD6"
-              rightButtonBackgroundColor="#C7CBD6"
-              leftButtonBackgroundColor="#C7CBD6"
-            />
-            <Text
-              style={{
-                marginTop: 20,
-                marginBottom: 3,
-                fontSize: 17,
-                fontWeight: '800',
-              }}>
-              Critical Limit
+              <NumericInput
+                value={upperLimit}
+                onChange={value => {
+                  setUpperLimit(value);
+                }}
+                totalWidth={150}
+                totalHeight={35}
+                minValue={0}
+                maxValue={99999}
+                onLimitReached={(isMAx, msg) => console.log(msg)}
+                step={1}
+                iconStyle={{ fontSize: 15, color: '#434A5E' }}
+                inputStyle={{ fontSize: 18, color: '#434A5E' }}
+                valueType="real"
+                borderColor="#C7CBD6"
+                rightButtonBackgroundColor="#C7CBD6"
+                leftButtonBackgroundColor="#C7CBD6"
+              />
+              <Text
+                style={{
+                  marginTop: 20,
+                  marginBottom: 3,
+                  fontSize: 17,
+                  fontWeight: '800',
+                }}>
+                Critical Limit
             </Text>
-            <NumericInput
-              value={lowerLimit}
-              onChange={value => {
-                setLowerLimit(value);
-              }}
-              totalWidth={150}
-              totalHeight={35}
-              minValue={0}
-              maxValue={99999}
-              onLimitReached={(isMAx, msg) => console.log(msg)}
-              step={1}
-              iconStyle={{fontSize: 15, color: '#434A5E'}}
-              inputStyle={{fontSize: 18, color: '#434A5E'}}
-              valueType="real"
-              borderColor="#C7CBD6"
-              rightButtonBackgroundColor="#C7CBD6"
-              leftButtonBackgroundColor="#C7CBD6"
-            />
+              <NumericInput
+                value={lowerLimit}
+                onChange={value => {
+                  setLowerLimit(value);
+                }}
+                totalWidth={150}
+                totalHeight={35}
+                minValue={0}
+                maxValue={99999}
+                onLimitReached={(isMAx, msg) => console.log(msg)}
+                step={1}
+                iconStyle={{ fontSize: 15, color: '#434A5E' }}
+                inputStyle={{ fontSize: 18, color: '#434A5E' }}
+                valueType="real"
+                borderColor="#C7CBD6"
+                rightButtonBackgroundColor="#C7CBD6"
+                leftButtonBackgroundColor="#C7CBD6"
+              />
             </View>
             <Text style={{
-                marginTop: 30,
-                fontSize: 17,
-                fontWeight: '800',
-                paddingLeft:10,
-              }}>Type</Text>
+              marginTop: 30,
+              fontSize: 17,
+              fontWeight: '800',
+              paddingLeft: 10,
+            }}>Type</Text>
             <RadioForm
               radio_props={radio_props}
               labelHorizontal={true}
               formHorizontal={true}
               buttonColor={'#434A5E'}
               labelColor={'#434A5E'}
-              labelStyle={{marginRight: 20,}}
-              style={{paddingLeft: 10, marginTop: 8}}
+              labelStyle={{ marginRight: 20, }}
+              style={{ paddingLeft: 10, marginTop: 8 }}
               onPress={value => {
                 updateProd.loose = value;
                 setUpdateProd(updateProd);
@@ -308,7 +310,7 @@ const InventoryListScreen = ({navigation}) => {
               <FlatList
                 style={styles.flatlist}
                 data={inventoryList}
-                renderItem={({item}) => (
+                renderItem={({ item }) => (
                   <InventoryListItem
                     onMenuPressed={data => onMenuPressed(data)}
                     item={item}
@@ -382,7 +384,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     borderRadius: 20,
     flexDirection: 'row',
-    alignSelf:'center'
+    alignSelf: 'center'
     // position:'fixed',
   },
   addEmployeeButtonText: {
