@@ -6,7 +6,7 @@ import Icon from 'react-native-vector-icons/Feather';
 
 const HeaderView = ({ navigation,title }) => {
   return (
-    <Header style={{ backgroundColor: '#4796BD', flexDirection: 'row' }}>
+    <Header style={{ backgroundColor: '#4796BD', flexDirection: 'row' }} androidStatusBarColor="#247095" >
       <Left>
         <TouchableOpacity onPress={() => navigation.toggleDrawer()}>
           <Icon name="menu" color="white" size={35} />
