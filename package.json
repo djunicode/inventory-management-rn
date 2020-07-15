@@ -13,6 +13,7 @@
     "@react-native-community/async-storage": "github:react-native-community/async-storage",
     "@react-native-community/datetimepicker": "^2.4.1",
     "@react-native-community/masked-view": "^0.1.6",
+    "@react-native-community/toolbar-android": "0.1.0-rc.2",
     "@react-navigation/drawer": "^5.2.0",
     "@react-navigation/native": "^5.0.8",
     "@react-navigation/stack": "^5.1.0",

@@ -36,6 +36,8 @@ target 'rn_inventory' do
 
   pod 'RNDateTimePicker', :path => '../node_modules/@react-native-community/datetimepicker'
 
+  pod 'toolbar-android', :path => '../node_modules/@react-native-community/toolbar-android'
+
   target 'rn_inventoryTests' do
     inherit! :search_paths
     # Pods for testing
