@@ -59,7 +59,7 @@ const Sell = ({navigation}) => {
       .then(res => res.json())
       .then(data => {
         console.log(data);
-        setProductsList(data);
+        setProductsList(data.results);
       })
       .catch(err => console.log(err));
   };
