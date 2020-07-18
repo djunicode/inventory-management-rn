@@ -11,8 +11,8 @@ import {
 import AsyncStorage from '@react-native-community/async-storage';
 import HeaderView from '../components/HeaderView';
 import ProfitChart from '../components/ProfitChart';
-import MostSoldChart from '../components/MostSoldChart';
-import LeastSoldChart from '../components/LeastSoldChart';
+// import MostSoldChart from '../components/MostSoldChart';
+// import LeastSoldChart from '../components/LeastSoldChart';
 
 const screenWidth = Dimensions.get('window').width;
 const Home = ({ navigation }) => {
@@ -30,16 +30,6 @@ const Home = ({ navigation }) => {
       <View style={styles.chartView}>
         <Text style={styles.heading}>Profit</Text>
         <ProfitChart />
-      </View>
-
-      <View style={styles.chartView}>
-        <Text style={styles.heading}>Most Sold</Text>
-        <MostSoldChart />
-      </View>
-
-      <View style={styles.chartView}>
-        <Text style={styles.heading}>Least Sold</Text>
-        <LeastSoldChart />
       </View>
     </ScrollView>
   );

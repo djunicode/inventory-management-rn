@@ -15,15 +15,19 @@ import {
   RefreshControl,
 } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
-import HistoryListItem from '../components/HistoryListItem';
+import ExpiryListItem from '../components/ExpiryListItem';
 
-const HistoryScreen = ({navigation}) => {
-  const [transactionlist, setTransactionList] = useState([]);
+const ExpiryScreen = ({navigation}) => {
+  const [expiryList, setExpiryList] = useState([]);
+  // true when waiting for an response from API
+  const [isLoading, setIsLoading] = useState(false);
+  const [count, setCount] = useState(0);
+
   const apiFetch = async () => {
     try {
       const auth_key = await AsyncStorage.getItem('auth_key');
       console.log(auth_key);
-      fetch('http://chouhanaryan.pythonanywhere.com/api/transactions/', {
+      fetch('http://chouhanaryan.pythonanywhere.com/api/explist/', {
         method: 'GET',
         headers: {
           Authorization: `Token ${auth_key}`,
@@ -32,8 +36,13 @@ const HistoryScreen = ({navigation}) => {
         .then(res => res.json())
         .then(data => {
           console.log(data);
-          setTransactionList(data);
-          console.log(transactionlist);
+          setCount(data.count);
+          const list = data.results.map(val => ({
+            name: val.Product,
+            quantity: val['No. of items'],
+            daysLeft: val['Days left'],
+          }));
+          setExpiryList(list);
         })
         .catch(err => console.log(err));
     } catch (e) {
@@ -50,54 +59,53 @@ const HistoryScreen = ({navigation}) => {
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
     apiFetch();
-    setRefreshing(false)
+     setRefreshing(false)
   }, []);
   return (
     <Container style={{backgroundColor: '#F3F9FB'}}>
-      <Content>
+      <Text style={{fontWeight: 'bold', fontSize: 20, alignSelf: 'center'}}>
+        Items expiring in next 3 days.
+      </Text>
+      <Content style={{marginTop: -10}}>
         {/* the entire outerpart */}
         <Body style={styles.listContainer}>
           {/* the header of table */}
+
           <View style={styles.tableHeader}>
             <CardItem
               style={{
                 backgroundColor: 'rgba(255,255,255,0)',
                 justifyContent: 'center',
               }}>
-              {/* <Text style={styles.dateHeader}>Date</Text> */}
-              {/* <Text style={styles.typeHeader}>Type</Text>
               <Text style={styles.productHeader}>Product</Text>
               <Text style={styles.itemsHeader}>Items</Text>
-              <Text style={styles.priceHeader}>Price</Text> */}
-              <Text style={styles.typeHeader}>Type</Text>
-              <Text style={styles.productHeader}>Product</Text>
-              <Text style={styles.itemsHeader}>Quanity</Text>
-              <Text style={styles.priceHeader}>Rate</Text>
+              <Text style={styles.daysHeader}>Days Left</Text>
             </CardItem>
           </View>
 
           {/* the inner list */}
-          <ScrollView
+{count>0?(  <ScrollView
             refreshControl={
               <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
             }>
             <View>
               <FlatList
                 style={styles.flatlist}
-                data={transactionlist}
+                data={expiryList}
                 // scrollEnabled={true}
-                renderItem={({item}) => <HistoryListItem item={item} />}
-                keyExtractor={item => item.id}
+                renderItem={({item}) => <ExpiryListItem item={item} />}
+                
               />
             </View>
-          </ScrollView>
+          </ScrollView>):(null)}
+         
         </Body>
       </Content>
     </Container>
   );
 };
 
-export default HistoryScreen;
+export default ExpiryScreen;
 
 const DEVICE_WIDTH = Dimensions.get('screen').width;
 const DEVICE_HEIGHT = Dimensions.get('screen').height;
@@ -108,9 +116,9 @@ const styles = StyleSheet.create({
     borderColor: '#858585',
     borderWidth: 0.5,
     alignItems: 'center',
-    marginHorizontal: 16,
+    marginHorizontal: 10,
     marginVertical: 16,
-    borderRadius: 20,
+
     width: DEVICE_WIDTH - 32,
   },
   flatlist: {
@@ -122,32 +130,24 @@ const styles = StyleSheet.create({
   tableHeader: {
     backgroundColor: '#e7eff2',
     width: DEVICE_WIDTH - 32,
-    borderTopRightRadius: 20,
-    borderTopLeftRadius: 20,
   },
   itemsHeader: {
     flex: 0.25,
     fontSize: 16,
     fontWeight: 'bold',
+    marginLeft: 30,
   },
   productHeader: {
-    flex: 0.3,
+    flex: 0.35,
     fontSize: 16,
     fontWeight: 'bold',
+    marginLeft: 20,
   },
-  typeHeader: {
-    flex: 0.25,
+ 
+  daysHeader: {
+    flex: 0.4,
     fontSize: 16,
     fontWeight: 'bold',
-  },
-  // dateHeader: {
-  //   flex: 0.22,
-  //   fontSize: 16,
-  //   fontWeight: 'bold',
-  // },
-  priceHeader: {
-    flex: 0.2,
-    fontSize: 16,
-    fontWeight: 'bold',
+    marginLeft: 20,
   },
 });

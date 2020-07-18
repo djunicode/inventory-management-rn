@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {StyleSheet, Dimensions, processColor } from 'react-native';
+import {StyleSheet, Dimensions, processColor} from 'react-native';
 import {LineChart} from 'react-native-charts-wrapper';
 import AsyncStorage from '@react-native-community/async-storage';
 
@@ -7,15 +7,27 @@ const Functional = () => {
   const [min_Vis, setMin_Vis] = useState(0);
   const [max_vis, setMax_vis] = useState(10);
 
-  const get_month_name_from_data = (data_month_string) => {
-    const month_name = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-    const year = data_month_string.substr(2, 2)
+  const get_month_name_from_data = data_month_string => {
+    const month_name = [
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec',
+    ];
+    const year = data_month_string.substr(2, 2);
     const month = data_month_string.substr(5, 2);
     const index = parseInt(month) - 1;
     const display_string = month_name[index] + '/' + year;
-    return display_string
-  }
-
+    return display_string;
+  };
 
   const getRandomColor = () => {
     let color = '#0000ff';
@@ -65,37 +77,36 @@ const Functional = () => {
   const [finalData, setFinalData] = useState([]);
 
   const get_data = async () => {
-    const auth_key = await AsyncStorage.getItem('auth_key')
+    const auth_key = await AsyncStorage.getItem('auth_key');
     fetch('http://chouhanaryan.pythonanywhere.com/api/profit/', {
-      headers: {"Authorization": `Token ${auth_key}`},
+      headers: {Authorization: `Token ${auth_key}`},
     })
-    .then((res) => res.json())
-    .then((data) => {
-      // this temp variable is a dummy data object which is being used because it has more months in its data
-      const total = temp;
+      .then(data => {
+        // this temp variable is a dummy data object which is being used because it has more months in its data
+        const total = temp;
 
-      /* uncomment this below line to display data from endpoint in the graph and comment the above line */
-      // const total = data;
+        /* uncomment this below line to display data from endpoint in the graph and comment the above line */
+        // const total = data;
 
-      const my_data = Object.keys(total).map((key) => {
-        return {month: key, value: total[key]}
+        const my_data = Object.keys(total).map(key => {
+          return {month: key, value: total[key]};
+        });
+        setFinalData(my_data);
+        setMax_vis(my_data.length);
       })
-      setFinalData(my_data)
-      setMax_vis(my_data.length)
-    })
-    .catch((err) => console.log(err))
-  }
+      .catch(err => console.log(err));
+  };
 
   useEffect(() => {
     get_data();
-  }, [])
+  }, []);
 
   let dummy_time = [];
 
   for (let i = 0; i < finalData.length; i++) {
     // console.log(i)
     if (finalData[i].month != 'Total') {
-      const month_name = get_month_name_from_data(finalData[i].month)
+      const month_name = get_month_name_from_data(finalData[i].month);
       dummy_time.push(month_name);
     }
   }
@@ -167,7 +178,7 @@ const Functional = () => {
       <LineChart
         style={styles.bar}
         visibleRange={{
-          x: {min: 0, max: 10}
+          x: {min: 0, max: 10},
         }}
         // onChange={event => {
         //   if (event.nativeEvent.scaleX > 2.2) {
@@ -233,8 +244,6 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
 });
-
-
 
 // dummy data
 const temp = {
