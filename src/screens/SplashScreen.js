@@ -29,6 +29,7 @@ export default class SplashScreen extends React.Component {
         );
       }
     } catch (error) {
+      this.props.navigation.dispatch(StackActions.replace('LoginScreen'));
       console.log(error);
     }
   };

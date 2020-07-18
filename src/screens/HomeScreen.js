@@ -7,9 +7,18 @@ import {
   ScrollView,
   StyleSheet,
   TouchableOpacity,
-  Image
+  Image,
 } from 'react-native';
-import {Body, Input, Container, Content, Item, Label, Icon, Header} from 'native-base';
+import {
+  Body,
+  Input,
+  Container,
+  Content,
+  Item,
+  Label,
+  Icon,
+  Header,
+} from 'native-base';
 import {
   LineChart,
   BarChart,
@@ -25,9 +34,13 @@ import ProfitChart from '../components/ProfitChart';
 // import LeastSoldChart from '../components/LeastSoldChart';
 const DEVICE_WIDTH = Dimensions.get('screen').width;
 const DEVICE_HEIGHT = Dimensions.get('screen').height;
+import isAuthenticated from '../utils/isAuthenticated';
 
 const screenWidth = Dimensions.get('window').width;
+
+
 const Home = ({navigation}) => {
+  
   const [display, setdisplay] = useState(false);
   const Logout = async () => {
     // console.log(await AsyncStorage.getItem('auth_key'));
@@ -35,30 +48,55 @@ const Home = ({navigation}) => {
     // console.log(await AsyncStorage.getItem('auth_key'));
     navigation.navigate('LoginScreen');
   };
+  
+  
 
   return (
     <ScrollView style={{flex: 1}}>
       <HeaderView navigation={navigation} title={'Home'} />
-      <TouchableOpacity onPress={() =>setdisplay(!display)} style={{flex: 1,alignItems: 'center',backgroundColor:'#857562',marginHorizontal:110,marginTop:10,borderRadius:40}}><Text style={{fontSize:20,alignItems: 'center',justifyContent: 'center',alignSelf: 'center',marginHorizontal:10}}>Show charts</Text></TouchableOpacity>
+      <TouchableOpacity
+        onPress={() => setdisplay(!display)}
+        style={{
+          flex: 1,
+          alignItems: 'center',
+          backgroundColor: '#857562',
+          marginHorizontal: 110,
+          marginTop: 10,
+          borderRadius: 40,
+        }}>
+        <Text
+          style={{
+            fontSize: 20,
+            alignItems: 'center',
+            justifyContent: 'center',
+            alignSelf: 'center',
+            marginHorizontal: 10,
+          }}>
+          Show charts
+        </Text>
+      </TouchableOpacity>
       {display ? (
         <View style={styles.chartView}>
           <Text style={styles.heading}>Profit</Text>
           <ProfitChart />
         </View>
-      ) : (<Content>
-        <Body>
-        <Image
-            style={{
-              width:DEVICE_WIDTH - 32,
-              height: 300,
-              marginVertical: 40,
-             
-            }}
-            source={require('../Images/Illustration.png')}
-          />
-        <Text style={{ fontSize: 16 }}>More data needed to display charts</Text>
-        </Body>
-        </Content>)}
+      ) : (
+        <Content>
+          <Body>
+            <Image
+              style={{
+                width: DEVICE_WIDTH - 32,
+                height: 300,
+                marginVertical: 40,
+              }}
+              source={require('../Images/Illustration.png')}
+            />
+            <Text style={{fontSize: 16}}>
+              More data needed to display charts
+            </Text>
+          </Body>
+        </Content>
+      )}
     </ScrollView>
   );
 };
