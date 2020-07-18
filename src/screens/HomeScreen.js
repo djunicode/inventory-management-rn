@@ -97,6 +97,28 @@ const Home = ({navigation}) => {
           </Body>
         </Content>
       )}
+      <TouchableOpacity
+        onPress={() => {AsyncStorage.removeItem('auth_key')
+        navigation.navigate('LoginScreen')}}
+        style={{
+          flex: 1,
+          alignItems: 'center',
+          backgroundColor: '#857562',
+          marginHorizontal: 110,
+          marginTop: 10,
+          borderRadius: 40,
+        }}>
+        <Text
+          style={{
+            fontSize: 20,
+            alignItems: 'center',
+            justifyContent: 'center',
+            alignSelf: 'center',
+            marginHorizontal: 10,
+          }}>
+          Logout
+        </Text>
+      </TouchableOpacity>
     </ScrollView>
   );
 };
