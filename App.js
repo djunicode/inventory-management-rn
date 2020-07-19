@@ -7,11 +7,11 @@ import { createDrawerNavigator } from '@react-navigation/drawer';
 import AddEmployee from './src/screens/AddEmployee';
 import LoginScreen from './src/screens/LoginScreen';
 import HomeScreen from './src/screens/HomeScreen';
-import InventoryListScreen from './src/screens/InventoryListScreen';
+import InventoryScreen from './src/screens/InventoryScreen';
 import DrawerScreen2 from './src/screens/TransactionsScreen';
 import EmployeeListScreen from './src/screens/EmployeeListScreen';
 import SplashScreen from './src/screens/SplashScreen';
-import Settings from './src/screens/SettingsScreen';
+//import ExpiryScreen from './src/screens/ExpiryScreen';
 import ProfilePage from './src/screens/ProfilePage'
 import {
   NavigationContainer,
@@ -93,16 +93,16 @@ function BurgerBtn() {
         component={HomeScreen}
         options={
           ({ title: 'Home' },
-            { drawerIcon: () => <Icon_MaterialIcons name="home" size={24} /> })
+            { drawerIcon: () => <Icon_MaterialIcons name="home" size={24} color="#4796BD" /> })
         }
       />
 
       <Drawer.Screen
         name="Inventory"
-        component={InventoryListScreen}
+        component={InventoryScreen}
         options={
           ({ title: 'Inventory' },
-            { drawerIcon: () => <Icon_Feather name="list" size={24} /> })
+            { drawerIcon: () => <Icon_Feather name="list" size={24} color="#4796BD" /> })
         }
       />
       {/* <Drawer.Screen
@@ -120,29 +120,32 @@ function BurgerBtn() {
         component={StackFn}
         options={
           ({ title: 'Employee' },
-            { drawerIcon: () => <Icon_MaterialIcons name="person" size={24} /> })
+            { drawerIcon: () => <Icon_MaterialIcons name="person" size={24} color="#4796BD" /> })
         }
       />
       <Drawer.Screen
         name="Transactions"
+        
         component={DrawerScreen2}
         options={
-          ({ title: 'Transactions' },
+        
+          ({ title: 'Transactions'},
+          {labelStyle:{fontSize: 55,}},
           {
             drawerIcon: () => (
-              <Icon_MaterialIcons name="attach-money" size={24} />
+              <Icon_MaterialIcons name="attach-money" size={24} color="#4796BD"/>
             ),
           })
         }
       />
-      <Drawer.Screen
-        name="Settings"
-        component={Settings}
+      {/* <Drawer.Screen
+        name="Expiry "
+        component={ExpiryScreen}
         options={
-          ({ title: 'Settings' },
+          ({ title: 'Expiry' },
             { drawerIcon: () => <Icon_MaterialIcons name="settings" size={24} /> })
         }
-      />
+      /> */}
     </Drawer.Navigator>
   );
 }
@@ -150,10 +153,10 @@ export default App;
 const MyTheme = {
   dark: false,
   colors: {
-    primary: 'rgb(255, 45, 85)',
+    primary: '#5c5e61',
     background: '#F3F9FB',
-    card: '#4796BD',
-    text: '#F4F9FA',
+    card: '#fff',
+    text: '#000',
     border: 'rgb(199, 199, 204)',
   },
 };

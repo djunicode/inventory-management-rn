@@ -160,7 +160,7 @@ const InventoryListScreen = ({ navigation }) => {
 
   return (
     <Container style={{ backgroundColor: '#F3F9FB' }}>
-      <HeaderView navigation={navigation} title={'Inventory'} />
+     
 
       <Modal
         animationType="slide"
