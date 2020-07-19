@@ -1,4 +1,4 @@
-import React, {useState, useEffect, PureComponent} from 'react';
+import React, { useState, useEffect, PureComponent } from 'react';
 import {
   View,
   Text,
@@ -30,8 +30,8 @@ import {
 import AsyncStorage from '@react-native-community/async-storage';
 import HeaderView from '../components/HeaderView';
 import ProfitChart from '../components/ProfitChart';
-// import MostSoldChart from '../components/MostSoldChart';
-// import LeastSoldChart from '../components/LeastSoldChart';
+import MostSoldChart from '../components/MostSoldChart';
+import LeastSoldChart from '../components/LeastSoldChart';
 const DEVICE_WIDTH = Dimensions.get('screen').width;
 const DEVICE_HEIGHT = Dimensions.get('screen').height;
 import isAuthenticated from '../utils/isAuthenticated';
@@ -39,41 +39,36 @@ import isAuthenticated from '../utils/isAuthenticated';
 const screenWidth = Dimensions.get('window').width;
 
 
-const Home = ({navigation}) => {
-  
+const Home = ({ navigation }) => {
+
   const [display, setdisplay] = useState(false);
-  const Logout = async () => {
-    // console.log(await AsyncStorage.getItem('auth_key'));
-    await AsyncStorage.removeItem('auth_key'); //Removing the token from local storage while logging out
-    // console.log(await AsyncStorage.getItem('auth_key'));
-    navigation.navigate('LoginScreen');
-  };
-  
-  
+  // const Logout = async () => {
+  //   // console.log(await AsyncStorage.getItem('auth_key'));
+  //   await AsyncStorage.removeItem('auth_key'); //Removing the token from local storage while logging out
+  //   // console.log(await AsyncStorage.getItem('auth_key'));
+  //   navigation.navigate('LoginScreen');
+  // };
+
+
 
   return (
-    <ScrollView style={{flex: 1}}>
+    <ScrollView style={{ flex: 1 }}>
       <HeaderView navigation={navigation} title={'Home'} />
       <TouchableOpacity
         onPress={() => setdisplay(!display)}
-        style={{
-          flex: 1,
-          alignItems: 'center',
-          backgroundColor: '#857562',
-          marginHorizontal: 110,
-          marginTop: 10,
-          borderRadius: 40,
-        }}>
-        <Text
-          style={{
-            fontSize: 20,
-            alignItems: 'center',
-            justifyContent: 'center',
-            alignSelf: 'center',
-            marginHorizontal: 10,
-          }}>
-          Show charts
-        </Text>
+        style={styles.button}>
+        {
+          display ?
+            <Text
+              style={styles.buttonText}>
+              Hide Profit Chart
+        </Text> :
+            <Text
+              style={styles.buttonText}>
+              Show Profit Chart
+      </Text>
+        }
+
       </TouchableOpacity>
       {display ? (
         <View style={styles.chartView}>
@@ -81,44 +76,32 @@ const Home = ({navigation}) => {
           <ProfitChart />
         </View>
       ) : (
-        <Content>
-          <Body>
-            <Image
-              style={{
-                width: DEVICE_WIDTH - 32,
-                height: 300,
-                marginVertical: 40,
-              }}
-              source={require('../Images/Illustration.png')}
-            />
-            <Text style={{fontSize: 16}}>
-              More data needed to display charts
+          <Content>
+            <Body>
+              <Image
+                style={{
+                  width: DEVICE_WIDTH - 32,
+                  height: 300,
+                  marginVertical: 40,
+                }}
+                source={require('../Images/Illustration.png')}
+              />
+              <Text style={{ fontSize: 16 }}>
+                More data needed to display Profit charts
             </Text>
-          </Body>
-        </Content>
-      )}
-      <TouchableOpacity
-        onPress={() => {AsyncStorage.removeItem('auth_key')
-        navigation.navigate('LoginScreen')}}
-        style={{
-          flex: 1,
-          alignItems: 'center',
-          backgroundColor: '#857562',
-          marginHorizontal: 110,
-          marginTop: 10,
-          borderRadius: 40,
-        }}>
-        <Text
-          style={{
-            fontSize: 20,
-            alignItems: 'center',
-            justifyContent: 'center',
-            alignSelf: 'center',
-            marginHorizontal: 10,
-          }}>
-          Logout
-        </Text>
-      </TouchableOpacity>
+            </Body>
+          </Content>
+        )}
+
+      <View style={styles.chartView}>
+        <Text style={styles.heading}>Most Sold</Text>
+        <MostSoldChart />
+      </View>
+
+      <View style={styles.chartView}>
+        <Text style={styles.heading}>Least Sold</Text>
+        <LeastSoldChart />
+      </View>
     </ScrollView>
   );
 };
@@ -134,6 +117,24 @@ const styles = StyleSheet.create({
     marginVertical: 20,
     marginHorizontal: 10,
   },
+  buttonText: {
+    fontSize: 18,
+    alignItems: 'center',
+    justifyContent: 'center',
+    alignSelf: 'center',
+    color: 'white',
+    // marginHorizontal: 10,
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+  },
+  button:{
+    flex: 1,
+    alignItems: 'center',
+    backgroundColor: '#4796BD',
+    marginHorizontal: 110,
+    marginTop: 10,
+    borderRadius: 40,
+  }
 });
 
 export default Home;

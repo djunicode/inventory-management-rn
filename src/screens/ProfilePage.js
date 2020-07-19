@@ -61,7 +61,7 @@ const ProfilePage = ({ navigation }) => {
             })
 
             const data = await res.json()
-
+            console.log(data)
             const firstName = data.first_name
             const lastName = data.last_name
             const age = data.age.toString()
@@ -82,7 +82,7 @@ const ProfilePage = ({ navigation }) => {
             }
 
         } catch (err) {
-            console.log(err)
+            console.log('here' , err)
         }
     }
 
