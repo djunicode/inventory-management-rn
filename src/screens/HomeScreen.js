@@ -93,7 +93,7 @@ const Home = ({ navigation }) => {
           </Content>
         )}
 
-      <View style={styles.chartView}>
+      {/* <View style={styles.chartView}>
         <Text style={styles.heading}>Most Sold</Text>
         <MostSoldChart />
       </View>
@@ -101,7 +101,7 @@ const Home = ({ navigation }) => {
       <View style={styles.chartView}>
         <Text style={styles.heading}>Least Sold</Text>
         <LeastSoldChart />
-      </View>
+      </View> */}
     </ScrollView>
   );
 };

@@ -32,6 +32,10 @@ const Sell = ({navigation}) => {
   const [selected, setSelected] = useState('key1');
   const [list, setProductsList] = useState([]);
 
+  const [customerName, setCustomerName] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
+  const [address, setAddress] = useState('');
+
   const onPickerValueChange = (item_name, item_index, product_index) => {
     setSelected(item_name);
     console.log('this is name:', item_name);
@@ -101,6 +105,52 @@ const Sell = ({navigation}) => {
       <Content>
         <Body>
           <Text style={styles.heading}>Sell Items</Text>
+          
+          {/* separator line above name, phone no. and address fields */}
+          <View style={{ flex: 1, flexDirection: 'row', marginBottom: 10 }}>
+            <View
+              style={{
+                borderColor: '#0004',
+                borderWidth: 1,
+                width: '50%',
+                alignSelf: 'center',
+                borderRadius: 2,
+                marginBottom: -10,
+                marginTop: 5,
+              }}
+            />
+          </View>
+
+          {/* customer name */}
+          <Item floatingLabel style={styles.inputBox}>
+            <Label style={styles.label}>Customer Name</Label>
+            <Input
+              style={styles.inputArea}
+              value={customerName}
+              onChangeText={value => setCustomerName(value)}
+            />
+          </Item>
+
+          {/* phone number */}
+          <Item floatingLabel style={styles.inputBox}>
+            <Label style={styles.label}>Phone number</Label>
+            <Input
+              style={styles.inputArea}
+              keyboardType='number-pad'
+              value={phoneNumber}
+              onChangeText={value => setPhoneNumber(value)}
+            />
+          </Item>
+
+          {/* address */}
+          <Item floatingLabel style={styles.inputBox}>
+            <Label style={styles.label}>Address</Label>
+            <Input
+              style={styles.inputArea}
+              value={address}
+              onChangeText={value => setAddress(value)}
+            />
+          </Item>
 
           {product.map((product_item, product_index) => {
             return (

@@ -26,12 +26,18 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import { ScrollView } from 'react-native-gesture-handler';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import axios from 'axios';
+
+
 const Buy = ({ navigation }) => {
   const [product, setProduct] = useState([]);
   const [date_array, setDate_array] = useState([]);
 
   const [show, setShow] = useState(false);
   const [curr_ind, setCurr_ind] = useState(0);
+
+  const [customerName, setCustomerName] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
+  const [address, setAddress] = useState('');
 
 
   useEffect(() => {
@@ -98,6 +104,53 @@ const Buy = ({ navigation }) => {
       <ScrollView>
         <Body>
           <Text style={styles.heading}>Buy Items</Text>
+
+          {/* separator line above name, phone no. and address fields */}
+          <View style={{ flex: 1, flexDirection: 'row', marginBottom: 10 }}>
+            <View
+              style={{
+                borderColor: '#0004',
+                borderWidth: 1,
+                width: '50%',
+                alignSelf: 'center',
+                borderRadius: 2,
+                marginBottom: -10,
+                marginTop: 5,
+              }}
+            />
+          </View>
+
+          {/* customer name */}
+          <Item floatingLabel style={styles.inputBox}>
+            <Label style={styles.label}>Customer Name</Label>
+            <Input
+              style={styles.inputArea}
+              value={customerName}
+              onChangeText={value => setCustomerName(value)}
+            />
+          </Item>
+
+          {/* phone number */}
+          <Item floatingLabel style={styles.inputBox}>
+            <Label style={styles.label}>Phone number</Label>
+            <Input
+              style={styles.inputArea}
+              keyboardType='number-pad'
+              value={phoneNumber}
+              onChangeText={value => setPhoneNumber(value)}
+            />
+          </Item>
+
+          {/* address */}
+          <Item floatingLabel style={styles.inputBox}>
+            <Label style={styles.label}>Address</Label>
+            <Input
+              style={styles.inputArea}
+              value={address}
+              onChangeText={value => setAddress(value)}
+            />
+          </Item>
+
 
           {product.map((item, index) => {
             return (
