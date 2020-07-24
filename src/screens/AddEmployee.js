@@ -1,4 +1,9 @@
 import React, {Component} from 'react';
+import RadioForm, {
+  RadioButton,
+  RadioButtonInput,
+  RadioButtonLabel,
+} from 'react-native-simple-radio-button';
 import {
   Button,
   Body,
@@ -41,6 +46,7 @@ export default class AddEmployee extends Component {
       inval_pass: false,
       inval_confpass: false,
       failed: false,
+      is_staff:true,
     };
   }
   async keyy() {
@@ -87,7 +93,7 @@ export default class AddEmployee extends Component {
     formData.append('password', this.state.password);
     formData.append('first_name', this.state.fname);
     formData.append('last_name', this.state.lname);
-    formData.append('is_staff', true);
+    formData.append('is_staff', this.state.is_staff);
     formData.append('age', this.state.age);
     formData.append('gender', this.state.gender);
     console.log(formData);
@@ -220,6 +226,21 @@ export default class AddEmployee extends Component {
                   <Picker.Item label="Others" value="Other" />
                 </Picker>
               </Item>
+              <RadioForm
+                radio_props={[
+                  {label: 'Employee', value: false},
+                  {label: 'Manager', value: true},
+                ]}
+                labelHorizontal={true}
+                formHorizontal={true}
+                buttonColor={'#434A5E'}
+                labelColor={'#434A5E'}
+                labelStyle={{marginRight: 20}}
+                style={{paddingLeft: 10, marginTop: 8}}
+                onPress={value => {
+                  this.setState(({is_staff:value}))
+                }}
+              />
 
               {/* <Text style={{color: 'red'}}>HEY</Text> */}
 
