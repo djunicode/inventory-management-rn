@@ -48,7 +48,7 @@ const Sell = ({navigation}) => {
   };
 
   useEffect(() => {
-    setProduct([{name: 'Pick a value', price: 0, amount: 0}]);
+    setProduct([{name: 'Pick a value', price: '', amount: ''}]);
     apiFetch();
   }, []);
 
@@ -71,8 +71,8 @@ const Sell = ({navigation}) => {
     await product.forEach(async product => {
       const formData = new FormData();
       formData.append('name', product.name);
-      formData.append('quantity', product.amount);
-      formData.append('latest_selling_price', product.price);
+      formData.append('quantity', parseInt(product.amount));
+      formData.append('latest_selling_price', parseFloat(product.price));
       var myHeaders = new Headers();
       const auth_key = await AsyncStorage.getItem('auth_key');
 
@@ -88,15 +88,7 @@ const Sell = ({navigation}) => {
         .then(result => console.log(result))
         .catch(error => console.log('error', error));
 
-      // const config = { headers: { Authorization: `Token ${token}` } };
-      //       const response = await axios.post(
-      //         'http://chouhanaryan.pythonanywhere.com/api/sell/',
-      //         formData,
-      //         config
-      //       );
-      //       const {data} = response;
-      //       console.log(JSON.stringify(data) + ' here is selling data');
-      //     });
+    
     });
   };
 
@@ -112,7 +104,7 @@ const Sell = ({navigation}) => {
               style={{
                 borderColor: '#0004',
                 borderWidth: 1,
-                width: '50%',
+                width: '90%',
                 alignSelf: 'center',
                 borderRadius: 2,
                 marginBottom: -10,
@@ -162,7 +154,7 @@ const Sell = ({navigation}) => {
                   style={{
                     borderColor: '#0004',
                     borderWidth: 1,
-                    width: '50%',
+                    width: '90%',
                     alignSelf: 'center',
                     borderRadius: 2,
                     marginBottom: -10,
@@ -171,7 +163,7 @@ const Sell = ({navigation}) => {
                 />
 
                 <Text style={styles.product_titles}>
-                  Product {product.length == 1 ? '1' : product_index + 1}
+                  Product {product.length == 1 ? '' : product_index + 1}
                 </Text>
                 <View
                   style={{
@@ -247,7 +239,7 @@ const Sell = ({navigation}) => {
                 product[product.length - 1].amount
               ) {
                 let copy = [...product];
-                copy.push({name: '', price: 0, amount: 0});
+                copy.push({name: '', price: '', amount: ''});
                 setProduct(copy);
               } else {
                 Alert.alert(
@@ -280,8 +272,8 @@ const Sell = ({navigation}) => {
                 Alert.alert('please select all unique items');
               } else if (
                 product[product.length - 1].name == '' ||
-                product[product.length - 1].price == 0 ||
-                product[product.length - 1].amount == 0
+                product[product.length - 1].price == '' ||
+                product[product.length - 1].amount == ''
               ) {
                 Alert.alert(
                   `Please fill valid details for product ${product.length}`,
@@ -310,8 +302,15 @@ const Sell = ({navigation}) => {
                   );
                 } else {
                   console.log('finally sold!!');
-                  sellprod();
-                  setProduct([{name: '', price: 0, amount: 0}]);
+                  await sellprod();
+                  setProduct([]);
+                  setProduct([{name: '', price: '', amount: ''}]);
+                  setAddress();
+                setAddress('');
+                setCustomerName();
+                setCustomerName('');
+                setPhoneNumber();
+                setPhoneNumber('')
                 }
               }
             }}
