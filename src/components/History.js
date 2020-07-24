@@ -83,8 +83,9 @@ const HistoryScreen = ({navigation}) => {
             }>
             <View>
               <FlatList
+              initialNumToRender={10}
                 style={styles.flatlist}
-                data={transactionlist}
+                data={transactionlist.reverse()}
                 // scrollEnabled={true}
                 renderItem={({item}) => <HistoryListItem item={item} />}
                 keyExtractor={item => item.id}
