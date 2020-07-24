@@ -1,5 +1,5 @@
-import React, {Component, useState, useEffect} from 'react';
-import {Body, Input, Container, Content, Item, Label, Icon, Header} from 'native-base';
+import React, { Component, useState, useEffect } from 'react';
+import { Body, Input, Container, Content, Item, Label, Icon, Header } from 'native-base';
 import {
   StyleSheet,
   ScrollView,
@@ -14,77 +14,75 @@ import Axios from 'axios';
 import AsyncStorage from '@react-native-community/async-storage';
 
 // For Testing enter password : admin   email : admin@admin.com in text inputs
-async function getLoginToken(email, password) {
-  try {
-    const response = await Axios.post(
-      'http://chouhanaryan.pythonanywhere.com/auth/token/login/',
-      {
-        password: password,
-        email: email,
-      },
-    );
-    const token = await response.data;
-    console.log(token.auth_token);
-    return token.auth_token;
-  } catch (error) {
-    Alert.alert('Invalid email or password', 'Please enter correct credentials')
-    console.log(Object.keys(error), error.message);
-    return -1; //Returning -1 for error 400
-  }
-}
 
-const LoginScreen=({navigation})=> {
-  const Login = async (email, password) => {
-    const token = await getLoginToken(email, password);
-    if (email !== '' && password !== '' && token !== -1) {
-      //checking if the token is recieved and inputs arent empty
-      try {
-        await AsyncStorage.setItem('auth_key', token); //Storing token in local storage
-      } catch (e) {
-        console.log(e);
-      }
-      try {
-        // console.log(token)
-        const response = await Axios.get(
-          'http://chouhanaryan.pythonanywhere.com/auth/users/me/',
-          {
+const LoginScreen = ({ navigation }) => {
+
+  const login = () => {
+
+    // fetching the token by providing email and password
+    fetch('http://chouhanaryan.pythonanywhere.com/auth/token/login/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        'email': email,
+        'password': password
+      })
+    })
+      .then((res) => res.json())
+      .then(async (data) => {
+        const token = data.auth_token;
+        if (token) {
+          console.log('token is: ' + token);
+
+          // storing token in async storage
+          try {
+            await AsyncStorage.setItem('auth_key', token);
+          } catch (error) {
+            console.log('Token not saved in async storage properly');
+            console.log(error);
+          }
+
+          // using the token just received to check the info of the current logged in user
+          fetch('http://chouhanaryan.pythonanywhere.com/auth/users/me/', {
+            method: 'GET',
             headers: {
-              Authorization: `Token ${token}`,
-            },
-          },
-        );
-        const check = await response.data;
-        try {
-          await AsyncStorage.setItem('is_staff', check.is_staff.toString()); //Storing whether staff or not in local storage
-        } catch (e) {
-          console.log(e);
+              'Content-Type': 'application/json',
+              'Authorization': `Token ${token}`
+            }
+          })
+          .then((res) => res.json())
+          .then(async (data) => {
+
+            // storing is_staff boolean in async storage
+            try {
+              await AsyncStorage.setItem('is_staff', data.is_staff.toString());
+            } catch (error) {
+              console.log('is_staff not saved in async storage properly');
+              console.log(error)
+            }
+
+            navigation.navigate('Drawer');
+
+          })
+          .catch((err) => {
+            console.log(err)
+          })
+        } else {
+          Alert.alert('Invalid email or password', 'Please enter correct credentials')
         }
-      } catch (e) {
-        console.log(e);
-      }
-      console.log(await AsyncStorage.getItem('is_staff'));
-      navigation.navigate('Drawer');
-    }
-  };
-  async function LoginCheck() {
-    //checking if user has already logged in
-    console.log(await AsyncStorage.getItem('auth_key'));
-    if ((await AsyncStorage.getItem('auth_key')) !== null) {
-      navigation.navigate('Drawer');
-    } else {
-      setFlag(true);
-    }
+      })
+      .catch((err) => console.log(err))
   }
-  LoginCheck();
+
   const [email, setUserEmail] = useState('');
   const [password, setUserPassword] = useState('');
-  const [flag, setFlag] = useState(false);
-  const [isAdmin, setisAdmin] = useState(false);
 
   return (
-    <Container style={{backgroundColor: '#F3F9FB'}}>
-     <Header style={{ backgroundColor: '#4796BD', flexDirection: 'row', alignItems: 'center' }}>	
-        <Text style={{color: '#fff', fontSize: 20}}>Inventory Management</Text>	
+    <Container style={{ backgroundColor: '#F3F9FB' }}>
+      <Header style={{ backgroundColor: '#4796BD', flexDirection: 'row', alignItems: 'center' }}>
+        <Text style={{ color: '#fff', fontSize: 20 }}>Inventory Management</Text>
       </Header>
       <Content>
         <Body>
@@ -101,23 +99,23 @@ const LoginScreen=({navigation})=> {
           />
 
           <Item floatingLabel style={styles.inputBox}>
-         
+
             <Label style={styles.label}>Email ID</Label>
-            
+
             <Input
               style={styles.inputArea}
               blurOnSubmit={true}
               onChangeText={value => {
                 setUserEmail(value);
               }}
-             
+
               keyboardType="email-address"
               autoCapitalize="none"
             />
           </Item>
 
           <Item floatingLabel style={styles.inputBox}>
-         
+
             <Label style={styles.label}>Password</Label>
             <Input
               style={styles.inputArea}
@@ -130,27 +128,41 @@ const LoginScreen=({navigation})=> {
             />
           </Item>
 
-          <TouchableOpacity
+          {/* <TouchableOpacity
             rounded
             style={styles.loginButton}
             onPress={() => {
               Login(email, password);
             }}>
             <Text style={styles.buttonText}>Login</Text>
+          </TouchableOpacity> */}
+
+          <TouchableOpacity
+            rounded
+            style={styles.loginButton}
+            onPress={() => {
+              login()
+            }}>
+            <Text style={styles.buttonText}>Login</Text>
           </TouchableOpacity>
-          <View style={{flexDirection: 'row'}}>
-          <Text style={styles.newUser}>New user ? </Text>
-          <TouchableOpacity onPress={() =>{
-            navigation.navigate('RegisterScreen');
-          }}   ><Text style={{fontSize: 18,
-          textDecorationLine: 'underline',
-    color: '#9ca2ad',
-    // borderBottomWidth:1,
-    // borderBottomColor: 'black',
-    
-    marginTop: 25,
-    marginBottom: 10,
-    marginBottom: 10,}}>Register </Text></TouchableOpacity>
+
+
+
+          <View style={{ flexDirection: 'row' }}>
+            <Text style={styles.newUser}>New user ? </Text>
+            <TouchableOpacity onPress={() => {
+              navigation.navigate('RegisterScreen');
+            }}   ><Text style={{
+              fontSize: 18,
+              textDecorationLine: 'underline',
+              color: '#9ca2ad',
+              // borderBottomWidth:1,
+              // borderBottomColor: 'black',
+
+              marginTop: 25,
+              marginBottom: 10,
+              marginBottom: 10,
+            }}>Register </Text></TouchableOpacity>
           </View>
         </Body>
       </Content>
@@ -161,10 +173,10 @@ const LoginScreen=({navigation})=> {
 export default LoginScreen;
 
 const styles = StyleSheet.create({
-  newUser:{
+  newUser: {
     fontSize: 18,
     color: '#9ca2ad',
-    
+
     marginTop: 25,
     marginBottom: 10,
     marginBottom: 10,
@@ -211,9 +223,9 @@ const styles = StyleSheet.create({
 
   label: {
     paddingLeft: 10,
-   alignItems: 'center',
-   justifyContent: 'center',
-   fontSize:15,
+    alignItems: 'center',
+    justifyContent: 'center',
+    fontSize: 15,
     color: '#828282',
   },
   inputArea: {
