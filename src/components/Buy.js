@@ -111,7 +111,7 @@ const Buy = ({ navigation }) => {
               style={{
                 borderColor: '#0004',
                 borderWidth: 1,
-                width: '50%',
+                width: '90%',
                 alignSelf: 'center',
                 borderRadius: 2,
                 marginBottom: -10,
@@ -160,7 +160,7 @@ const Buy = ({ navigation }) => {
                   style={{
                     borderColor: '#0004',
                     borderWidth: 1,
-                    width: '50%',
+                    width: '90%',
                     alignSelf: 'center',
                     borderRadius: 2,
                     marginBottom: -10,
@@ -305,8 +305,15 @@ const Buy = ({ navigation }) => {
                 );
               } else {
                 await buyprod();
+                setProduct([]);
                 setProduct([{ name: '', price: 0, amount: 0, expiry: '' }]);
-                setDate_array([new Date()])
+                setDate_array([new Date()]);
+                setAddress();
+                setAddress('');
+                setCustomerName();
+                setCustomerName('');
+                setPhoneNumber();
+                setPhoneNumber('')
               }
             }}
             style={styles.buyButton}>
@@ -345,8 +352,8 @@ const styles = StyleSheet.create({
     color: '#122E40',
     marginTop: 25,
     marginBottom: 10,
-    alignSelf: 'flex-start',
-    marginLeft: '5%',
+    
+    marginLeft: '10%',
   },
 
   inputBox: {
