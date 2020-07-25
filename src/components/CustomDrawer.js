@@ -11,7 +11,7 @@ const deviceHeight = Dimensions.get("window").height
 const deviceWidth = Dimensions.get("window").width
 
 const CustomDrawer = (props) => {
-    console.log('hereee')
+    // console.log('hereee')
     return (
         <DrawerContentScrollView {...props}>
 
