@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import Icon from 'react-native-vector-icons/Feather';
+import Icon from 'react-native-vector-icons/Foundation';
 import {
   Button,
   Body,
@@ -16,29 +16,13 @@ import {
   ActionSheet,
 } from 'native-base';
 import {
-  Alert,
-  FlatList,
-  SafeAreaView,
-  StyleSheet,
-  ScrollView,
-  View,
-  Text,
+  Alert, FlatList, SafeAreaView,
+  StyleSheet, ScrollView,
+  View,Text,
   StatusBar,
   TouchableOpacity,
   KeyboardAvoidingView,
-  Dimensions,
-} from 'react-native';
-
-const GENDER_MALE = 'Male';
-const GENDER_FEMALE = 'Female';
-
-const BUTTONS = [
-  {text: 'Option 0', icon: 'american-football', iconColor: '#2c8ef4'},
-  {text: 'Option 1', icon: 'analytics', iconColor: '#f42ced'},
-  {text: 'Option 2', icon: 'aperture', iconColor: '#ea943b'},
-  {text: 'Delete', icon: 'trash', iconColor: '#fa213b'},
-  {text: 'Cancel', icon: 'close', iconColor: '#25de5b'},
-];
+  Dimensions,} from 'react-native';
 
 export default class EmployeeListItem extends React.Component {
   componentDidMount() {
@@ -54,10 +38,11 @@ export default class EmployeeListItem extends React.Component {
           <TouchableOpacity
             onPress={() => this.props.onMenuPressed(this.props.item)}>
             <Icon
-              name="menu"
+              name="trash"
               color="grey"
               size={22}
               style={listItemStyles.icon}
+              // fill='black'
             />
           </TouchableOpacity>
 
@@ -84,21 +69,20 @@ const listItemStyles = StyleSheet.create({
     // backgroundColor:'red',
   },
   icon: {
-    paddingRight: 8,
-    flex: 0.12,
+    paddingRight: 12,
+    flex: 0.10,
   },
   name: {
     textAlign: 'left',
     flex: 0.3,
     fontSize: 16,
     paddingHorizontal: 4,
-    // backgroundColor:'red',
   },
   gender: {
     flex: 0.25,
     fontSize: 16,
     marginHorizontal: 4,
-    // backgroundColor:'cyan',
+
   },
   email: {
     flex: 0.3,

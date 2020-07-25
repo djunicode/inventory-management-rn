@@ -4,6 +4,7 @@ import RadioForm, {
   RadioButtonInput,
   RadioButtonLabel,
 } from 'react-native-simple-radio-button';
+import HeaderView from '../components/HeaderView';
 import {
   Button,
   Body,
@@ -103,6 +104,7 @@ export default class AddEmployee extends Component {
   render() {
     return (
       <Container style={{backgroundColor: '#F3F9FB'}}>
+        <HeaderView navigation={this.props.navigation} title={'Add Employee'} />
         <Content>
           <ScrollView>
             <Body>

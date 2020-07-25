@@ -15,9 +15,10 @@ const TransactionsScreen = ({navigation}) => {
 
       <Tabs>
         <Tab
+          
           activeTabStyle={{backgroundColor: '#4796BD'}}
           tabStyle={{backgroundColor: '#4796BD'}}
-          textStyle={{color: '#000'}}
+          textStyle={{color: '#fff'}}
           activeTextStyle={{color: '#fff', fontWeight: 'bold'}}
           heading="Inventory">
           <InventoryListScreen />
@@ -25,12 +26,12 @@ const TransactionsScreen = ({navigation}) => {
         <Tab
           activeTabStyle={{backgroundColor: '#4796BD'}}
           tabStyle={{backgroundColor: '#4796BD'}}
-          textStyle={{color: '#000'}}
+          textStyle={{color: '#fff'}}
           activeTextStyle={{color: '#fff', fontWeight: 'bold'}}
           heading="Near expiry">
           <ExpiryScreen />
         </Tab>
-      
+
       </Tabs>
     </Container>
   );

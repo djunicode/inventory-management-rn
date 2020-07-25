@@ -12,6 +12,7 @@ import DrawerScreen2 from './src/screens/TransactionsScreen';
 import EmployeeListScreen from './src/screens/EmployeeListScreen';
 import SplashScreen from './src/screens/SplashScreen';
 //import ExpiryScreen from './src/screens/ExpiryScreen';
+import CustomDrawer from './src/components/CustomDrawer'
 import ProfilePage from './src/screens/ProfilePage'
 import {
   NavigationContainer,
@@ -82,12 +83,13 @@ function StackFn() {
       />
       <EmployeeStack.Screen name="AddEmployee" component={AddEmployee} />
     </EmployeeStack.Navigator>
-  );
+  )
 }
 
 function BurgerBtn() {
   return (
-    <Drawer.Navigator initialRouteName="Home">
+    <Drawer.Navigator initialRouteName="Home" drawerContent={(props) => <CustomDrawer {...props} />}
+    >
       <Drawer.Screen
         name="Home"
         component={HomeScreen}
