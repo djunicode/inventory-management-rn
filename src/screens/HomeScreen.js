@@ -32,6 +32,8 @@ import HeaderView from '../components/HeaderView';
 import ProfitChart from '../components/ProfitChart';
 import MostSoldChart from '../components/MostSoldChart';
 import LeastSoldChart from '../components/LeastSoldChart';
+import SalesOverTime from '../components/SalesOverTime';
+import SalesPerItem from '../components/SalesPerItem';
 const DEVICE_WIDTH = Dimensions.get('screen').width;
 const DEVICE_HEIGHT = Dimensions.get('screen').height;
 import isAuthenticated from '../utils/isAuthenticated';
@@ -54,26 +56,28 @@ const Home = ({ navigation }) => {
   return (
     <ScrollView style={{ flex: 1 }}>
       <HeaderView navigation={navigation} title={'Home'} />
-      <TouchableOpacity
+
+
+      {/* <TouchableOpacity
         onPress={() => setdisplay(!display)}
         style={styles.button}>
         {
           display ?
             <Text
-              style={styles.buttonText}>
+              style={[styles.buttonText, { fontSize: 15 }]}>
               Hide Profit Chart
         </Text> :
             <Text
-              style={styles.buttonText}>
+              style={[styles.buttonText, { fontSize: 15 }]}>
               Show Profit Chart
       </Text>
         }
 
-      </TouchableOpacity>
-      {display ? (
+      </TouchableOpacity> */}
+      {/* {display ? (
         <View style={styles.chartView}>
           <Text style={styles.heading}>Profit</Text>
-          <ProfitChart />
+          <SalesOverTime />
         </View>
       ) : (
           <Content>
@@ -91,16 +95,27 @@ const Home = ({ navigation }) => {
             </Text>
             </Body>
           </Content>
-        )}
+        )} */}
 
       <View style={styles.chartView}>
+        <Text style={styles.heading}>Sales over time</Text>
+        <SalesOverTime />
+      </View>
+
+      <View style={styles.chartView}>
+        <Text style={styles.heading}>Sales per item</Text>
+        <SalesPerItem />
+      </View>
+
+
+      {/* <View style={styles.chartView}>
         <Text style={styles.heading}>Most Sold</Text>
         <MostSoldChart />
       </View>
       <View style={styles.chartView}>
         <Text style={styles.heading}>Least Sold</Text>
         <LeastSoldChart />
-      </View>
+      </View> */}
     </ScrollView>
   );
 };
@@ -115,6 +130,7 @@ const styles = StyleSheet.create({
     flex: 1,
     marginVertical: 20,
     marginHorizontal: 10,
+    marginTop: 30
   },
   buttonText: {
     fontSize: 18,
@@ -126,7 +142,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingVertical: 6,
   },
-  button:{
+  button: {
     flex: 1,
     alignItems: 'center',
     backgroundColor: '#4796BD',
