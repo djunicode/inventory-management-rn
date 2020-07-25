@@ -16,7 +16,7 @@ const HeaderView = ({ navigation,title }) => {
         <Text style={{fontSize: 21, color: '#fff'}}>{title}</Text>
       </Body>
       <Right>
-        <TouchableOpacity onPress={() => navigation.navigate('ProfilePage')}>
+        <TouchableOpacity onPress={() => navigation.replace('ProfilePage')}>
           <Icon name="user" color="white" size={35} />
         </TouchableOpacity>
       </Right>

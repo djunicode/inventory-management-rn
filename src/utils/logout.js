@@ -1,5 +1,5 @@
 import AsyncStorage from '@react-native-community/async-storage';
-import { StackActions, NavigationAction } from '@react-navigation/native';
+import { StackActions, NavigationActions } from '@react-navigation/native';
 
 export const logout = async (navigation) => {
     try {
@@ -20,8 +20,7 @@ export const logout = async (navigation) => {
         // console.log(await AsyncStorage.getItem('auth_key'));
         await AsyncStorage.removeItem('auth_key'); //Removing the token from local storage while logging out
         // console.log(await AsyncStorage.getItem('auth_key'));
-
-        navigation.navigate('LoginScreen')
+        navigation.replace('LoginScreen')
 
     } catch (err) {
         console.log(err)

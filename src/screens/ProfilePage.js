@@ -123,12 +123,13 @@ const ProfilePage = ({ navigation }) => {
             <Header style={{ backgroundColor: '#4796BD', flexDirection: 'row' }} androidStatusBarColor="#247096">
                 <Left>
                     <TouchableOpacity onPress={() => { navigation.navigate('Drawer') }}>
-                        <Icon name="arrow-left" color="white" size={35} />
+                        <Icon name="home" color="white" size={35} />
                     </TouchableOpacity>
                 </Left>
                 <Body>
-                    <Text style={{ fontSize: 21, color: '#fff' }}>Employee</Text>
+                    <Text style={{ fontSize: 21, color: '#fff' }}>Profile</Text>
                 </Body>
+
             </Header>
 
             {/* container */}
@@ -142,8 +143,8 @@ const ProfilePage = ({ navigation }) => {
             {
                 isReady &&
                 <View >
-                    <View style={{ flexDirection: 'row', marginVertical: 20, marginHorizontal: 40 }}>
-                        <Text style={styles.profileTitle}> Profile </Text>
+                    <View style={{ alignItems:'center',marginTop: 20, }}>
+                        {/* <Text style={styles.profileTitle}>  </Text> */}
 
                         {!editMode && <TouchableOpacity style={styles.editButton} onPress={() => toggleEditMode(!editMode)}>
                             <Icon name="edit" color="#4796BD" size={25} />
@@ -270,14 +271,14 @@ const styles = StyleSheet.create({
         color: '#4796BD',
     },
     editButton: {
-        flex: 0.4,
+        // flex: 0.6,
         borderColor: '#4796BD',
         borderWidth: 2,
-
+        width: 200,
+        height: 50,
         borderRadius: 10,
         paddingHorizontal: 10,
         paddingVertical: 5,
-
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center'
@@ -352,7 +353,7 @@ const styles = StyleSheet.create({
         marginHorizontal: 100,
         paddingVertical: 10,
         // paddingHorizontal: ,
-        borderRadius: 20,
+        borderRadius: 10,
         // flexDirection: 'row',
         // position:'fixed',
       },

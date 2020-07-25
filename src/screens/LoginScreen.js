@@ -65,9 +65,7 @@ const LoginScreen = ({ navigation }) => {
               console.log('is_staff not saved in async storage properly');
               console.log(error)
             }
-            setUserEmail("")
-            setUserPassword("")
-            navigation.navigate('Drawer')
+            navigation.replace('Drawer');
           })
           .catch((err) => {
             console.log(err)
