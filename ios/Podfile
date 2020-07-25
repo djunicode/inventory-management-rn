@@ -38,6 +38,8 @@ target 'rn_inventory' do
 
   pod 'toolbar-android', :path => '../node_modules/@react-native-community/toolbar-android'
 
+  pod 'rn-fetch-blob', :path => '../node_modules/rn-fetch-blob'
+
   target 'rn_inventoryTests' do
     inherit! :search_paths
     # Pods for testing
