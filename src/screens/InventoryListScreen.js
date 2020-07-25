@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect} from 'react';
 import RadioForm, {
   RadioButton,
   RadioButtonInput,
@@ -32,13 +32,16 @@ import {
   KeyboardAvoidingView,
   Dimensions,
   Modal,
+  ActivityIndicator,
+  TextInput,
 } from 'react-native';
 import NumericInput from 'react-native-numeric-input';
 import AsyncStorage from '@react-native-community/async-storage';
 import InventoryListItem from '../components/InventoryListItem';
 import HeaderView from '../components/HeaderView';
+import {log} from 'react-native-reanimated';
 
-const InventoryListScreen = ({ navigation }) => {
+const InventoryListScreen = ({navigation}) => {
   const [inventoryList, setInventoryList] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
   const [updateSellPrice, setUpdateSellPrice] = useState('');
@@ -46,27 +49,41 @@ const InventoryListScreen = ({ navigation }) => {
   const [upperLimit, setUpperLimit] = useState(0);
   const [lowerLimit, setLowerLimit] = useState(0);
   const [updateProd, setUpdateProd] = useState({});
-  const [limit, setLimit] = useState(10);
+  const [limit, setLimit] = useState(8);
   const [offset, setOffset] = useState(0);
-
+  const [end, setEnd] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isSearch, setIsSearch] = useState(false);
   useEffect(() => {
-    getInventoryList(offset);
-  }, [inventoryList]);
+    getInventoryList(0);
+  }, []);
 
-  const getInventoryList = async (offset) => {
+  const getInventoryList = async offs => {
+    console.log(offs);
+    setIsLoading(false);
     const auth_key = await AsyncStorage.getItem('auth_key');
-    fetch(`http://chouhanaryan.pythonanywhere.com/api/productlist/?limit=${limit}&offset=${offset}`, {
-      method: 'GET',
-      headers: {
-        Authorization: `Token ${auth_key}`,
+    fetch(
+      `http://chouhanaryan.pythonanywhere.com/api/productlist/?limit=${limit}&offset=${offs}`,
+      {
+        method: 'GET',
+        headers: {
+          Authorization: `Token ${auth_key}`,
+        },
       },
-    })
+    )
       .then(res => res.json())
       .then(data => {
-        const tempInventoryList = [...inventoryList, ...data.results]
-        if (data.results.length !== 0) {
-          setOffset(offset + 10)
-          setInventoryList(tempInventoryList);
+        setEnd(data.count);
+        console.log(data.previous, 'prev');
+        if (data.previous != null) {
+          const tempInventoryList = [...inventoryList, ...data.results];
+          if (data.results.length !== 0) {
+            setInventoryList(tempInventoryList);
+          }
+        } else {
+          if (data.results.length !== 0) {
+            setInventoryList(data.results);
+          }
         }
       })
       .catch(err => console.log(err));
@@ -76,19 +93,49 @@ const InventoryListScreen = ({ navigation }) => {
     const auth_key = await AsyncStorage.getItem('auth_key');
     await fetch(
       `http://chouhanaryan.pythonanywhere.com/api/productlist/${
-      inventoryItem.id
+        inventoryItem.id
       }/`,
       {
         method: 'DELETE',
-        headers: { Authorization: `Token ${auth_key}` },
+        headers: {Authorization: `Token ${auth_key}`},
       },
-    ).then(
-      console.log('deleted successfully!'),
-      setInventoryList(inventoryList.filter((item) => item.id !== inventoryItem.id))
     )
-
+      .then(() => {
+        setOffset(0);
+        getInventoryList(0);
+        console.log('deleted successfully!');
+      })
+      .catch(e => {
+        console.log(e);
+      });
   };
 
+  const performSearch = async search => {
+    console.log(search);
+    if (isSearch) {
+      const auth_key = await AsyncStorage.getItem('auth_key');
+      fetch(
+        'http://chouhanaryan.pythonanywhere.com/api/prodsearch/?search=' +
+          search,
+        {
+          method: 'GET',
+          headers: {
+            Authorization: `Token ${auth_key}`,
+          },
+        },
+      )
+        .then(response => response.json())
+        .then(response => {
+           console.log(response,'w');
+           console.log(inventoryList,'h')
+            setInventoryList(response);
+          
+        })
+        .catch(error => {
+          console.log(error);
+        });
+    }
+  };
   const updateProductPost = async () => {
     let formData = new FormData();
     const looseVal = updateProd.loose === true ? 'True' : 'False';
@@ -113,12 +160,28 @@ const InventoryListScreen = ({ navigation }) => {
       .then(res => res.json())
       .then(data => {
         console.log(data);
-        getInventoryList();
+        setOffset(0);
+        getInventoryList(0);
         Alert.alert('Success!', 'Product Updated');
       })
       .catch(err => console.log(err));
     setUpdateName('');
     setUpdateSellPrice(null);
+  };
+  const handleReach = () => {
+    if (!isSearch) {
+      false;
+      const newOff = offset + limit;
+      
+      if (newOff < end) {
+        setIsLoading(true);
+       
+          setOffset(newOff);
+          console.log(newOff, limit, end);
+          getInventoryList(newOff);
+        
+      }
+    }
   };
 
   const onMenuPressed = inventoryItem => {
@@ -132,7 +195,11 @@ const InventoryListScreen = ({ navigation }) => {
           onPress: () => {
             setUpdateProd(inventoryItem);
             setUpdateName(inventoryItem.name);
-            setUpdateSellPrice(inventoryItem.latest_selling_price.toString());
+            if (inventoryItem.latest_selling_price) {
+              setUpdateSellPrice(inventoryItem.latest_selling_price.toString());
+            } else {
+              setUpdateSellPrice('Not assigned');
+            }
             console.log(inventoryItem.latest_selling_price);
             setUpperLimit(inventoryItem.upper_limit);
             setLowerLimit(inventoryItem.lower_limit);
@@ -154,14 +221,12 @@ const InventoryListScreen = ({ navigation }) => {
     );
   };
   var radio_props = [
-    { label: 'Loose', value: true },
-    { label: 'Packed', value: false },
+    {label: 'Loose', value: true},
+    {label: 'Packed', value: false},
   ];
 
   return (
-    <Container style={{ backgroundColor: '#F3F9FB' }}>
-     
-
+    <Container style={{backgroundColor: '#F3F9FB'}}>
       <Modal
         animationType="slide"
         transparent={true}
@@ -173,7 +238,7 @@ const InventoryListScreen = ({ navigation }) => {
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
             <Text style={styles.product_titles}>Update Product</Text>
-            <View style={{ alignItems: 'flex-start', marginVertical: 20 }}>
+            <View style={{alignItems: 'flex-start', marginVertical: 20}}>
               <Item floatingLabel style={styles.inputBox}>
                 <Label style={styles.label}>Product Name</Label>
                 <Input
@@ -184,7 +249,6 @@ const InventoryListScreen = ({ navigation }) => {
                   value={updateName}
                 />
               </Item>
-
               <Item floatingLabel style={styles.inputBox}>
                 <Label style={styles.label}>Selling Price</Label>
                 <Input
@@ -197,7 +261,7 @@ const InventoryListScreen = ({ navigation }) => {
                 />
               </Item>
             </View>
-            <View style={{ paddingLeft: 10, }}>
+            <View style={{paddingLeft: 10}}>
               <Text
                 style={{
                   marginTop: 10,
@@ -206,7 +270,7 @@ const InventoryListScreen = ({ navigation }) => {
                   fontWeight: '800',
                 }}>
                 Recommended Limit
-            </Text>
+              </Text>
               <NumericInput
                 value={upperLimit}
                 onChange={value => {
@@ -218,8 +282,8 @@ const InventoryListScreen = ({ navigation }) => {
                 maxValue={99999}
                 onLimitReached={(isMAx, msg) => console.log(msg)}
                 step={1}
-                iconStyle={{ fontSize: 15, color: '#434A5E' }}
-                inputStyle={{ fontSize: 18, color: '#434A5E' }}
+                iconStyle={{fontSize: 15, color: '#434A5E'}}
+                inputStyle={{fontSize: 18, color: '#434A5E'}}
                 valueType="real"
                 borderColor="#C7CBD6"
                 rightButtonBackgroundColor="#C7CBD6"
@@ -233,7 +297,7 @@ const InventoryListScreen = ({ navigation }) => {
                   fontWeight: '800',
                 }}>
                 Critical Limit
-            </Text>
+              </Text>
               <NumericInput
                 value={lowerLimit}
                 onChange={value => {
@@ -245,28 +309,31 @@ const InventoryListScreen = ({ navigation }) => {
                 maxValue={99999}
                 onLimitReached={(isMAx, msg) => console.log(msg)}
                 step={1}
-                iconStyle={{ fontSize: 15, color: '#434A5E' }}
-                inputStyle={{ fontSize: 18, color: '#434A5E' }}
+                iconStyle={{fontSize: 15, color: '#434A5E'}}
+                inputStyle={{fontSize: 18, color: '#434A5E'}}
                 valueType="real"
                 borderColor="#C7CBD6"
                 rightButtonBackgroundColor="#C7CBD6"
                 leftButtonBackgroundColor="#C7CBD6"
               />
             </View>
-            <Text style={{
-              marginTop: 30,
-              fontSize: 17,
-              fontWeight: '800',
-              paddingLeft: 10,
-            }}>Type</Text>
+            <Text
+              style={{
+                marginTop: 30,
+                fontSize: 17,
+                fontWeight: '800',
+                paddingLeft: 10,
+              }}>
+              Type
+            </Text>
             <RadioForm
               radio_props={radio_props}
               labelHorizontal={true}
               formHorizontal={true}
               buttonColor={'#434A5E'}
               labelColor={'#434A5E'}
-              labelStyle={{ marginRight: 20, }}
-              style={{ paddingLeft: 10, marginTop: 8 }}
+              labelStyle={{marginRight: 20}}
+              style={{paddingLeft: 10, marginTop: 8}}
               onPress={value => {
                 updateProd.loose = value;
                 setUpdateProd(updateProd);
@@ -290,6 +357,37 @@ const InventoryListScreen = ({ navigation }) => {
         {/* the entire outerpart */}
         <Body style={styles.listContainer}>
           {/* the header of table */}
+          <TextInput
+            underlineColorAndroid="transparent"
+            style={styles.inputStyle}
+            placeholder=" Search Product"
+            placeholderTextColor="gray"
+            multiline={false}
+            onEndEditing={e => {
+              console.log(e.nativeEvent.text);
+              if (e.nativeEvent.text === '') {
+                setOffset(0);
+                console.log('bb');
+                getInventoryList(0);
+              }
+            }}
+            onChangeText={search => {
+              if (search === '') {
+                setIsSearch(false);
+                setOffset(0);
+                console.log('h');
+                setIsLoading(true);
+                setInventoryList([]);
+                getInventoryList(0);
+              } else {
+                setIsSearch(true);
+                setInventoryList([]);
+                setTimeout(() => {
+                  performSearch(search);
+                }, 1500);
+              }
+            }}
+          />
           <View style={styles.tableHeader}>
             <CardItem
               style={{
@@ -303,25 +401,26 @@ const InventoryListScreen = ({ navigation }) => {
               <Text style={styles.priceHeader}>Price</Text>
             </CardItem>
           </View>
-
-          {/* the inner list */}
-          <ScrollView>
-            <View>
-              <FlatList
-                style={styles.flatlist}
-                data={inventoryList}
-                renderItem={({ item }) => (
-                  <InventoryListItem
-                    onMenuPressed={data => onMenuPressed(data)}
-                    item={item}
-                  />
-                )}
-                keyExtractor={item => item.id}
+          <FlatList
+            style={styles.flatlist}
+            data={inventoryList}
+            extraData={inventoryList}
+            renderItem={({item}) => (
+              <InventoryListItem
+                onMenuPressed={data => onMenuPressed(data)}
+                item={item}
               />
-            </View>
-          </ScrollView>
-
-          {/* the add employee button */}
+            )}
+            keyExtractor={item => item.id}
+            onEndReached={!isSearch && handleReach}
+            onEndReachedThreshold={!isSearch && 0.2}
+            ListFooterComponent={() => {
+              if (isLoading) {
+                return <ActivityIndicator size="large" color="#828282" />;
+              }
+              return null;
+            }}
+          />
         </Body>
       </Content>
     </Container>
@@ -349,7 +448,8 @@ const styles = StyleSheet.create({
   flatlist: {
     width: DEVICE_WIDTH - 32,
     backgroundColor: '#fff',
-    height: 500,
+    height: 488,
+    alignSelf: 'center',
   },
   tableHeader: {
     backgroundColor: '#e7eff2',
@@ -359,6 +459,18 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 20,
     borderTopLeftRadius: 20,
     alignContent: 'stretch',
+  },
+  inputStyle: {
+    marginVertical: 16,
+    marginHorizontal: 20,
+    height: 55,
+    paddingHorizontal: 25,
+    alignSelf: 'stretch',
+    borderWidth: 2,
+    fontSize: 23,
+    borderColor: '#4796BD',
+    borderRadius: 28,
+    color: 'black',
   },
   productNameHeader: {
     fontSize: 18,
@@ -384,7 +496,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     borderRadius: 20,
     flexDirection: 'row',
-    alignSelf: 'center'
+    alignSelf: 'center',
     // position:'fixed',
   },
   addEmployeeButtonText: {
