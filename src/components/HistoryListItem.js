@@ -1,6 +1,8 @@
 import React, {Component} from 'react';
 import {CardItem} from 'native-base';
-import {StyleSheet, ScrollView, View, Text} from 'react-native';
+import {StyleSheet, ScrollView, View, Text,PermissionsAndroid} from 'react-native';
+import Icon from "react-native-vector-icons/MaterialCommunityIcons";
+import RNFetchBlob from 'rn-fetch-blob'
 
 export default class HistoryListItem extends React.Component {
   componentDidMount() {
@@ -19,6 +21,41 @@ export default class HistoryListItem extends React.Component {
     return transactions.reduce((acc, obj) => acc + obj.rate * obj.quantity, 0);
   };
   //row=this.props.item could have done this rather than writing this.props.item evrywhere
+  actualDownload = (id) => {
+    const { dirs } = RNFetchBlob.fs;
+   RNFetchBlob.config({
+     fileCache: true,
+     addAndroidDownloads: {
+     useDownloadManager: true,
+     mime: 'application/pdf',
+     notification: true,
+     mediaScannable: true,
+     title: 'transactions/'+`${id}`+'.pdf',
+     path: `${dirs.DownloadDir}/transactions${id}.pdf`,
+     },
+   })
+     .fetch('GET', `http://chouhanaryan.pythonanywhere.com/api/pdf/${id}`, {})
+     .then((res) => {
+       console.log('The file saved to ', res.path());
+     })
+     .catch((e) => {
+       console.log(e)
+     });
+ }
+
+  downloadFile =async (id) => {
+    try {
+        const granted = await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE);
+        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+          this.actualDownload(id);
+        } else {
+          Alert.alert('Permission Denied!', 'You need to give storage permission to download the file');
+        }
+      } catch (err) {
+        console.warn(err);
+      } 
+  }
+
   render() {
     return (
       <View style={listItemStyles.container}>
@@ -30,32 +67,13 @@ export default class HistoryListItem extends React.Component {
             alignContent: 'center',
             textAlign: 'center',
           }}>
-          {/* <Text style={listItemStyles.date}>
-            {this.parseDate(this.props.item.date_time)}
-          </Text> */}
           <Text style={listItemStyles.type}>
             {this.props.item.in_or_out == 'In' ? 'Buy' : 'Sell'}
           </Text>
-          <Text style={listItemStyles.product}>
-            {/* {this.props.item.transaction.map((val, index) =>
-              index === this.props.item.transaction.length - 1
-                ? val.name
-                : `${val.name}, `,
-            )} */}
-            {this.props.item.name}
-          </Text>
-          <Text style={listItemStyles.items}>
-            {/* {this.props.item.transaction.map((val, index) =>
-              index === this.props.item.transaction.length - 1
-                ? val.quantity
-                : `${val.quantity}, `,
-            )} */}
-            {this.props.item.quantity}
-          </Text>
-          <Text style={listItemStyles.price}>
-            {/* {this.parsePrice(this.props.item.transaction)} */}
-            {this.props.item.rate}
-          </Text>
+          <Text style={listItemStyles.product}>{this.props.item.name}</Text>
+          <Text style={listItemStyles.items}>{this.props.item.quantity}</Text>
+          <Text style={listItemStyles.price}>{this.props.item.rate}</Text>
+<Icon name="download" size={30} color="black" style={{flex:0.1}} onPress={()=>{this.downloadFile(this.props.item.id)}}/>
         </CardItem>
       </View>
     );
@@ -68,10 +86,7 @@ const listItemStyles = StyleSheet.create({
     borderColor: '#E0E0E0',
     borderWidth: 0.5,
   },
-  // date: {
-  //   flex: 0.24,
-  //   fontSize: 16,
-  // },
+
   type: {
     flex: 0.25,
     fontSize: 16,
@@ -79,18 +94,16 @@ const listItemStyles = StyleSheet.create({
   product: {
     flex: 0.3,
     fontSize: 16,
+    marginLeft:-10
   },
   items: {
     flex: 0.25,
     fontSize: 16,
-    // textAlign: 'center',
+    marginLeft:5
   },
   price: {
     flex: 0.2,
     fontSize: 16,
-    // textAlign: 'center'
+    
   },
-
-  // backgroundColor: '#4796BD', blue
-  // backgroundColor: '#E0E0E0', grey
 });
