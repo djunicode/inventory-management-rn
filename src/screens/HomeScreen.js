@@ -97,7 +97,6 @@ const Home = ({ navigation }) => {
         <Text style={styles.heading}>Most Sold</Text>
         <MostSoldChart />
       </View>
-
       <View style={styles.chartView}>
         <Text style={styles.heading}>Least Sold</Text>
         <LeastSoldChart />

@@ -10,6 +10,7 @@ import HeaderView from '../components/HeaderView';
 const deviceHeight = Dimensions.get('window').height;
 
 const TransactionsScreen = ({navigation}) => {
+  
   return (
     <Container>
       <HeaderView navigation={navigation} title={'Transactions'} />
@@ -19,13 +20,13 @@ const TransactionsScreen = ({navigation}) => {
           activeTabStyle={{backgroundColor: '#4796BD'}}
           tabStyle={{backgroundColor: '#4796BD'}}
           heading="Buy">
-          <Buy />
+          <Buy  />
         </Tab>
         <Tab
           activeTabStyle={{backgroundColor: '#4796BD'}}
           tabStyle={{backgroundColor: '#4796BD'}}
           heading="Sell">
-          <Sell />
+          <Sell  />
         </Tab>
         <Tab
           activeTabStyle={{backgroundColor: '#4796BD'}}

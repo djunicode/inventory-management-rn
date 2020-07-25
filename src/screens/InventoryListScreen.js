@@ -126,10 +126,9 @@ const InventoryListScreen = ({navigation}) => {
       )
         .then(response => response.json())
         .then(response => {
-           console.log(response,'w');
-           console.log(inventoryList,'h')
-            setInventoryList(response);
-          
+          console.log(response, 'w');
+          console.log(inventoryList, 'h');
+          setInventoryList(response);
         })
         .catch(error => {
           console.log(error);
@@ -172,14 +171,13 @@ const InventoryListScreen = ({navigation}) => {
     if (!isSearch) {
       false;
       const newOff = offset + limit;
-      
+
       if (newOff < end) {
         setIsLoading(true);
-       
-          setOffset(newOff);
-          console.log(newOff, limit, end);
-          getInventoryList(newOff);
-        
+
+        setOffset(newOff);
+        console.log(newOff, limit, end);
+        getInventoryList(newOff);
       }
     }
   };

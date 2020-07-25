@@ -67,11 +67,12 @@ const HistoryScreen = ({navigation}) => {
               {/* <Text style={styles.dateHeader}>Date</Text> */}
               {/* <Text style={styles.typeHeader}>Type</Text>
               <Text style={styles.productHeader}>Product</Text>
-              <Text style={styles.itemsHeader}>Items</Text>
+              <Text style={styles.noOfItemsHeader}>Items</Text>
               <Text style={styles.priceHeader}>Price</Text> */}
+              
               <Text style={styles.typeHeader}>Type</Text>
               <Text style={styles.productHeader}>Product</Text>
-              <Text style={styles.itemsHeader}>Quanity</Text>
+              <Text style={styles.noOfItemsHeader}>Quanity</Text>
               <Text style={styles.priceHeader}>Rate</Text>
             </CardItem>
           </View>
@@ -83,8 +84,9 @@ const HistoryScreen = ({navigation}) => {
             }>
             <View>
               <FlatList
+              initialNumToRender={10}
                 style={styles.flatlist}
-                data={transactionlist}
+                data={transactionlist.reverse()}
                 // scrollEnabled={true}
                 renderItem={({item}) => <HistoryListItem item={item} />}
                 keyExtractor={item => item.id}
@@ -125,29 +127,27 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 20,
     borderTopLeftRadius: 20,
   },
-  itemsHeader: {
-    flex: 0.25,
+  typeHeader: {
+    flex: 0.15,
     fontSize: 16,
     fontWeight: 'bold',
+    marginLeft:-20
   },
   productHeader: {
     flex: 0.3,
     fontSize: 16,
     fontWeight: 'bold',
   },
-  typeHeader: {
-    flex: 0.25,
+  noOfItemsHeader: {
+    flex: 0.20,
     fontSize: 16,
     fontWeight: 'bold',
+    marginLeft:-10
   },
-  // dateHeader: {
-  //   flex: 0.22,
-  //   fontSize: 16,
-  //   fontWeight: 'bold',
-  // },
   priceHeader: {
-    flex: 0.2,
+    flex: 0.22,
     fontSize: 16,
     fontWeight: 'bold',
+    marginLeft:10
   },
 });

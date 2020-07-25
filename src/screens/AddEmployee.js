@@ -46,7 +46,7 @@ export default class AddEmployee extends Component {
       inval_pass: false,
       inval_confpass: false,
       failed: false,
-      is_staff:true,
+      is_staff: true,
     };
   }
   async keyy() {
@@ -238,7 +238,7 @@ export default class AddEmployee extends Component {
                 labelStyle={{marginRight: 20}}
                 style={{paddingLeft: 10, marginTop: 8}}
                 onPress={value => {
-                  this.setState(({is_staff:value}))
+                  this.setState({is_staff: value});
                 }}
               />
 

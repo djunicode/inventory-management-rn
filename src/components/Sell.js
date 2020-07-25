@@ -32,6 +32,10 @@ const Sell = ({navigation}) => {
   const [selected, setSelected] = useState('key1');
   const [list, setProductsList] = useState([]);
 
+  const [customerName, setCustomerName] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
+  const [address, setAddress] = useState('');
+
   const onPickerValueChange = (item_name, item_index, product_index) => {
     setSelected(item_name);
     console.log('this is name:', item_name);
@@ -44,7 +48,7 @@ const Sell = ({navigation}) => {
   };
 
   useEffect(() => {
-    setProduct([{name: 'Pick a value', price: 0, amount: 0}]);
+    setProduct([{name: 'Pick a value', price: '', amount: ''}]);
     apiFetch();
   }, []);
 
@@ -67,8 +71,8 @@ const Sell = ({navigation}) => {
     await product.forEach(async product => {
       const formData = new FormData();
       formData.append('name', product.name);
-      formData.append('quantity', product.amount);
-      formData.append('latest_selling_price', product.price);
+      formData.append('quantity', parseInt(product.amount));
+      formData.append('latest_selling_price', parseFloat(product.price));
       var myHeaders = new Headers();
       const auth_key = await AsyncStorage.getItem('auth_key');
 
@@ -84,15 +88,7 @@ const Sell = ({navigation}) => {
         .then(result => console.log(result))
         .catch(error => console.log('error', error));
 
-      // const config = { headers: { Authorization: `Token ${token}` } };
-      //       const response = await axios.post(
-      //         'http://chouhanaryan.pythonanywhere.com/api/sell/',
-      //         formData,
-      //         config
-      //       );
-      //       const {data} = response;
-      //       console.log(JSON.stringify(data) + ' here is selling data');
-      //     });
+    
     });
   };
 
@@ -101,6 +97,52 @@ const Sell = ({navigation}) => {
       <Content>
         <Body>
           <Text style={styles.heading}>Sell Items</Text>
+          
+          {/* separator line above name, phone no. and address fields */}
+          <View style={{ flex: 1, flexDirection: 'row', marginBottom: 10 }}>
+            <View
+              style={{
+                borderColor: '#0004',
+                borderWidth: 1,
+                width: '90%',
+                alignSelf: 'center',
+                borderRadius: 2,
+                marginBottom: -10,
+                marginTop: 5,
+              }}
+            />
+          </View>
+
+          {/* customer name */}
+          <Item floatingLabel style={styles.inputBox}>
+            <Label style={styles.label}>Customer Name</Label>
+            <Input
+              style={styles.inputArea}
+              value={customerName}
+              onChangeText={value => setCustomerName(value)}
+            />
+          </Item>
+
+          {/* phone number */}
+          <Item floatingLabel style={styles.inputBox}>
+            <Label style={styles.label}>Phone number</Label>
+            <Input
+              style={styles.inputArea}
+              keyboardType='number-pad'
+              value={phoneNumber}
+              onChangeText={value => setPhoneNumber(value)}
+            />
+          </Item>
+
+          {/* address */}
+          <Item floatingLabel style={styles.inputBox}>
+            <Label style={styles.label}>Address</Label>
+            <Input
+              style={styles.inputArea}
+              value={address}
+              onChangeText={value => setAddress(value)}
+            />
+          </Item>
 
           {product.map((product_item, product_index) => {
             return (
@@ -112,7 +154,7 @@ const Sell = ({navigation}) => {
                   style={{
                     borderColor: '#0004',
                     borderWidth: 1,
-                    width: '50%',
+                    width: '90%',
                     alignSelf: 'center',
                     borderRadius: 2,
                     marginBottom: -10,
@@ -121,7 +163,7 @@ const Sell = ({navigation}) => {
                 />
 
                 <Text style={styles.product_titles}>
-                  Product {product.length == 1 ? '1' : product_index + 1}
+                  Product {product.length == 1 ? '' : product_index + 1}
                 </Text>
                 <View
                   style={{
@@ -197,7 +239,7 @@ const Sell = ({navigation}) => {
                 product[product.length - 1].amount
               ) {
                 let copy = [...product];
-                copy.push({name: '', price: 0, amount: 0});
+                copy.push({name: '', price: '', amount: ''});
                 setProduct(copy);
               } else {
                 Alert.alert(
@@ -230,8 +272,8 @@ const Sell = ({navigation}) => {
                 Alert.alert('please select all unique items');
               } else if (
                 product[product.length - 1].name == '' ||
-                product[product.length - 1].price == 0 ||
-                product[product.length - 1].amount == 0
+                product[product.length - 1].price == '' ||
+                product[product.length - 1].amount == ''
               ) {
                 Alert.alert(
                   `Please fill valid details for product ${product.length}`,
@@ -260,8 +302,15 @@ const Sell = ({navigation}) => {
                   );
                 } else {
                   console.log('finally sold!!');
-                  sellprod();
-                  setProduct([{name: '', price: 0, amount: 0}]);
+                  await sellprod();
+                  await setProduct([]);
+                  await setProduct([{name: '', price: '', amount: ''}]);
+                  await setAddress();
+                await setAddress('');
+                await  setCustomerName();
+                await setCustomerName('');
+                await setPhoneNumber();
+                await setPhoneNumber('')
                 }
               }
             }}
