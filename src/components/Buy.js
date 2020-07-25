@@ -305,15 +305,15 @@ const Buy = ({ navigation }) => {
                 );
               } else {
                 await buyprod();
-                setProduct([]);
-                setProduct([{ name: '', price: 0, amount: 0, expiry: '' }]);
-                setDate_array([new Date()]);
-                setAddress();
-                setAddress('');
-                setCustomerName();
-                setCustomerName('');
-                setPhoneNumber();
-                setPhoneNumber('')
+               await  setProduct([]);
+               await  setProduct([{ name: '', price: 0, amount: 0, expiry: '' }]);
+                await setDate_array([new Date()]);
+                await setAddress();
+                await setAddress('');
+                await  setCustomerName();
+                await setCustomerName('');
+                await setPhoneNumber();
+                await setPhoneNumber('')
               }
             }}
             style={styles.buyButton}>

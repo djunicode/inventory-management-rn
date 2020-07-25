@@ -303,14 +303,14 @@ const Sell = ({navigation}) => {
                 } else {
                   console.log('finally sold!!');
                   await sellprod();
-                  setProduct([]);
-                  setProduct([{name: '', price: '', amount: ''}]);
-                  setAddress();
-                setAddress('');
-                setCustomerName();
-                setCustomerName('');
-                setPhoneNumber();
-                setPhoneNumber('')
+                  await setProduct([]);
+                  await setProduct([{name: '', price: '', amount: ''}]);
+                  await setAddress();
+                await setAddress('');
+                await  setCustomerName();
+                await setCustomerName('');
+                await setPhoneNumber();
+                await setPhoneNumber('')
                 }
               }
             }}
