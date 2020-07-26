@@ -8,6 +8,9 @@ import {
 } from 'native-base';
 import Icon from 'react-native-vector-icons/Feather';
 
+import { isTokenValid } from '../utils/isTokenValid'
+import { logout } from '../utils/logout'
+
 const ProfilePage = ({ navigation }) => {
 
     const [editMode, toggleEditMode] = useState(false)
@@ -21,29 +24,7 @@ const ProfilePage = ({ navigation }) => {
 
     const [isReady, setReady] = useState(false);
 
-    async function Logout() {
-
-        const auth_key = await AsyncStorage.getItem('auth_key')
-
-        await fetch('http://chouhanaryan.pythonanywhere.com/auth/token/logout/', {
-            method: 'POST',
-            headers: { Authorization: `Token ${auth_key}` }
-        })
-            .then((res) => {
-                console.log('here response', res.json())
-                return res.json()
-            })
-            .catch((err) => {
-                console.log(err)
-            })
-
-        // console.log(await AsyncStorage.getItem('auth_key'));
-        await AsyncStorage.removeItem('auth_key'); //Removing the token from local storage while logging out
-        // console.log(await AsyncStorage.getItem('auth_key'));
-
-        navigation.navigate('LoginScreen');
-    }
-
+    
     useEffect(() => {
         getCurrentUserInfo();
     }, []);     //called only when component mounted 
@@ -51,38 +32,44 @@ const ProfilePage = ({ navigation }) => {
     const getCurrentUserInfo = async () => {
 
         try {
-            const auth_key = await AsyncStorage.getItem('auth_key');
+            const tokenValidity = await isTokenValid(navigation)
+            console.log('token valid? ',tokenValidity)
+            if (tokenValidity){
+                const auth_key = await AsyncStorage.getItem('auth_key');
 
-            const res = await fetch('http://chouhanaryan.pythonanywhere.com/auth/users/me/', {
-                method: 'GET',
-                headers: {
-                    Authorization: `Token ${auth_key}`,
-                },
-            })
-
-            const data = await res.json()
-            console.log(data)
-            const firstName = data.first_name
-            const lastName = data.last_name
-            const age = data.age.toString()
-            const email = data.email
-            const gender = data.gender === 'F' ? 'Female' : 'Male'
-            const isStaff = data.is_staff
-
-            //set user details to state
-            updateAge(age)
-            updateEmail(email)
-            updateFirstName(firstName)
-            updateLastName(lastName)
-            updateGender(gender)
-            updateIsStaff(isStaff)
-
-            if (res.status === 200) {
-                setReady(true);
+                const res = await fetch('http://chouhanaryan.pythonanywhere.com/auth/users/me/', {
+                    method: 'GET',
+                    headers: {
+                        Authorization: `Token ${auth_key}`,
+                    },
+                })
+    
+                const data = await res.json()
+                console.log(data)
+                const firstName = data.first_name
+                const lastName = data.last_name
+                const age = data.age.toString()
+                const email = data.email
+                const gender = data.gender === 'F' ? 'Female' : 'Male'
+                const isStaff = data.is_staff
+    
+                //set user details to state
+                updateAge(age)
+                updateEmail(email)
+                updateFirstName(firstName)
+                updateLastName(lastName)
+                updateGender(gender)
+                updateIsStaff(isStaff)
+    
+                if (res.status === 200) {
+                    setReady(true);
+                }
+            } else {
+                logout(navigation)
             }
 
         } catch (err) {
-            console.log('here' , err)
+            console.log('error' , err)
         }
     }
 
@@ -136,12 +123,13 @@ const ProfilePage = ({ navigation }) => {
             <Header style={{ backgroundColor: '#4796BD', flexDirection: 'row' }} androidStatusBarColor="#247096">
                 <Left>
                     <TouchableOpacity onPress={() => { navigation.navigate('Drawer') }}>
-                        <Icon name="arrow-left" color="white" size={35} />
+                        <Icon name="home" color="white" size={35} />
                     </TouchableOpacity>
                 </Left>
                 <Body>
-                    <Text style={{ fontSize: 21, color: '#fff' }}>Employee</Text>
+                    <Text style={{ fontSize: 21, color: '#fff' }}>Profile</Text>
                 </Body>
+
             </Header>
 
             {/* container */}
@@ -155,8 +143,8 @@ const ProfilePage = ({ navigation }) => {
             {
                 isReady &&
                 <View >
-                    <View style={{ flexDirection: 'row', marginVertical: 20, marginHorizontal: 40 }}>
-                        <Text style={styles.profileTitle}> Profile </Text>
+                    <View style={{ alignItems:'center',marginTop: 20, }}>
+                        {/* <Text style={styles.profileTitle}>  </Text> */}
 
                         {!editMode && <TouchableOpacity style={styles.editButton} onPress={() => toggleEditMode(!editMode)}>
                             <Icon name="edit" color="#4796BD" size={25} />
@@ -263,13 +251,12 @@ const ProfilePage = ({ navigation }) => {
                     <TouchableOpacity
                         style={styles.logoutButton}
                         onPress={() => {
-                            Logout();
+                            logout(navigation)
                         }}>
                         <Text style={styles.logoutText}>Logout</Text>
                     </TouchableOpacity>
 
                 </View>}
-
         </ScrollView>
     );
 };
@@ -284,14 +271,14 @@ const styles = StyleSheet.create({
         color: '#4796BD',
     },
     editButton: {
-        flex: 0.4,
+        // flex: 0.6,
         borderColor: '#4796BD',
         borderWidth: 2,
-
+        width: 200,
+        height: 50,
         borderRadius: 10,
         paddingHorizontal: 10,
         paddingVertical: 5,
-
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center'
@@ -366,7 +353,7 @@ const styles = StyleSheet.create({
         marginHorizontal: 100,
         paddingVertical: 10,
         // paddingHorizontal: ,
-        borderRadius: 20,
+        borderRadius: 10,
         // flexDirection: 'row',
         // position:'fixed',
       },

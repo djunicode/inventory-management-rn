@@ -9,6 +9,7 @@ export default class SplashScreen extends React.Component {
   componentDidMount = async () => {
     try {
       const auth_key = await AsyncStorage.getItem('auth_key')   // gets auth token from async storage
+      console.log('authkey', auth_key)
       const data = await fetch('http://chouhanaryan.pythonanywhere.com/auth/users/me/', {
         method: "GET",
         headers: {
@@ -20,7 +21,7 @@ export default class SplashScreen extends React.Component {
         setTimeout(
           () => this.props.navigation.dispatch(StackActions.replace('Drawer')),
           1000,
-        );
+        )
       } else {
         setTimeout(
           () =>

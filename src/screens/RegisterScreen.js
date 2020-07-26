@@ -9,6 +9,7 @@ import {
   Icon,
   Header,
 } from 'native-base';
+import HeaderView from '../components/HeaderView';
 import {
   StyleSheet,
   ScrollView,
@@ -24,6 +25,9 @@ import AsyncStorage from '@react-native-community/async-storage';
 const RegisterScreen = ({navigation}) => {
   return (
     <Container style={{backgroundColor: '#F3F9FB'}}>
+       <Header style={{ backgroundColor: '#4796BD', flexDirection: 'row', alignItems: 'center' }} androidStatusBarColor="#247095">
+        <Text style={{ color: '#fff', fontSize: 20 }}>Register</Text>
+      </Header>
       <Content>
         <Body>
           <Text style={styles.heading}>Register</Text>

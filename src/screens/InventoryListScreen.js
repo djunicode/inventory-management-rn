@@ -461,13 +461,14 @@ const styles = StyleSheet.create({
   inputStyle: {
     marginVertical: 16,
     marginHorizontal: 20,
-    height: 55,
+    height: 40,
     paddingHorizontal: 25,
+    paddingVertical: 10,
     alignSelf: 'stretch',
     borderWidth: 2,
-    fontSize: 23,
+    fontSize: 16,
     borderColor: '#4796BD',
-    borderRadius: 28,
+    borderRadius: 10,
     color: 'black',
   },
   productNameHeader: {

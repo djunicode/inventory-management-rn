@@ -10,7 +10,6 @@ export const isAuthenticated = async () => {
       .then(res => res.json())
       .then(data => {
         return true;
-        console.log("hello");
       })
       .catch(err => {
         console.log(err);

@@ -17,6 +17,9 @@ import AsyncStorage from '@react-native-community/async-storage';
 
 const LoginScreen = ({ navigation }) => {
 
+  const [email, setUserEmail] = useState('');
+  const [password, setUserPassword] = useState('');
+
   const login = () => {
 
     // fetching the token by providing email and password
@@ -62,9 +65,7 @@ const LoginScreen = ({ navigation }) => {
               console.log('is_staff not saved in async storage properly');
               console.log(error)
             }
-
-            navigation.navigate('Drawer');
-
+            navigation.replace('Drawer');
           })
           .catch((err) => {
             console.log(err)
@@ -76,17 +77,15 @@ const LoginScreen = ({ navigation }) => {
       .catch((err) => console.log(err))
   }
 
-  const [email, setUserEmail] = useState('');
-  const [password, setUserPassword] = useState('');
 
   return (
     <Container style={{ backgroundColor: '#F3F9FB' }}>
-      <Header style={{ backgroundColor: '#4796BD', flexDirection: 'row', alignItems: 'center' }}>
-        <Text style={{ color: '#fff', fontSize: 20 }}>Inventory Management</Text>
+      <Header style={{ backgroundColor: '#4796BD', flexDirection: 'row', alignItems: 'center' }} androidStatusBarColor="#247095">
+        <Text style={{ color: '#fff', fontSize: 24 }}>Login</Text>
+        
       </Header>
       <Content>
         <Body>
-          <Text style={styles.heading}>Login</Text>
 
           <Image
             style={{
@@ -124,6 +123,7 @@ const LoginScreen = ({ navigation }) => {
                 setUserPassword(value);
               }}
               name="password"
+              autoCapitalize="none"
               secureTextEntry
             />
           </Item>
@@ -183,9 +183,9 @@ const styles = StyleSheet.create({
   },
   loginButton: {
     width: 280,
-    height: 40,
+    height: 50,
     backgroundColor: '#4796BD',
-    borderRadius: 20,
+    borderRadius: 10,
     justifyContent: 'center',
     marginTop: 25,
   },
