@@ -46,8 +46,8 @@ const InventoryListScreen = ({navigation}) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [updateSellPrice, setUpdateSellPrice] = useState('');
   const [updateName, setUpdateName] = useState('');
-  const [upperLimit, setUpperLimit] = useState(0);
-  const [lowerLimit, setLowerLimit] = useState(0);
+  const [upperLimit, setUpperLimit] = useState('');
+  const [lowerLimit, setLowerLimit] = useState('');
   const [updateProd, setUpdateProd] = useState({});
   const [limit, setLimit] = useState(8);
   const [offset, setOffset] = useState(0);
@@ -144,7 +144,7 @@ const InventoryListScreen = ({navigation}) => {
     formData.append('name', updateName);
     formData.append('latest_selling_price', updateSellPrice);
     const auth_key = await AsyncStorage.getItem('auth_key');
-    console.log(formData);
+    console.log(formData,"form");
 
     fetch(
       `http://chouhanaryan.pythonanywhere.com/api/update/${updateProd.id}/`,
@@ -171,7 +171,6 @@ const InventoryListScreen = ({navigation}) => {
     if (!isSearch) {
       false;
       const newOff = offset + limit;
-
       if (newOff < end) {
         setIsLoading(true);
 
@@ -183,7 +182,7 @@ const InventoryListScreen = ({navigation}) => {
   };
 
   const onMenuPressed = inventoryItem => {
-    console.log(inventoryItem);
+    console.log(inventoryItem,"Item");
     Alert.alert(
       `${inventoryItem.name} (Qty: ${inventoryItem.quantity})`,
       `Rs. ${inventoryItem.avg_cost_price}`,
@@ -199,8 +198,8 @@ const InventoryListScreen = ({navigation}) => {
               setUpdateSellPrice('Not assigned');
             }
             console.log(inventoryItem.latest_selling_price);
-            setUpperLimit(inventoryItem.upper_limit);
-            setLowerLimit(inventoryItem.lower_limit);
+            setUpperLimit(inventoryItem.upper_limit.toString());
+            setLowerLimit(inventoryItem.lower_limit.toString());
             setModalVisible(true);
           },
         },
@@ -219,8 +218,8 @@ const InventoryListScreen = ({navigation}) => {
     );
   };
   var radio_props = [
-    {label: 'Loose', value: true},
-    {label: 'Packed', value: false},
+    {label: 'Loose', value: updateProd.loose},
+    {label: 'Packed', value: !updateProd.loose},
   ];
 
   return (
@@ -253,6 +252,7 @@ const InventoryListScreen = ({navigation}) => {
                   style={styles.inputArea}
                   value={updateSellPrice}
                   onChangeText={value => {
+                    console.log(typeof(value))
                     setUpdateSellPrice(value);
                   }}
                   keyboardType="numeric"
@@ -270,9 +270,9 @@ const InventoryListScreen = ({navigation}) => {
                 Recommended Limit
               </Text>
               <NumericInput
-                value={upperLimit}
+                value={parseInt(upperLimit)}
                 onChange={value => {
-                  setUpperLimit(value);
+                  setUpperLimit(value.toString());
                 }}
                 totalWidth={150}
                 totalHeight={35}
@@ -297,9 +297,10 @@ const InventoryListScreen = ({navigation}) => {
                 Critical Limit
               </Text>
               <NumericInput
-                value={lowerLimit}
+                value={parseInt(lowerLimit)}
                 onChange={value => {
-                  setLowerLimit(value);
+                  console.log(typeof(value))
+                  setLowerLimit(value.toString());
                 }}
                 totalWidth={150}
                 totalHeight={35}
@@ -330,6 +331,7 @@ const InventoryListScreen = ({navigation}) => {
               formHorizontal={true}
               buttonColor={'#434A5E'}
               labelColor={'#434A5E'}
+              initial={(updateProd.loose===true)?0:1}
               labelStyle={{marginRight: 20}}
               style={{paddingLeft: 10, marginTop: 8}}
               onPress={value => {
@@ -461,14 +463,13 @@ const styles = StyleSheet.create({
   inputStyle: {
     marginVertical: 16,
     marginHorizontal: 20,
-    height: 40,
+    height: 55,
     paddingHorizontal: 25,
-    paddingVertical: 10,
     alignSelf: 'stretch',
     borderWidth: 2,
-    fontSize: 16,
+    fontSize: 23,
     borderColor: '#4796BD',
-    borderRadius: 10,
+    borderRadius: 28,
     color: 'black',
   },
   productNameHeader: {
