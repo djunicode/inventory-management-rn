@@ -10,8 +10,32 @@
     "lint": "eslint ."
   },
   "dependencies": {
+    "@react-native-community/async-storage": "github:react-native-community/async-storage",
+    "@react-native-community/datetimepicker": "^2.4.1",
+    "@react-native-community/masked-view": "^0.1.6",
+    "@react-native-community/toolbar-android": "0.1.0-rc.2",
+    "@react-navigation/drawer": "^5.2.0",
+    "@react-navigation/native": "^5.0.8",
+    "@react-navigation/stack": "^5.1.0",
+    "axios": "^0.19.2",
+    "native-base": "^2.13.8",
     "react": "16.9.0",
-    "react-native": "0.61.5"
+    "react-native": "0.61.5",
+    "react-native-chart-kit": "^5.2.0",
+    "react-native-charts-wrapper": "^0.5.7",
+    "react-native-gesture-handler": "^1.6.0",
+    "react-native-numeric-input": "^1.8.3",
+    "react-native-permissions": "^2.1.5",
+    "react-native-push-notification": "^3.1.9",
+    "react-native-reanimated": "^1.7.0",
+    "react-native-safe-area-context": "^0.7.3",
+    "react-native-scl-alert": "^1.2.1",
+    "react-native-screens": "^2.2.0",
+    "react-native-simple-radio-button": "^2.7.4",
+    "react-native-svg": "^12.0.3",
+    "react-native-svg-charts": "^5.3.0",
+    "react-native-vector-icons": "^6.6.0",
+    "rn-fetch-blob": "^0.12.0"
   },
   "devDependencies": {
     "@babel/core": "^7.6.2",

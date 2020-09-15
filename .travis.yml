@@ -62,5 +62,5 @@ before_script:
 
 
 script:
-  - cd android && sudo chmod +x gradlew && sudo ./gradlew clean && sudo ./gradlew assembleRelease
+  - cd android && sudo chmod +x gradlew && sudo ./gradlew clean && sudo ./gradlew assemble
   - cd ..
