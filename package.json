@@ -20,7 +20,7 @@
     "axios": "^0.19.2",
     "native-base": "^2.13.8",
     "react": "16.9.0",
-    "react-native": "0.61.5",
+    "react-native": "0.62.3",
     "react-native-chart-kit": "^5.2.0",
     "react-native-charts-wrapper": "^0.5.7",
     "react-native-gesture-handler": "^1.6.0",
