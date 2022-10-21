@@ -27,7 +27,7 @@
     "react-native-numeric-input": "^1.8.3",
     "react-native-permissions": "^2.1.5",
     "react-native-push-notification": "^3.1.9",
-    "react-native-reanimated": "^1.7.0",
+    "react-native-reanimated": "^2.10.0",
     "react-native-safe-area-context": "^0.7.3",
     "react-native-scl-alert": "^1.2.1",
     "react-native-screens": "^2.2.0",
